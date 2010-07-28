@@ -10,7 +10,7 @@ ifeq ($(OSTYPE), linux-gnu)
 CXXFLAGS  := -Wall -m64 -fPIC -shared
 LDFLAGS   := -m64 -fopenmp -Wl,--rpath,\$$ORIGIN -fPIC -shared
 INCLUDE   := 
-LIBS      := -lglut -lpthread
+LIBS      := -lglut -lpthread -ljpeg -lpng
 DYLIB_PRE := lib
 DYLIB_EXT := .so
 else
@@ -18,7 +18,7 @@ CXXFLAGS  := -Wall -isysroot /Developer/SDKs/MacOSX10.6.sdk -arch x86_64 -shared
 LDFLAGS   := -framework OpenGL -framework GLUT \
 	-Wl,-syslibroot,/Developer/SDKs/MacOSX10.6.sdk -arch x86_64 -shared
 INCLUDE   := 
-LIBS      := 
+LIBS      := -L/opt/local/lib -ljpeg -lpng
 DYLIB_PRE := lib
 DYLIB_EXT := .dylib
 endif
