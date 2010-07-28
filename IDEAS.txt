@@ -27,3 +27,5 @@ Ideas for things to include in the library:
 
 - Support for orthographic cameras
 
+- Use quaternions for rotations
+
