@@ -73,6 +73,60 @@ Float3 pow(const Float3& a, float k)
 }
 
 
+const Float3& operator += (Float3& a, const Float3& b)
+{
+  a.x += b.x;
+  a.y += b.y;
+  a.z += b.z;
+  return a;
+}
+
+
+const Float3& operator -= (Float3& a, const Float3& b)
+{
+  a.x -= b.x;
+  a.y -= b.y;
+  a.z -= b.z;
+  return a;
+}
+
+
+const Float3& operator *= (Float3& a, const Float3& b)
+{
+  a.x *= b.x;
+  a.y *= b.y;
+  a.z *= b.z;
+  return a;
+}
+
+
+const Float3& operator *= (Float3& a, float k)
+{
+  a.x *= k;
+  a.y *= k;
+  a.z *= k;
+  return a;
+}
+
+
+const Float3& operator /= (Float3& a, const Float3& b)
+{
+  a.x /= b.x;
+  a.y /= b.y;
+  a.z /= b.z;
+  return a;
+}
+
+
+const Float3& operator /= (Float3& a, float k)
+{
+  a.x /= k;
+  a.y /= k;
+  a.z /= k;
+  return a;
+}
+
+
 float sum(const Float3& a)
 {
   return a.x + a.y + a.z;

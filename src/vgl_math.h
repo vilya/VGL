@@ -63,6 +63,13 @@ Float3 operator * (float k, const Float3& a);
 Float3 operator / (const Float3& a, float k);
 Float3 pow(const Float3& a, float k);
 
+const Float3& operator += (Float3& a, const Float3& b);
+const Float3& operator -= (Float3& a, const Float3& b);
+const Float3& operator *= (Float3& a, const Float3& b);
+const Float3& operator *= (Float3& a, float k);
+const Float3& operator /= (Float3& a, const Float3& b);
+const Float3& operator /= (Float3& a, float k);
+
 float sum(const Float3& a);
 float dot(const Float3& a, const Float3& b);
 float lengthSqr(const Float3& a);
