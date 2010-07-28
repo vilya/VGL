@@ -6,6 +6,7 @@
 // compile times down, though.
 
 #include "vgl_camera.h"
+#include "vgl_image.h"
 #include "vgl_math.h"
 #include "vgl_renderer.h"
 #include "vgl_viewer.h"

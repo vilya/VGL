@@ -4,7 +4,6 @@
 #include "vgl_camera.h"
 #include "vgl_renderer.h"
 
-#include <cmath>
 #include <cstdlib>
 
 #ifdef linux
@@ -303,7 +302,7 @@ void Viewer::actionHandler(int action)
       float dx = _mouseX - _prevMouseX;
       float dy = _mouseY - _prevMouseY;
       float zoom = (abs(dx) >= abs(dy)) ? dx : dy;
-      _camera->zoomBy(powf(1.1, zoom / 2.0f));
+      _camera->zoomBy(zoom);
     }
     break;
 

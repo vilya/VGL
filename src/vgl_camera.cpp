@@ -1,5 +1,7 @@
 #include "vgl_camera.h"
 
+#include <cmath>
+
 #ifdef linux
 #include <GL/gl.h>
 #include <GL/glext.h>
@@ -60,11 +62,21 @@ Camera::~Camera()
 
 void Camera::panBy(float dx, float dy, float dz)
 {
+  Float3 viewVec = _target - _pos;
+  // TODO: Rotate viewVec by dx degrees around the x axis
+  // TODO: Rotate viewVec by dz degrees around the z axis
+  // TODO: Rotate viewVec by dy degrees around the y axis
+  _target = viewVec + _pos;
 }
 
 
 void Camera::rollBy(float dx, float dy, float dz)
 {
+  Float3 viewVec = _pos - _target;
+  // TODO: Rotate viewVec by dx degrees around the x axis
+  // TODO: Rotate viewVec by dz degrees around the z axis
+  // TODO: Rotate viewVec by dy degrees around the y axis
+  _pos = viewVec + _target;
 }
 
 
@@ -78,12 +90,13 @@ void Camera::dollyBy(float dx, float dy, float dz)
 
 void Camera::zoomBy(float dz)
 {
+  _aperture *= powf(1.1, -dz / 2.0f);
 }
 
 
 void Camera::setupProjectionMatrix()
 {
-  gluPerspective(30.0, float(_pixelWidth) / float(_pixelHeight), 0.0001, 10000.0);
+  gluPerspective(_aperture, float(_pixelWidth) / float(_pixelHeight), 0.0001, 10000.0);
 }
 
 
