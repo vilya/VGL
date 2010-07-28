@@ -1,0 +1,11 @@
+TODO
+====
+
+- Implement the camera movement methods.
+
+- Refactor other apps to use this library.
+  - OBJViewer
+  - Ray (both the ray and viewbvh apps)
+  - GPUCompositor
+
+- Use CMake to build the library instead of Make.

@@ -1,0 +1,29 @@
+IDEAS
+=====
+
+Ideas for things to include in the library:
+
+- Data structures to hold various 3D object types
+  - Indexed triangle mesh
+  - Lights
+  - The entire scene
+
+- 3D file format support via a callback-style interface (as in the OBJViewer).
+
+- Implementations of loaders for 3D file formats:
+  - .obj (Wavefront OBJ, already supported in the OBJViewer)
+  - .ply (PLY from Stanford University, already supported in the OBJViewer)
+  - .lwo (LightWave Object format)
+  - .max (3D Studio Max file format)
+  - .dae (Collada file format)
+
+- Implementations of various acceleration structures:
+  - BVH (Already implemented in Ray and Kaleidoscope)
+  - Regular grid (Already implemented in Nuke)
+  - Octree
+  - Kd-tree
+
+- Code to find out where a ray hits a scene.
+
+- Support for orthographic cameras
+
