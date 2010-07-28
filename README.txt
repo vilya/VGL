@@ -1,11 +1,18 @@
-vgl = Vil's Graphics Library! :-)
+VGL = Vil's Graphics Library! :-)
 
 It's a framework to take the donkey work out of writing OpenGL apps, so that
 it's easier to concentrate on the rendering and other interesting bits.
 
+The goal is to be agnostic about the choice of scene data structures, rendering
+algorithms and user interation methods while providing some useful default 
+implementations for each of these.
+
 So far it includes:
-- A basic windowing system based on GLUT. The aim is to make it easy to get a
-  single window up where you can draw using OpenGL and respond to events.
+- A very basic windowing system based on GLUT.
+  - Single window, set up for drawing into with OpenGL.
+  - Customisable (by overriding) mapping of input events to GUI actions.
+  - Default behaviour which maps input events to camera controls.
+- The usual 3D math classes.
 - Support for loading (but not saving) a number of 2d image formats:
   - BMP
   - PNG
@@ -20,4 +27,52 @@ So far it includes:
   types of camera).
 - A *very* simple renderer abstraction.
 - An example program which draws an unlit teapot.
+
+
+License
+=======
+This code is licensed under the GPL v3. A full copy of the license terms can be
+found in the accompanying LICENSE.txt file, or on the Free Software
+Foundation's website at http://www.gnu.org/licenses/gpl.html
+
+
+Pre-requisites
+==============
+- Linux or Mac OS X (tested on Ubuntu 9.10 and OS X 10.6.4)
+- Glut, libpng and libjpeg installed on your system.
+- A graphics card which supports OpenGL 2.1 or higher.
+
+
+Getting the code
+================
+
+  git clone http://github.com/vilya
+
+
+Compiling it
+============
+
+  make
+
+...should do the trick. You may need to adjust the include paths and library
+paths if you've got your libraries installed in custom locations.
+
+After a successful make, the library and headers will be inside the dist
+directory; the example program (and a second copy of the library) will be inside
+the bin directory.
+
+
+Running the examples
+====================
+If you're in the project root folder, you should be able to run the example
+program by typing
+
+  ./bin/example
+
+
+Reporting bugs
+==============
+If you find any bugs, please add them to the project tracker on github:
+
+  http://github.com/vilya/VGL/issues
 
