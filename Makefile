@@ -33,11 +33,13 @@ EXAMPLE_OBJ := build/example
 LIBVGL_BIN  := $(DIST)/lib/$(DYLIB_PRE)vgl$(DYLIB_EXT)
 LIBVGL_OBJS :=  \
                 $(OBJ)/vgl_camera.o \
+                $(OBJ)/vgl_image.o \
                 $(OBJ)/vgl_math.o \
                 $(OBJ)/vgl_viewer.o
 LIBVGL_INCS :=  \
                 $(DIST)/include/vgl.h \
                 $(DIST)/include/vgl_camera.h \
+                $(DIST)/include/vgl_image.h \
                 $(DIST)/include/vgl_math.h \
                 $(DIST)/include/vgl_renderer.h \
                 $(DIST)/include/vgl_viewer.h
