@@ -19,4 +19,5 @@ So far it includes:
 - A simple camera class (designed to be overridden if you want to support other
   types of camera).
 - A *very* simple renderer abstraction.
+- An example program which draws an unlit teapot.
 

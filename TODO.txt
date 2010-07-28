@@ -1,11 +1,11 @@
 TODO
 ====
 
-- Implement the camera movement methods.
+- Implement the remaining camera movement methods.
 
-- Refactor other apps to use this library.
-  - OBJViewer
-  - Ray (both the ray and viewbvh apps)
-  - GPUCompositor
+- Abstract the parsing interface a bit more, so it doesn't depend on any model
+  classes (part of the point of this library is so that I can experiment with
+  alternative model representations).
 
 - Use CMake to build the library instead of Make.
+
