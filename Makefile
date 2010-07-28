@@ -26,7 +26,7 @@ else
 CXXFLAGS  := -Wall -isysroot /Developer/SDKs/MacOSX10.6.sdk -arch x86_64 -shared
 LDFLAGS   := -framework OpenGL -framework GLUT \
 	-Wl,-syslibroot,/Developer/SDKs/MacOSX10.6.sdk -arch x86_64 -shared
-INCLUDE   := -I$(THIRDPARTY_SRC)
+INCLUDE   := -I/opt/local/include -I$(THIRDPARTY_SRC)
 LIBS      := -L/opt/local/lib -ljpeg -lpng
 DYLIB_PRE := lib
 DYLIB_EXT := .dylib
