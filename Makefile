@@ -46,14 +46,6 @@ EXAMPLE_BIN   := $(BIN)/example
 EXAMPLE_OBJS  := $(EXAMPLE_OBJ)/example.o
 
 
-.PHONY: dirs
-dirs:
-	@mkdir -p $(OBJ)
-	@mkdir -p $(DIST)/include
-	@mkdir -p $(DIST)/lib
-	@mkdir -p $(BIN)
-
-
 .PHONY: debug
 debug:
 	$(MAKE) CXXFLAGS="$(DBGFLAGS) $(CXXFLAGS)" all
@@ -68,8 +60,18 @@ release:
 all: dirs build_libvgl build_example
 
 
+.PHONY: dirs
+dirs:
+	@mkdir -p $(OBJ)
+	@mkdir -p $(EXAMPLE_OBJ)
+	@mkdir -p $(DIST)/include
+	@mkdir -p $(DIST)/lib
+	@mkdir -p $(BIN)
+
+
 .PHONY: build_example
 build_example: build_libvgl $(EXAMPLE_BIN)
+	cp $(LIBVGL_BIN) $(BIN)
 
 
 .PHONY: build_libvgl
@@ -98,5 +100,5 @@ $(EXAMPLE_OBJ)/%.o: $(EXAMPLE_SRC)/%.cpp
 
 .PHONY: clean
 clean:
-	@echo rm -rf $(DIST)/* $(BUILD)/* $(BIN)/*
+	rm -rf bin/* build/* dist/*
 
