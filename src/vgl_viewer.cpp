@@ -222,6 +222,9 @@ int Viewer::actionForKeyPress(unsigned int key, int x, int y)
 
 int Viewer::actionForMousePress(int button, int state, int x, int y)
 {
+  if (state != GLUT_DOWN)
+    return ACTION_IGNORE;
+
   switch (button) {
   case 3: // Mouse wheel up
     return ACTION_ZOOM_CAMERA_IN;
@@ -283,26 +286,47 @@ void Viewer::actionHandler(int action)
     break;
 
   case ACTION_PAN_CAMERA:
-    if (_camera != NULL)
+    if (_camera != NULL) {
       _camera->panBy(0, 0, 0);
+      glutPostRedisplay();
+    }
     break;
 
   case ACTION_ROLL_CAMERA:
-    if (_camera != NULL)
+    if (_camera != NULL) {
       _camera->rollBy(0, 0, 0);
+      glutPostRedisplay();
+    }
     break;
 
   case ACTION_DOLLY_CAMERA:
-    if (_camera != NULL)
+    if (_camera != NULL) {
       _camera->dollyBy(0, 0, 0);
+      glutPostRedisplay();
+    }
     break;
 
   case ACTION_ZOOM_CAMERA:
     if (_camera != NULL) {
       float dx = _mouseX - _prevMouseX;
       float dy = _mouseY - _prevMouseY;
-      float zoom = (abs(dx) >= abs(dy)) ? dx : dy;
+      float zoom = (abs(dx) >= abs(dy)) ? dx : -dy;
       _camera->zoomBy(zoom);
+      glutPostRedisplay();
+    }
+    break;
+
+  case ACTION_ZOOM_CAMERA_IN:
+    if (_camera != NULL) {
+      _camera->zoomBy(5);
+      glutPostRedisplay();
+    }
+    break;
+
+  case ACTION_ZOOM_CAMERA_OUT:
+    if (_camera != NULL) {
+      _camera->zoomBy(-5);
+      glutPostRedisplay();
     }
     break;
 
