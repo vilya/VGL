@@ -107,6 +107,9 @@ Viewer::Viewer(
   glutKeyboardFunc(vgl::keyPressed);
   glutMouseFunc(vgl::mousePressed);
   glutMotionFunc(vgl::mouseDragged);
+
+  if (_renderer != NULL)
+    _renderer->setup();
 }
 
 
