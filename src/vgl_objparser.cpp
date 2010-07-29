@@ -353,7 +353,7 @@ void loadMaterialLibrary(const char* path, ParserCallbacks* callbacks)
           throw ParseException("Defining a material property without declaring a material name.");
       }
 
-      switch (mtlParseLineType(col, col)) {
+      switch (lineType) {
         case MTL_LINETYPE_NEWMTL:
           if (materialName != "")
             callbacks->endMaterial();
