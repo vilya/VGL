@@ -114,7 +114,6 @@ $(THIRDPARTY_OBJ)/ply.o: $(THIRDPARTY_SRC)/ply.c
 
 
 $(EXAMPLE_BIN): $(EXAMPLE_OBJS)
-	#$(LD) -m64 -fopenmp -Wl,--rpath,\$$ORIGIN -L$(DIST)/lib -o $@ $^ $(LIBS) -lvgl
 	$(LD) $(LDFLAGS_EXE) -o  $@ $^ -L$(DIST)/lib -lvgl $(LIBS)
 
 
