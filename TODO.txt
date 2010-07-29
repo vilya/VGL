@@ -1,11 +1,7 @@
 TODO
 ====
 
-- Turn the Float3 functions into template functions which work on a Triple.
-
 - Matrix class
-
-- Implement the remaining camera movement methods.
 
 - Use CMake to build the library instead of Make.
 

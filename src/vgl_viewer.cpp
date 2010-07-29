@@ -257,7 +257,10 @@ int Viewer::actionForMouseDrag(int x, int y)
     else
       return ACTION_ROLL_CAMERA;
   case GLUT_MIDDLE_BUTTON:
-    return ACTION_DOLLY_CAMERA;
+    if (shiftDown)
+      return ACTION_DOLLY_CAMERA;
+    else
+      return ACTION_MOVE_CAMERA;
   case GLUT_RIGHT_BUTTON:
     return ACTION_ZOOM_CAMERA;
   default:
@@ -297,21 +300,37 @@ void Viewer::actionHandler(int action)
 
   case ACTION_PAN_CAMERA:
     if (_camera != NULL) {
-      _camera->panBy(0, 0, 0);
+      float dx = _mouseX - _prevMouseX;
+      float dy = _mouseY - _prevMouseY;
+      _camera->panBy(dy / 2.0, dx / 2.0, 0);
       glutPostRedisplay();
     }
     break;
 
   case ACTION_ROLL_CAMERA:
     if (_camera != NULL) {
-      _camera->rollBy(0, 0, 0);
+      float dx = _mouseX - _prevMouseX;
+      float dy = _mouseY - _prevMouseY;
+      _camera->rollBy(dy / 2.0, dx / 2.0, 0);
+      glutPostRedisplay();
+    }
+    break;
+
+  case ACTION_MOVE_CAMERA:
+    if (_camera != NULL) {
+      float dx = _mouseX - _prevMouseX;
+      float dy = _mouseY - _prevMouseY;
+      _camera->moveBy(dx, dy, 0);
       glutPostRedisplay();
     }
     break;
 
   case ACTION_DOLLY_CAMERA:
     if (_camera != NULL) {
-      _camera->dollyBy(0, 0, 0);
+      float dx = _mouseX - _prevMouseX;
+      float dy = _mouseY - _prevMouseY;
+      float dz = (abs(dx) >= abs(dy)) ? dx : -dy;
+      _camera->moveBy(0, 0, dz);
       glutPostRedisplay();
     }
     break;

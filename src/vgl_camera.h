@@ -15,7 +15,7 @@ public:
 
   virtual void panBy(float dx, float dy, float dz);
   virtual void rollBy(float dx, float dy, float dz);
-  virtual void dollyBy(float dx, float dy, float dz);
+  virtual void moveBy(float dx, float dy, float dz);
   virtual void zoomBy(float dz);
 
   virtual void setupProjectionMatrix();

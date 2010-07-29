@@ -32,7 +32,8 @@ public:
     ACTION_ZOOM_CAMERA_IN,    // Zoom the camera in by some predetermined amount
     ACTION_ZOOM_CAMERA_OUT,   // Zoom the camera out by some predetermined amount
     ACTION_PAN_CAMERA,        // Turn the camera without moving it from it's current position.
-    ACTION_DOLLY_CAMERA,      // Move the camera without turning it from it's current orientation.
+    ACTION_MOVE_CAMERA,       // Move the camera left right, up or down without turning it.
+    ACTION_DOLLY_CAMERA,      // Move the camera in or out without turning it.
     ACTION_ROLL_CAMERA        // Rotate the camera around it's current focal point.
   };
 

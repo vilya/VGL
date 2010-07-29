@@ -63,9 +63,9 @@ Camera::~Camera()
 void Camera::panBy(float dx, float dy, float dz)
 {
   Float3 viewVec = _target - _pos;
-  // TODO: Rotate viewVec by dx degrees around the x axis
-  // TODO: Rotate viewVec by dz degrees around the z axis
-  // TODO: Rotate viewVec by dy degrees around the y axis
+  viewVec = rotateX(viewVec, dx / (2 * M_PI));
+  viewVec = rotateZ(viewVec, dz / (2 * M_PI));
+  viewVec = rotateY(viewVec, dy / (2 * M_PI));
   _target = viewVec + _pos;
 }
 
@@ -73,14 +73,14 @@ void Camera::panBy(float dx, float dy, float dz)
 void Camera::rollBy(float dx, float dy, float dz)
 {
   Float3 viewVec = _pos - _target;
-  // TODO: Rotate viewVec by dx degrees around the x axis
-  // TODO: Rotate viewVec by dz degrees around the z axis
-  // TODO: Rotate viewVec by dy degrees around the y axis
+  viewVec = rotateX(viewVec, dx / (2 * M_PI));
+  viewVec = rotateZ(viewVec, dz / (2 * M_PI));
+  viewVec = rotateY(viewVec, dy / (2 * M_PI));
   _pos = viewVec + _target;
 }
 
 
-void Camera::dollyBy(float dx, float dy, float dz)
+void Camera::moveBy(float dx, float dy, float dz)
 {
   Float3 delta(dx, dy, dz);
   _pos += delta;
