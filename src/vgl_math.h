@@ -1,6 +1,7 @@
 #ifndef vgl_math_h
 #define vgl_math_h
 
+#include <algorithm>
 
 namespace vgl {
 
@@ -51,37 +52,186 @@ struct Plane3 {
 // FUNCTIONS
 //
 
-float clampf(float k);
-float sqr(float k);
+template <typename Num>
+Num clampf(Num k)
+{
+  return std::max(Num(0), std::min(Num(1), k));
+}
 
-Float3 operator - (const Float3& a);
-Float3 operator + (const Float3& a, const Float3& b);
-Float3 operator - (const Float3& a, const Float3& b);
-Float3 operator * (const Float3& a, const Float3& b);
-Float3 operator * (const Float3& a, float k);
-Float3 operator * (float k, const Float3& a);
-Float3 operator / (const Float3& a, float k);
-Float3 pow(const Float3& a, float k);
 
-const Float3& operator += (Float3& a, const Float3& b);
-const Float3& operator -= (Float3& a, const Float3& b);
-const Float3& operator *= (Float3& a, const Float3& b);
-const Float3& operator *= (Float3& a, float k);
-const Float3& operator /= (Float3& a, const Float3& b);
-const Float3& operator /= (Float3& a, float k);
+template <typename Num>
+Num sqr(Num k)
+{
+  return k * k;
+}
 
-float sum(const Float3& a);
-float dot(const Float3& a, const Float3& b);
+
+//
+// Triple OPERATORS AND FUNCTIONS
+//
+
+template <typename Num>
+Triple<Num> operator - (const Triple<Num>& a)
+{
+  return Triple<Num>(-a.x, -a.y, -a.z);
+}
+
+
+template <typename Num>
+Triple<Num> operator + (const Triple<Num>& a, const Triple<Num>& b)
+{
+  return Triple<Num>(a.x + b.x, a.y + b.y, a.z + b.z);
+}
+
+
+template <typename Num>
+Triple<Num> operator - (const Triple<Num>& a, const Triple<Num>& b)
+{
+  return Triple<Num>(a.x - b.x, a.y - b.y, a.z - b.z);
+}
+
+
+template <typename Num>
+Triple<Num> operator * (const Triple<Num>& a, const Triple<Num>& b)
+{
+  return Triple<Num>(a.x * b.x, a.y * b.y, a.z * b.z);
+}
+
+
+template <typename Num>
+Triple<Num> operator * (const Triple<Num>& a, float k)
+{
+  return Triple<Num>(a.x * k, a.y * k, a.z * k);
+}
+
+
+template <typename Num>
+Triple<Num> operator * (float k, const Triple<Num>& a)
+{
+  return Triple<Num>(a.x * k, a.y * k, a.z * k);
+}
+
+
+template <typename Num>
+Triple<Num> operator / (const Triple<Num>& a, float k)
+{
+  return Triple<Num>(a.x / k, a.y / k, a.z / k);
+}
+
+
+template <typename Num>
+const Triple<Num>& operator += (Triple<Num>& a, const Triple<Num>& b)
+{
+  a.x += b.x;
+  a.y += b.y;
+  a.z += b.z;
+  return a;
+}
+
+
+template <typename Num>
+const Triple<Num>& operator -= (Triple<Num>& a, const Triple<Num>& b)
+{
+  a.x -= b.x;
+  a.y -= b.y;
+  a.z -= b.z;
+  return a;
+}
+
+
+template <typename Num>
+const Triple<Num>& operator *= (Triple<Num>& a, const Triple<Num>& b)
+{
+  a.x *= b.x;
+  a.y *= b.y;
+  a.z *= b.z;
+  return a;
+}
+
+
+template <typename Num>
+const Triple<Num>& operator *= (Triple<Num>& a, Num k)
+{
+  a.x *= k;
+  a.y *= k;
+  a.z *= k;
+  return a;
+}
+
+
+template <typename Num>
+const Triple<Num>& operator /= (Triple<Num>& a, const Triple<Num>& b)
+{
+  a.x /= b.x;
+  a.y /= b.y;
+  a.z /= b.z;
+  return a;
+}
+
+
+template <typename Num>
+const Triple<Num>& operator /= (Triple<Num>& a, Num k)
+{
+  a.x /= k;
+  a.y /= k;
+  a.z /= k;
+  return a;
+}
+
+
+template <typename Num>
+Num sum(const Triple<Num>& a)
+{
+  return a.x + a.y + a.z;
+}
+
+
+template <typename Num>
+float dot(const Triple<Num>& a, const Triple<Num>& b)
+{
+  return sum(a * b);
+}
+
+
+template <typename Num>
+Triple<Num> cross(const Triple<Num>& a, const Triple<Num>& b)
+{
+  return Triple<Num>(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
+}
+
+
+template <typename Num>
+Num scalarTriple(const Triple<Num>& a, const Triple<Num>& b, const Triple<Num>& c)
+{
+  return dot(a, cross(b, c));
+}
+
+
+template <typename Num>
+Triple<Num> pairwiseMin(const Triple<Num>& a, const Triple<Num>& b)
+{
+  return Triple<Num>(std::min(a.x, b.x), std::min(a.y, b.y), std::min(a.z, b.z));
+}
+
+
+template <typename Num>
+Triple<Num> pairwiseMax(const Triple<Num>& a, const Triple<Num>& b)
+{
+  return Triple<Num>(std::max(a.x, b.x), std::max(a.y, b.y), std::max(a.z, b.z));
+}
+
+
+//
+// Float3 FUNCTIONS
+//
+
 float lengthSqr(const Float3& a);
 float length(const Float3& a);
 
-Float3 pairwiseMin(const Float3& a, const Float3& b);
-Float3 pairwiseMax(const Float3& a, const Float3& b);
-Float3 cross(const Float3& a, const Float3& b);
+Float3 pow(const Float3& a, float k);
 Float3 norm(const Float3& a);
 Float3 clamp(const Float3& a);
 
-float scalarTriple(const Float3& a, const Float3& b, const Float3& c);
 Ray3 reflect(const Ray3& r, const Float3& hitpos, const Float3& normal);
 Ray3 refract(const Ray3& r, const Float3& hitpos, const Float3& normal, float oldNi, float newNi);
 
