@@ -1,11 +1,17 @@
 TODO
 ====
 
+- Turn the Float3 functions into template functions which work on a Triple.
+
+- Matrix class
+
 - Implement the remaining camera movement methods.
 
-- Abstract the parsing interface a bit more, so it doesn't depend on any model
-  classes (part of the point of this library is so that I can experiment with
-  alternative model representations).
-
 - Use CMake to build the library instead of Make.
+
+- Utility functions:
+  - check for and report OpenGL errors.
+  - load shaders (reporting any errors).
+
+- Support for orthographic cameras
 

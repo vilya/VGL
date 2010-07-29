@@ -21,7 +21,5 @@ Ideas for things to include in the library:
 
 - Code to find out where a ray hits a scene.
 
-- Support for orthographic cameras
-
 - Use quaternions for rotations
 
