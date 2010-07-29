@@ -4,6 +4,7 @@ OPTFLAGS := -O3 -fopenmp
 #OPTFLAGS := -O3
 
 CXX := g++
+CC  := gcc
 LD  := g++
 
 SRC := src
@@ -11,28 +12,34 @@ OBJ := build/obj
 DIST := dist
 BIN := bin
 THIRDPARTY_SRC := thirdparty
-THIRDPARTY_OBJ := build/thirdparty_obj
+THIRDPARTY_OBJ := build/thirdparty
 EXAMPLE_SRC := example
 EXAMPLE_OBJ := build/example
 
 ifeq ($(OSTYPE), linux-gnu)
-CXXFLAGS  := -Wall -m64 -fPIC -shared
-LDFLAGS   := -m64 -fopenmp -Wl,--rpath,\$$ORIGIN -fPIC -shared
-INCLUDE   := -I$(THIRDPARTY_SRC)
-LIBS      := -lglut -lpthread -ljpeg -lpng
 DYLIB_PRE := lib
 DYLIB_EXT := .so
+LIBVGL_BIN  := $(DIST)/lib/$(DYLIB_PRE)vgl$(DYLIB_EXT)
+CXXFLAGS  := -Wall -m64 -fPIC -shared
+LDFLAGS   := -m64 -fopenmp -Wl,--rpath,\$$ORIGIN -fPIC -shared
+LDFLAGS_EXE := -m64 -fopenmp -Wl,--rpath,\$$ORIGIN
+INCLUDE   := -I$(THIRDPARTY_SRC)
+LIBS      := -lglut -lpthread -ljpeg -lpng
 else
-CXXFLAGS  := -Wall -isysroot /Developer/SDKs/MacOSX10.6.sdk -arch x86_64 -shared
-LDFLAGS   := -framework OpenGL -framework GLUT \
-	-Wl,-syslibroot,/Developer/SDKs/MacOSX10.6.sdk -arch x86_64 -shared
-INCLUDE   := -I/opt/local/include -I$(THIRDPARTY_SRC)
-LIBS      := -L/opt/local/lib -ljpeg -lpng
 DYLIB_PRE := lib
 DYLIB_EXT := .dylib
+LIBVGL_BIN  := $(DIST)/lib/$(DYLIB_PRE)vgl$(DYLIB_EXT)
+CXXFLAGS  := -Wall -isysroot /Developer/SDKs/MacOSX10.6.sdk -arch x86_64 -shared
+LDFLAGS   := -framework OpenGL -framework GLUT \
+	-Wl,-syslibroot,/Developer/SDKs/MacOSX10.6.sdk -arch x86_64 -shared \
+	-install_name @rpath/$(DYLIB_PRE)vgl$(DYLIB_EXT)
+LDFLAGS_EXE := -framework OpenGL -framework GLUT \
+	-Wl,-syslibroot,/Developer/SDKs/MacOSX10.6.sdk -arch x86_64 \
+	-Wl,-rpath,@loader_path/
+INCLUDE   := -I/opt/local/include -I$(THIRDPARTY_SRC)
+LIBS      := -L/opt/local/lib -ljpeg -lpng
 endif
 
-LIBVGL_BIN  := $(DIST)/lib/$(DYLIB_PRE)vgl$(DYLIB_EXT)
 LIBVGL_OBJS :=  \
                 $(OBJ)/vgl_camera.o \
                 $(OBJ)/vgl_image.o \
@@ -90,7 +97,7 @@ build_example: build_libvgl $(EXAMPLE_BIN)
 build_libvgl: $(LIBVGL_BIN) $(LIBVGL_INCS)
 
 
-$(LIBVGL_BIN): $(LIBVGL_OBJS)
+$(LIBVGL_BIN): $(LIBVGL_OBJS) $(THIRDPARTY_OBJS)
 	$(LD) $(LDFLAGS) -o  $@ $^ $(LIBS)
 
 
@@ -102,12 +109,14 @@ $(OBJ)/%.o: $(SRC)/%.cpp
 	$(CXX) $(CXXFLAGS) $(INCLUDE) -c $< -o $@
 
 
-$(THIRDPARTY_OBJ)/%.o: $(THIRDPARTY_SRC)/%.cpp
-	$(CXX) $(CXXFLAGS) $(INCLUDE) -c $< -o $@
+$(THIRDPARTY_OBJ)/ply.o: $(THIRDPARTY_SRC)/ply.c
+	$(CC) $(CXXFLAGS) $(INCLUDE) -c $< -o $@
 
 
 $(EXAMPLE_BIN): $(EXAMPLE_OBJS)
-	$(LD) -m64 -fopenmp -Wl,--rpath,\$$ORIGIN -L$(DIST)/lib -o $@ $^ $(LIBS) -lvgl
+	#$(LD) -m64 -fopenmp -Wl,--rpath,\$$ORIGIN -L$(DIST)/lib -o $@ $^ $(LIBS) -lvgl
+	$(LD) $(LDFLAGS_EXE) -o  $@ $^ -L$(DIST)/lib -lvgl $(LIBS)
+
 
 
 $(EXAMPLE_OBJ)/%.o: $(EXAMPLE_SRC)/%.cpp
