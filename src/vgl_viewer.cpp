@@ -146,8 +146,15 @@ void Viewer::render()
   else
     glutSolidTeapot(1.0);
 
+  // Clean up.
+  if (_camera != NULL) {
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+  }
+
   // Swap the buffers.
-  glFlush();
   glutSwapBuffers();
 }
 
