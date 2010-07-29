@@ -31,10 +31,34 @@ const char* ParseException::what() const throw()
 
 
 //
+// ParserCallbacks
+//
+
+const char* ParserCallbacks::kAmbientColor = "Ka";
+const char* ParserCallbacks::kDiffuseColor = "Kd";
+const char* ParserCallbacks::kSpecularColor = "Ks";
+const char* ParserCallbacks::kTransmissivity = "Tf";
+const char* ParserCallbacks::kDissolve = "D";
+const char* ParserCallbacks::kSpecularIndex = "Ns";
+const char* ParserCallbacks::kNormal = "N";
+const char* ParserCallbacks::kBumpMap = "Bump";
+
+const char* ParserCallbacks::kCoordRef = "vi";
+const char* ParserCallbacks::kTexCoordRef = "vti";
+const char* ParserCallbacks::kNormalRef = "vni";
+
+const char* ParserCallbacks::kMaterialName = "usemtl";
+const char* ParserCallbacks::kCoord = "v";
+const char* ParserCallbacks::kTexCoord = "vt";
+const char* ParserCallbacks::kVertexNormal = "vn";
+const char* ParserCallbacks::kIntensity = "I";
+
+
+//
 // PUBLIC FUNCTIONS
 //
 
-void loadModel(ParserCallbacks* callbacks, const char* path, ResourceManager* resources)
+void loadModel(ParserCallbacks* callbacks, const char* path)
   throw(ParseException)
 {
   if (callbacks == NULL)
@@ -55,17 +79,12 @@ void loadModel(ParserCallbacks* callbacks, const char* path, ResourceManager* re
   if (ext == NULL)
     throw ParseException("Unknown model format.");
 
-  if (strcasecmp(ext, ".obj") == 0) {
-    callbacks->beginModel(path);
-    loadOBJ(callbacks, path, resources);
-    callbacks->endModel();
-  } else if (strcasecmp(ext, ".ply") == 0) {
-    callbacks->beginModel(path);
-    loadPLY(callbacks, path, resources);
-    callbacks->endModel();
-  } else {
+  if (strcasecmp(ext, ".obj") == 0)
+    loadOBJ(callbacks, path);
+  else if (strcasecmp(ext, ".ply") == 0)
+    loadPLY(callbacks, path);
+  else
     throw ParseException("Unknown model format: %s", ext);
-  }
 }
 
 

@@ -78,7 +78,7 @@ void plyParseFaces(ParserCallbacks* callbacks, PlyFile* plySrc,
 // PUBLIC FUNCTIONS
 //
 
-void loadPLY(ParserCallbacks* callbacks, const char* path, ResourceManager* resources)
+void loadPLY(ParserCallbacks* callbacks, const char* path)
   throw(ParseException)
 {
   int numElements = 0;
@@ -124,16 +124,16 @@ void loadPLY(ParserCallbacks* callbacks, const char* path, ResourceManager* reso
         PLYVertex plyVert;
         ply_get_element(plySrc, &plyVert);
 
-        callbacks->coordParsed(Float3(plyVert.x, plyVert.y, plyVert.z));
+        callbacks->float3AttributeParsed(ParserCallbacks::kCoord, Float3(plyVert.x, plyVert.y, plyVert.z));
         if (hasTexCoords)
-          callbacks->texCoordParsed(Float3(plyVert.u, plyVert.v, 0.0));
+          callbacks->float3AttributeParsed(ParserCallbacks::kTexCoord, Float3(plyVert.u, plyVert.v, 0.0));
         if (hasNormals)
-          callbacks->normalParsed(Float3(plyVert.nx, plyVert.ny, plyVert.nz));
+          callbacks->float3AttributeParsed(ParserCallbacks::kVertexNormal, Float3(plyVert.nx, plyVert.ny, plyVert.nz));
 
         if (hasRGB)
-          callbacks->colorParsed(Float3(plyVert.r, plyVert.g, plyVert.b));
+          callbacks->float3AttributeParsed(ParserCallbacks::kDiffuseColor, Float3(plyVert.r, plyVert.g, plyVert.b));
         else if (hasIntensity)
-          callbacks->colorParsed(Float3(plyVert.intensity, plyVert.intensity, plyVert.intensity));
+          callbacks->float3AttributeParsed(ParserCallbacks::kIntensity, Float3(plyVert.intensity, plyVert.intensity, plyVert.intensity));
       }
     } else if (strcmp("face", sectionName) == 0) {
       ply_get_property(plySrc, sectionName, &faceProps[0]);
@@ -143,15 +143,22 @@ void loadPLY(ParserCallbacks* callbacks, const char* path, ResourceManager* reso
         PLYFace plyFace;
         ply_get_element(plySrc, &plyFace);
 
-        Face* face = new Face();
+        callbacks->beginFace();
         for (int j = 0; j < plyFace.nverts; ++j) {
+          callbacks->beginVertex();
           int v = plyFace.verts[j];
-          int vt = hasTexCoords ? v : -1;
-          int vn = hasNormals ? v : -1;
-          int c = (hasRGB || hasIntensity) ? v : -1;
-          face->vertexes.push_back(Vertex(v, vt, vn, c));
+          callbacks->indexAttributeParsed(ParserCallbacks::kCoordRef, v);
+          if (hasTexCoords)
+            callbacks->indexAttributeParsed(ParserCallbacks::kTexCoordRef, v);
+          if (hasNormals)
+            callbacks->indexAttributeParsed(ParserCallbacks::kVertexNormal, v);
+          if (hasRGB)
+            callbacks->indexAttributeParsed(ParserCallbacks::kDiffuseColor, v);
+          if (hasIntensity)
+            callbacks->indexAttributeParsed(ParserCallbacks::kIntensity, v);
+          callbacks->endVertex();
         }
-        callbacks->faceParsed(face);
+        callbacks->endFace();
       }
     } else {
       ply_get_other_element(plySrc, sectionName, sectionSize);

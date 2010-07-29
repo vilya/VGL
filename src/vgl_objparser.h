@@ -7,17 +7,10 @@
 namespace vgl {
 
 //
-// Forward declarations
-//
-
-class ResourceManager;
-
-
-//
 // Functions
 //
 
-void loadOBJ(ParserCallbacks* callbacks, const char* path, ResourceManager* resources)
+void loadOBJ(ParserCallbacks* callbacks, const char* path)
   throw(ParseException);
 
 

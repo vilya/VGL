@@ -8,15 +8,6 @@
 
 namespace vgl {
 
-//
-// Forward declarations
-//
-
-class Face;
-class Material;
-class RawImage;
-class ResourceManager;
-
 
 //
 // Exceptions
@@ -41,16 +32,47 @@ public:
 // parsing behaviour.
 class ParserCallbacks {
 public:
+  // Common material attribute names.
+  static const char* kAmbientColor;
+  static const char* kDiffuseColor;
+  static const char* kSpecularColor;
+  static const char* kTransmissivity;
+  static const char* kDissolve;
+  static const char* kSpecularIndex;
+  static const char* kNormal;
+  static const char* kBumpMap;
+
+  // Common vertex attribute names.
+  static const char* kCoordRef;
+  static const char* kTexCoordRef;
+  static const char* kNormalRef;
+  
+  // Common model attribute names.
+  static const char* kMaterialName;
+  static const char* kCoord;
+  static const char* kTexCoord;
+  static const char* kVertexNormal;
+  static const char* kIntensity;
+
+public:
   virtual void beginModel(const char* path) = 0;
   virtual void endModel() = 0;
 
-  virtual void coordParsed(const Float3& coord) = 0;
-  virtual void texCoordParsed(const Float3& coord) = 0;
-  virtual void normalParsed(const Float3& normal) = 0;
-  virtual void colorParsed(const Float3& color) = 0;
-  virtual void faceParsed(Face* face) = 0;
-  virtual void materialParsed(const std::string& name, Material* material) = 0;
-  virtual void textureParsed(RawImage* texture) = 0;
+  virtual void beginFace() = 0;
+  virtual void endFace() = 0;
+
+  virtual void beginVertex() = 0;
+  virtual void endVertex() = 0;
+
+  virtual void beginMaterial(const char* name) = 0;
+  virtual void endMaterial() = 0;
+
+  virtual void indexAttributeParsed(const char* attr, size_t value) = 0;
+  virtual void floatAttributeParsed(const char* attr, float value) = 0;
+  virtual void float3AttributeParsed(const char* attr, const Float3& value) = 0;
+  virtual void textureAttributeParsed(const char* attr, const char* path) = 0;
+  virtual void stringAttributeParsed(const char* attr, const char* value) = 0;
+  // TODO: add other attribute types: matrix, string, quaternion, etc.
 };
 
 
@@ -58,7 +80,7 @@ public:
 // Functions
 //
 
-void loadModel(ParserCallbacks* callbacks, const char* path, ResourceManager* resources)
+void loadModel(ParserCallbacks* callbacks, const char* path)
   throw(ParseException);
 
 

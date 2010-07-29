@@ -301,34 +301,20 @@ float mtlParseFloat(char *line, char*& col) throw(ParseException)
 }
 
 
-RawImage* mtlParseTexture(char* line, char*& col, const char* baseDir) throw(ParseException)
+std::string mtlParseTexture(char* line, char*& col, const char* baseDir) throw(ParseException)
 {
   col = line;
   eatSpace(col, true);
 
   std::string filename = resolvePath(baseDir, parseFilename(col, col));
-  std::map<std::string, RawImage*>::const_iterator texIter = gTextures.find(filename);
-  if (texIter != gTextures.end())
-    return texIter->second;
 
   fprintf(stderr, "Loading texture %s...", filename.c_str());
 
-  RawImage* tex = NULL;
-  try {
-    tex = new RawImage(filename.c_str());
-    gTextures[filename] = tex;
-  } catch (ImageException& ex) {
-    throw ParseException("Error loading texture map: %s", ex.what());
-  }
-
-  if (tex != NULL)
-    fprintf(stderr, " %dx%d pixels.\n", tex->getWidth(), tex->getHeight());
-  return tex;
+  return filename;
 }
 
 
-void loadMaterialLibrary(ParserCallbacks* callbacks, const char* path,
-    std::map<std::string, Material*>& materials)
+void loadMaterialLibrary(const char* path, ParserCallbacks* callbacks)
   throw(ParseException)
 {
   fprintf(stderr, "Loading mtllib %s...\n", path);
@@ -345,7 +331,7 @@ void loadMaterialLibrary(ParserCallbacks* callbacks, const char* path,
   snprintf(baseDir, _MAX_LINE_LEN, "%s", dirname(const_cast<char*>(path)));
 
   std::string materialName;
-  Material *material = NULL;
+  std::string texPath;
   try {
     while (!feof(f)) {
       ++line_no;
@@ -360,77 +346,59 @@ void loadMaterialLibrary(ParserCallbacks* callbacks, const char* path,
 
       col = line;
       eatSpace(col);
+
+      MTLFileLineType lineType = mtlParseLineType(col, col);
+      if (lineType != MTL_LINETYPE_BLANK && lineType != MTL_LINETYPE_COMMENT && lineType != MTL_LINETYPE_NEWMTL) {
+        if (materialName == "")
+          throw ParseException("Defining a material property without declaring a material name.");
+      }
+
       switch (mtlParseLineType(col, col)) {
         case MTL_LINETYPE_NEWMTL:
-          if (material != NULL) {
-            materials[materialName] = material;
-            callbacks->materialParsed(materialName, material);
-            material = NULL;
-          }
+          if (materialName != "")
+            callbacks->endMaterial();
           materialName = mtlParseNEWMTL(col, col);
-          if (materials.count(materialName) > 0)
-            throw ParseException("Redefinition of material %s", materialName.c_str());
-          material = new Material();
+          callbacks->beginMaterial(materialName.c_str());
+          //if (materials.count(materialName) > 0)
+          //  throw ParseException("Redefinition of material %s", materialName.c_str());
           break;
         case MTL_LINETYPE_KA:
-          if (material == NULL)
-            throw ParseException("Defining a material property without declaring a material name.");
-          material->Ka = mtlParseColor(col, col);
+          callbacks->float3AttributeParsed(ParserCallbacks::kAmbientColor, mtlParseColor(col, col));
           break;
         case MTL_LINETYPE_KD:
-          if (material == NULL)
-            throw ParseException("Defining a material property without declaring a material name.");
-          material->Kd = mtlParseColor(col, col);
+          callbacks->float3AttributeParsed(ParserCallbacks::kDiffuseColor, mtlParseColor(col, col));
           break;
         case MTL_LINETYPE_KS:
-          if (material == NULL)
-            throw ParseException("Defining a material property without declaring a material name.");
-          material->Ks = mtlParseColor(col, col);
+          callbacks->float3AttributeParsed(ParserCallbacks::kSpecularColor, mtlParseColor(col, col));
           break;
         case MTL_LINETYPE_TF:
-          if (material == NULL)
-            throw ParseException("Defining a material property without declaring a material name.");
-          material->Tf = mtlParseColor(col, col);
+          callbacks->float3AttributeParsed(ParserCallbacks::kTransmissivity, mtlParseColor(col, col));
           break;
         case MTL_LINETYPE_D:
-          if (material == NULL)
-            throw ParseException("Defining a material property without declaring a material name.");
-          material->d = mtlParseFloat(col, col);
+          callbacks->floatAttributeParsed(ParserCallbacks::kDissolve, mtlParseFloat(col, col));
           break;
         case MTL_LINETYPE_NS:
-          if (material == NULL)
-            throw ParseException("Defining a material property without declaring a material name.");
-          material->Ns = mtlParseFloat(col, col);
+          callbacks->floatAttributeParsed(ParserCallbacks::kSpecularIndex, mtlParseFloat(col, col));
           break;
         case MTL_LINETYPE_MAP_KA:
-          if (material == NULL)
-            throw ParseException("Defining a material property without declaring a material name.");
-          material->mapKa = mtlParseTexture(col, col, baseDir);
-          callbacks->textureParsed(material->mapKa);
+          texPath = mtlParseTexture(col, col, baseDir);
+          callbacks->textureAttributeParsed(ParserCallbacks::kAmbientColor, texPath.c_str());
           break;
         case MTL_LINETYPE_MAP_KD:
-          if (material == NULL)
-            throw ParseException("Defining a material property without declaring a material name.");
-          material->mapKd = mtlParseTexture(col, col, baseDir);
-          callbacks->textureParsed(material->mapKd);
+          texPath = mtlParseTexture(col, col, baseDir);
+          callbacks->textureAttributeParsed(ParserCallbacks::kDiffuseColor, texPath.c_str());
           break;
         case MTL_LINETYPE_MAP_KS:
-          if (material == NULL)
-            throw ParseException("Defining a material property without declaring a material name.");
-          material->mapKs = mtlParseTexture(col, col, baseDir);
-          callbacks->textureParsed(material->mapKs);
+          texPath = mtlParseTexture(col, col, baseDir);
+          callbacks->textureAttributeParsed(ParserCallbacks::kSpecularColor, texPath.c_str());
           break;
         case MTL_LINETYPE_MAP_D:
-          if (material == NULL)
-            throw ParseException("Defining a material property without declaring a material name.");
-          material->mapD = mtlParseTexture(col, col, baseDir);
-          callbacks->textureParsed(material->mapD);
+          texPath = mtlParseTexture(col, col, baseDir);
+          callbacks->textureAttributeParsed(ParserCallbacks::kDissolve, texPath.c_str());
           break;
         case MTL_LINETYPE_MAP_BUMP:
-          if (material == NULL)
-            throw ParseException("Defining a material property without declaring a material name.");
-          material->mapBump = mtlParseTexture(col, col, baseDir);
-          callbacks->textureParsed(material->mapBump);
+          texPath = mtlParseTexture(col, col, baseDir);
+          callbacks->textureAttributeParsed(ParserCallbacks::kBumpMap, texPath.c_str());
           break;
         case MTL_LINETYPE_KE:
         case MTL_LINETYPE_KM:
@@ -440,8 +408,6 @@ void loadMaterialLibrary(ParserCallbacks* callbacks, const char* path,
         case MTL_LINETYPE_ILLUM:
         case MTL_LINETYPE_TR:
         case MTL_LINETYPE_BUMP:
-          if (material == NULL)
-            throw ParseException("Defining a material property without declaring a material name.");
           // TODO: handle these.
           while (!isEnd(*col))
             ++col;
@@ -459,16 +425,13 @@ void loadMaterialLibrary(ParserCallbacks* callbacks, const char* path,
         throw ParseException("Unexpected trailing characters: %s", col);
     }
 
-    if (material != NULL) {
-      materials[materialName] = material;
-      callbacks->materialParsed(materialName, material);
-      material = NULL;
-    }
+    if (materialName != "")
+      callbacks->endMaterial();
+
+    fclose(f);
     fprintf(stderr, "Finished parsing mtllib %s\n", path);
   } catch (ParseException& ex) {
     fclose(f);
-    if (material != NULL)
-      delete material;
     throw ParseException("[%s: line %d, col %d] %s\n", path, line_no, (int)(col - line), ex.message);
   }
 }
@@ -576,45 +539,49 @@ Float3 objParseVN(char* line, char*& col) throw(ParseException) {
 }
 
 
-Vertex objParseVertex(char *line, char*& col) throw(ParseException) {
+void objParseVertex(char *line, char*& col, ParserCallbacks* callbacks) throw(ParseException) {
+  // TODO: check for -ve indexes and resolve them to +ve ones.
+
   col = line;
+
+  callbacks->beginVertex();
+
   int v = parseInt(col, col) - 1;
-  int vt = -1;
-  int vn = -1;
+  callbacks->indexAttributeParsed(ParserCallbacks::kCoordRef, (size_t)v);
+
   if (*col == '/') {
     eatChar('/', col);
-    if (*col == '-' || isDigit(*col))
-      vt = parseInt(col, col) - 1;
+    if (*col == '-' || isDigit(*col)) {
+      int vt = parseInt(col, col) - 1;
+      callbacks->indexAttributeParsed(ParserCallbacks::kTexCoordRef, (size_t)vt);
+    }
     if (*col == '/') {
       eatChar('/', col);
-      if (*col == '-' || isDigit(*col))
-        vn = parseInt(col, col) - 1;
+      if (*col == '-' || isDigit(*col)) {
+        int vn = parseInt(col, col) - 1;
+        callbacks->indexAttributeParsed(ParserCallbacks::kNormalRef, (size_t)vn);
+      }
     }
   }
-  return Vertex(v, vt, vn, -1);
+
+  callbacks->endVertex();
 }
 
 
-Face *objParseFace(char* line, char*& col, Material *activeMaterial) throw(ParseException) {
-  Face *face = new Face(activeMaterial);
-  try {
-    col = line;
-    while (!isEnd(*col) && !isCommentStart(*col)) {
-      eatSpace(col, true);
-      if (!isEnd(*col) && !isCommentStart(*col))
-        face->vertexes.push_back(objParseVertex(col, col));
-    }
-  } catch (ParseException& ex) {
-    delete face;
-    throw ex;
+void objParseFace(char* line, char*& col, ParserCallbacks* callbacks) throw(ParseException) {
+  callbacks->beginFace();
+  col = line;
+  while (!isEnd(*col) && !isCommentStart(*col)) {
+    eatSpace(col, true);
+    if (!isEnd(*col) && !isCommentStart(*col))
+      objParseVertex(col, col, callbacks);
   }
-  return face;
+  callbacks->endFace();
 }
 
 
 void objParseMTLLIB(char* line, char*& col,
-    ParserCallbacks* callbacks, const char* baseDir,
-    std::map<std::string, Material*>& materials)
+    ParserCallbacks* callbacks, const char* baseDir)
   throw(ParseException)
 {
   col = line;
@@ -622,20 +589,19 @@ void objParseMTLLIB(char* line, char*& col,
     eatSpace(col, true);
     if (!isEnd(*col) && !isCommentStart(*col)) {
       std::string filename = resolvePath(baseDir, parseFilename(col, col));
-      loadMaterialLibrary(callbacks, filename.c_str(), materials);
+      loadMaterialLibrary(filename.c_str(), callbacks);
     }
   }
 }
 
 
-Material *objParseUSEMTL(char *line, char*& col, std::map<std::string, Material*>& materials)
+void objParseUSEMTL(char *line, char*& col, ParserCallbacks* callbacks)
   throw(ParseException)
 {
   col = line;
   eatSpace(col, true);
   std::string name = parseIdentifier(col, col);
-  Material *material = materials[name];
-  return material;
+  callbacks->stringAttributeParsed(ParserCallbacks::kMaterialName, name.c_str());
 }
 
 
@@ -643,7 +609,7 @@ Material *objParseUSEMTL(char *line, char*& col, std::map<std::string, Material*
 // PUBLIC FUNCTIONS
 //
 
-void loadOBJ(ParserCallbacks* callbacks, const char* path, ResourceManager* resources)
+void loadOBJ(ParserCallbacks* callbacks, const char* path)
   throw(ParseException)
 {
   FILE *f = fopen(path, "r");
@@ -654,9 +620,8 @@ void loadOBJ(ParserCallbacks* callbacks, const char* path, ResourceManager* reso
   char *col;
   unsigned int line_no = 0;
 
-  std::map<std::string, Material*> materials;
-  Material *activeMaterial = NULL;
   try {
+    callbacks->beginModel(path);
     while (!feof(f)) {
       ++line_no;
 
@@ -671,24 +636,25 @@ void loadOBJ(ParserCallbacks* callbacks, const char* path, ResourceManager* reso
       eatSpace(col);
       switch (objParseLineType(col, col)) {
         case OBJ_LINETYPE_V:
-          callbacks->coordParsed(objParseV(col, col));
+          callbacks->float3AttributeParsed(ParserCallbacks::kCoord, objParseV(col, col));
           break;
         case OBJ_LINETYPE_VT:
-          callbacks->texCoordParsed(objParseVT(col, col));
+          callbacks->float3AttributeParsed(ParserCallbacks::kTexCoord, objParseVT(col, col));
           break;
         case OBJ_LINETYPE_VN:
-          callbacks->normalParsed(objParseVN(col, col));
+          callbacks->float3AttributeParsed(ParserCallbacks::kVertexNormal, objParseVN(col, col));
           break;
         case OBJ_LINETYPE_F:
         case OBJ_LINETYPE_FO:
-          callbacks->faceParsed(objParseFace(col, col, activeMaterial));
-          // TODO: check for -ve indexes and resolve them to +ve ones.
+          callbacks->beginFace();
+          objParseFace(col, col, callbacks);
+          callbacks->endFace();
           break;
         case OBJ_LINETYPE_USEMTL:
-          activeMaterial = objParseUSEMTL(col, col, materials);
+          objParseUSEMTL(col, col, callbacks);
           break;
         case OBJ_LINETYPE_MTLLIB:
-          objParseMTLLIB(col, col, callbacks, dirname(const_cast<char*>(path)), materials);
+          objParseMTLLIB(col, col, callbacks, dirname(const_cast<char*>(path)));
           break;
         case OBJ_LINETYPE_VP:
         case OBJ_LINETYPE_G:
@@ -710,6 +676,8 @@ void loadOBJ(ParserCallbacks* callbacks, const char* path, ResourceManager* reso
       if (!isCommentStart(*col) && !isEnd(*col))
         throw ParseException("Unexpected trailing characters: %s", col);
     }
+    callbacks->endModel();
+    fclose(f);
   } catch (ParseException& ex) {
     fclose(f);
     throw ParseException("[%s: line %d, col %d] %s\n", path, line_no, (int)(col - line), ex.what());
