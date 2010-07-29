@@ -1,5 +1,6 @@
 #include "vgl.h"
 
+#include <cstdio>
 #include <cstring>
 #include <vector>
 
@@ -21,6 +22,34 @@ struct ExampleMesh
   std::vector<GLuint> indexes;
 
   ExampleMesh() : coords(), indexes() {}
+};
+
+
+class MeshBuilder : public vgl::ParserCallbacks
+{
+public:
+  MeshBuilder(ExampleMesh* mesh) : _mesh(mesh) {}
+
+  virtual void beginModel(const char* path)
+  {
+    _mesh->coords.clear();
+    _mesh->indexes.clear();
+  }
+
+  virtual void indexAttributeParsed(const char* attr, size_t value)
+  {
+    if (strcmp(attr, ParserCallbacks::kCoordRef) == 0)
+      _mesh->indexes.push_back(value);
+  }
+
+  virtual void float3AttributeParsed(const char* attr, const vgl::Float3& value)
+  {
+    if (strcmp(attr, ParserCallbacks::kCoord) == 0)
+      _mesh->coords.push_back(value);
+  }
+
+private:
+  ExampleMesh* _mesh;
 };
 
 
@@ -59,8 +88,6 @@ public:
   }
 
   virtual void render() {
-//    glutSolidTeapot(1.0);
-
     glBindBuffer(GL_ARRAY_BUFFER, _bufferID);
     checkGLError("Unable to bind vertex buffer");
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexesID);
@@ -86,13 +113,14 @@ private:
 
 int main(int argc, char** argv)
 {
+  if (argc <= 1) {
+    fprintf(stderr, "Usage: %s <obj-file>\n", argv[0]);
+    return 0;
+  }
+
   ExampleMesh* mesh = new ExampleMesh();
-  mesh->coords.push_back(vgl::Float3(-0.5, -0.5, 0));
-  mesh->coords.push_back(vgl::Float3( 0.5, -0.5, 0));
-  mesh->coords.push_back(vgl::Float3( 0.0,  0.5, 0));
-  mesh->indexes.push_back(0);
-  mesh->indexes.push_back(1);
-  mesh->indexes.push_back(2);
+  MeshBuilder* builder = new MeshBuilder(mesh);
+  vgl::loadModel(builder, argv[1]);
 
   vgl::Camera* camera = new vgl::Camera(
       vgl::Float3(0, 0, 5), vgl::Float3(0, 0, 0), vgl::Float3(0, 1, 0),
