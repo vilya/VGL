@@ -39,6 +39,30 @@ Float3 clamp(const Float3& a)
 }
 
 
+Float3 rotateX(const Float3& a, float radians)
+{
+  float c = cosf(radians);
+  float s = sinf(radians);
+  return Float3(a.x, c * a.y - s * a.z, s * a.y + c * a.z);
+}
+
+
+Float3 rotateY(const Float3& a, float radians)
+{
+  float c = cosf(radians);
+  float s = sinf(radians);
+  return Float3(c * a.x + s * a.z, a.y, -s * a.x + c * a.z);
+}
+
+
+Float3 rotateZ(const Float3& a, float radians)
+{
+  float c = cosf(radians);
+  float s = sinf(radians);
+  return Float3(c * a.x - s * a.y, s * a.x + c * a.y, a.z);
+}
+
+
 Ray3 reflect(const Ray3& r, const Float3& hitpos, const Float3& normal)
 {
   return Ray3(hitpos, r.d - 2 * dot(r.d, normal) * normal);

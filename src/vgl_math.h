@@ -231,6 +231,9 @@ float length(const Float3& a);
 Float3 pow(const Float3& a, float k);
 Float3 norm(const Float3& a);
 Float3 clamp(const Float3& a);
+Float3 rotateX(const Float3& a, float radians);
+Float3 rotateY(const Float3& a, float radians);
+Float3 rotateZ(const Float3& a, float radians);
 
 Ray3 reflect(const Ray3& r, const Float3& hitpos, const Float3& normal);
 Ray3 refract(const Ray3& r, const Float3& hitpos, const Float3& normal, float oldNi, float newNi);
