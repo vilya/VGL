@@ -75,26 +75,26 @@ release:
 
 
 .PHONY: all
-all: dirs build_libvgl build_example
+all: build_libvgl build_example
 
 
 .PHONY: dirs
 dirs:
 	@mkdir -p $(OBJ)
 	@mkdir -p $(THIRDPARTY_OBJ)
-	@mkdir -p $(EXAMPLE_OBJ)
 	@mkdir -p $(DIST)/include
 	@mkdir -p $(DIST)/lib
 	@mkdir -p $(BIN)
 
 
 .PHONY: build_example
-build_example: build_libvgl $(EXAMPLE_BIN)
+build_example: dirs build_libvgl
+	$(MAKE) -C $(EXAMPLE_SRC) CXXFLAGS="$(CXXFLAGS)" all
 	cp $(LIBVGL_BIN) $(BIN)
 
 
 .PHONY: build_libvgl
-build_libvgl: $(LIBVGL_BIN) $(LIBVGL_INCS)
+build_libvgl: dirs $(LIBVGL_BIN) $(LIBVGL_INCS)
 
 
 $(LIBVGL_BIN): $(LIBVGL_OBJS) $(THIRDPARTY_OBJS)
@@ -111,15 +111,6 @@ $(OBJ)/%.o: $(SRC)/%.cpp
 
 $(THIRDPARTY_OBJ)/ply.o: $(THIRDPARTY_SRC)/ply.c
 	$(CC) $(CXXFLAGS) $(INCLUDE) -c $< -o $@
-
-
-$(EXAMPLE_BIN): $(EXAMPLE_OBJS)
-	$(LD) $(LDFLAGS_EXE) -o  $@ $^ -L$(DIST)/lib -lvgl $(LIBS)
-
-
-
-$(EXAMPLE_OBJ)/%.o: $(EXAMPLE_SRC)/%.cpp
-	$(CXX) $(CXXFLAGS) $(INCLUDE) -I$(DIST)/include -c $< -o $@
 
 
 .PHONY: clean
