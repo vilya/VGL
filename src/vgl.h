@@ -12,11 +12,16 @@
 #include "vgl_renderer.h"
 #include "vgl_viewer.h"
 
+#define GL_GLEXT_PROTOTYPES 1
 #ifdef linux
 #include <GL/gl.h>
+#include <GL/glext.h>
+#include <GL/glu.h>
 #include <GL/glut.h>
 #else
 #include <OpenGL/gl.h>
+#include <OpenGL/glext.h>
+#include <OpenGL/glu.h>
 #include <GLUT/glut.h>
 #endif
 
