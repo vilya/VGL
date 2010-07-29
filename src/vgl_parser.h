@@ -55,24 +55,23 @@ public:
   static const char* kIntensity;
 
 public:
-  virtual void beginModel(const char* path) = 0;
-  virtual void endModel() = 0;
+  virtual void beginModel(const char* path);
+  virtual void endModel();
 
-  virtual void beginFace() = 0;
-  virtual void endFace() = 0;
+  virtual void beginFace();
+  virtual void endFace();
 
-  virtual void beginVertex() = 0;
-  virtual void endVertex() = 0;
+  virtual void beginVertex();
+  virtual void endVertex();
 
-  virtual void beginMaterial(const char* name) = 0;
-  virtual void endMaterial() = 0;
+  virtual void beginMaterial(const char* name);
+  virtual void endMaterial();
 
-  virtual void indexAttributeParsed(const char* attr, size_t value) = 0;
-  virtual void floatAttributeParsed(const char* attr, float value) = 0;
-  virtual void float3AttributeParsed(const char* attr, const Float3& value) = 0;
-  virtual void textureAttributeParsed(const char* attr, const char* path) = 0;
-  virtual void stringAttributeParsed(const char* attr, const char* value) = 0;
-  // TODO: add other attribute types: matrix, string, quaternion, etc.
+  virtual void indexAttributeParsed(const char* attr, size_t value);
+  virtual void floatAttributeParsed(const char* attr, float value);
+  virtual void float3AttributeParsed(const char* attr, const Float3& value);
+  virtual void textureAttributeParsed(const char* attr, const char* path);
+  virtual void stringAttributeParsed(const char* attr, const char* value);
 };
 
 

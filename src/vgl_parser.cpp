@@ -54,6 +54,75 @@ const char* ParserCallbacks::kVertexNormal = "vn";
 const char* ParserCallbacks::kIntensity = "I";
 
 
+void ParserCallbacks::beginModel(const char* path)
+{
+}
+
+
+void ParserCallbacks::endModel()
+{
+}
+
+
+
+void ParserCallbacks::beginFace()
+{
+}
+
+
+void ParserCallbacks::endFace()
+{
+}
+
+
+
+void ParserCallbacks::beginVertex()
+{
+}
+
+
+void ParserCallbacks::endVertex()
+{
+}
+
+
+
+void ParserCallbacks::beginMaterial(const char* name)
+{
+}
+
+
+void ParserCallbacks::endMaterial()
+{
+}
+
+
+
+void ParserCallbacks::indexAttributeParsed(const char* attr, size_t value)
+{
+}
+
+
+void ParserCallbacks::floatAttributeParsed(const char* attr, float value)
+{
+}
+
+
+void ParserCallbacks::float3AttributeParsed(const char* attr, const Float3& value)
+{
+}
+
+
+void ParserCallbacks::textureAttributeParsed(const char* attr, const char* path)
+{
+}
+
+
+void ParserCallbacks::stringAttributeParsed(const char* attr, const char* value)
+{
+}
+
+
 //
 // PUBLIC FUNCTIONS
 //
