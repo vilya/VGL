@@ -9,5 +9,5 @@ TODO
   - check for and report OpenGL errors.
   - load shaders (reporting any errors).
 
-- Support for orthographic cameras
+- Support for orthographic cameras.
 
