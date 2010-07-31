@@ -34,6 +34,8 @@ public:
     ACTION_PAN_CAMERA,        // Turn the camera without moving it from it's current position.
     ACTION_MOVE_CAMERA,       // Move the camera left right, up or down without turning it.
     ACTION_DOLLY_CAMERA,      // Move the camera in or out without turning it.
+    ACTION_DOLLY_CAMERA_IN,   // Move the camera in by some predetermined amount without turning it.
+    ACTION_DOLLY_CAMERA_OUT,  // Move the camera out by some predetermined amount without turning it.
     ACTION_ROLL_CAMERA        // Rotate the camera around it's current focal point.
   };
 
@@ -74,6 +76,7 @@ private:
   int _mouseX, _mouseY;
   int _prevMouseX, _prevMouseY;
   int _state, _key, _button;
+  bool _shiftDown, _altDown, _ctrlDown;
   bool _fullscreen;
 
   Camera* _camera;

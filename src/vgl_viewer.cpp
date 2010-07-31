@@ -83,6 +83,9 @@ Viewer::Viewer(
   _state(0),
   _key(0),
   _button(-1),
+  _shiftDown(false),
+  _altDown(false),
+  _ctrlDown(false),
   _fullscreen(false),
   _camera(camera),
   _renderer(renderer)
@@ -194,6 +197,11 @@ void Viewer::mousePressed(int button, int state, int x, int y)
   _state = state;
   _button = button;
 
+  int modifiers = glutGetModifiers();
+  _shiftDown = (modifiers & GLUT_ACTIVE_SHIFT) != 0;
+  _altDown = (modifiers & GLUT_ACTIVE_ALT) != 0;
+  _ctrlDown = (modifiers & GLUT_ACTIVE_CTRL) != 0;
+
   int action = actionForMousePress(button, state, x, y);
   actionHandler(action);
 }
@@ -237,9 +245,9 @@ int Viewer::actionForMousePress(int button, int state, int x, int y)
 
   switch (button) {
   case 3: // Mouse wheel up
-    return ACTION_ZOOM_CAMERA_IN;
+    return _shiftDown ? ACTION_ZOOM_CAMERA_IN : ACTION_DOLLY_CAMERA_IN;
   case 4: // Mouse wheel down
-    return ACTION_ZOOM_CAMERA_OUT;
+    return _shiftDown ? ACTION_ZOOM_CAMERA_OUT : ACTION_DOLLY_CAMERA_OUT;
   default:
     return ACTION_IGNORE;
   }
@@ -248,16 +256,14 @@ int Viewer::actionForMousePress(int button, int state, int x, int y)
 
 int Viewer::actionForMouseDrag(int x, int y)
 {
-  bool shiftDown = false;
-
   switch (_button) {
   case GLUT_LEFT_BUTTON:
-    if (shiftDown)
+    if (_shiftDown)
       return ACTION_PAN_CAMERA;
     else
       return ACTION_ROLL_CAMERA;
   case GLUT_MIDDLE_BUTTON:
-    if (shiftDown)
+    if (_shiftDown)
       return ACTION_DOLLY_CAMERA;
     else
       return ACTION_MOVE_CAMERA;
@@ -318,19 +324,33 @@ void Viewer::actionHandler(int action)
 
   case ACTION_MOVE_CAMERA:
     if (_camera != NULL) {
-      float dx = _mouseX - _prevMouseX;
-      float dy = _mouseY - _prevMouseY;
-      _camera->moveBy(dx, dy, 0);
+      float dx = (_mouseX - _prevMouseX) / (float)_width;
+      float dy = (_mouseY - _prevMouseY) / (float)_height;
+      _camera->moveBy(-2 * dx, 2 * dy, 0);
       glutPostRedisplay();
     }
     break;
 
   case ACTION_DOLLY_CAMERA:
     if (_camera != NULL) {
-      float dx = _mouseX - _prevMouseX;
-      float dy = _mouseY - _prevMouseY;
+      float dx = (_mouseX - _prevMouseX) / (float)_width;
+      float dy = (_mouseY - _prevMouseY) / (float)_height;
       float dz = (abs(dx) >= abs(dy)) ? dx : -dy;
-      _camera->moveBy(0, 0, dz);
+      _camera->moveBy(0, 0, 2 * dz);
+      glutPostRedisplay();
+    }
+    break;
+
+  case ACTION_DOLLY_CAMERA_IN:
+    if (_camera != NULL) {
+      _camera->moveBy(0, 0, 0.1);
+      glutPostRedisplay();
+    }
+    break;
+
+  case ACTION_DOLLY_CAMERA_OUT:
+    if (_camera != NULL) {
+      _camera->moveBy(0, 0, -0.1);
       glutPostRedisplay();
     }
     break;
