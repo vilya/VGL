@@ -20,7 +20,7 @@ namespace vgl {
 // Camera METHODS
 //
 
-Camera::Camera(const Float3& pos, const Float3& target, const Float3& up,
+Camera::Camera(const Vec3f& pos, const Vec3f& target, const Vec3f& up,
     float left, float right, float bottom, float top, float aperture,
     unsigned int pixelWidth, unsigned int pixelHeight) :
   _pos(pos),
@@ -35,10 +35,10 @@ Camera::Camera(const Float3& pos, const Float3& target, const Float3& up,
   _pixelHeight(pixelHeight)
 {
   /* My old lookAt code from the Ray project:
-  Float3 dir = target - pos;
-  Float3 w = norm(dir);
-  Float3 u = norm(cross(up, dir));
-  Float3 v = cross(w, u);
+  Vec3f dir = target - pos;
+  Vec3f w = norm(dir);
+  Vec3f u = norm(cross(up, dir));
+  Vec3f v = cross(w, u);
 
   Camera* cam = new Camera();
 
@@ -62,7 +62,7 @@ Camera::~Camera()
 
 void Camera::panBy(float dx, float dy, float dz)
 {
-  Float3 viewVec = _target - _pos;
+  Vec3f viewVec = _target - _pos;
   viewVec = rotateX(viewVec, dx / (2 * M_PI));
   viewVec = rotateZ(viewVec, dz / (2 * M_PI));
   viewVec = rotateY(viewVec, dy / (2 * M_PI));
@@ -72,7 +72,7 @@ void Camera::panBy(float dx, float dy, float dz)
 
 void Camera::rollBy(float dx, float dy, float dz)
 {
-  Float3 viewVec = _pos - _target;
+  Vec3f viewVec = _pos - _target;
   viewVec = rotateX(viewVec, dx / (2 * M_PI));
   viewVec = rotateZ(viewVec, dz / (2 * M_PI));
   viewVec = rotateY(viewVec, dy / (2 * M_PI));
@@ -82,7 +82,7 @@ void Camera::rollBy(float dx, float dy, float dz)
 
 void Camera::moveBy(float dx, float dy, float dz)
 {
-  Float3 delta(dx, dy, dz);
+  Vec3f delta(dx, dy, dz);
   _pos += delta;
   _target += delta;
 }

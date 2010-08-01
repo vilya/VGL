@@ -6,70 +6,70 @@ namespace vgl {
 
 
 //
-// Float3 FUNCTIONS
+// Vec3f FUNCTIONS
 //
 
-float lengthSqr(const Float3& a)
+float lengthSqr(const Vec3f& a)
 {
   return dot(a, a);
 }
 
 
-float length(const Float3& a)
+float length(const Vec3f& a)
 {
   return sqrtf(lengthSqr(a));
 }
 
 
-Float3 pow(const Float3& a, float k)
+Vec3f pow(const Vec3f& a, float k)
 {
-  return Float3(powf(a.x, k), powf(a.y, k), powf(a.z, k));
+  return Vec3f(powf(a.x, k), powf(a.y, k), powf(a.z, k));
 }
 
 
-Float3 norm(const Float3& a)
+Vec3f norm(const Vec3f& a)
 {
   return a / length(a);
 }
 
 
-Float3 clamp(const Float3& a)
+Vec3f clamp(const Vec3f& a)
 {
-  return Float3(clampf(a.x), clampf(a.y), clampf(a.z));
+  return Vec3f(clampf(a.x), clampf(a.y), clampf(a.z));
 }
 
 
-Float3 rotateX(const Float3& a, float radians)
-{
-  float c = cosf(radians);
-  float s = sinf(radians);
-  return Float3(a.x, c * a.y - s * a.z, s * a.y + c * a.z);
-}
-
-
-Float3 rotateY(const Float3& a, float radians)
+Vec3f rotateX(const Vec3f& a, float radians)
 {
   float c = cosf(radians);
   float s = sinf(radians);
-  return Float3(c * a.x + s * a.z, a.y, -s * a.x + c * a.z);
+  return Vec3f(a.x, c * a.y - s * a.z, s * a.y + c * a.z);
 }
 
 
-Float3 rotateZ(const Float3& a, float radians)
+Vec3f rotateY(const Vec3f& a, float radians)
 {
   float c = cosf(radians);
   float s = sinf(radians);
-  return Float3(c * a.x - s * a.y, s * a.x + c * a.y, a.z);
+  return Vec3f(c * a.x + s * a.z, a.y, -s * a.x + c * a.z);
 }
 
 
-Ray3 reflect(const Ray3& r, const Float3& hitpos, const Float3& normal)
+Vec3f rotateZ(const Vec3f& a, float radians)
+{
+  float c = cosf(radians);
+  float s = sinf(radians);
+  return Vec3f(c * a.x - s * a.y, s * a.x + c * a.y, a.z);
+}
+
+
+Ray3 reflect(const Ray3& r, const Vec3f& hitpos, const Vec3f& normal)
 {
   return Ray3(hitpos, r.d - 2 * dot(r.d, normal) * normal);
 }
 
 
-Ray3 refract(const Ray3& r, const Float3& hitpos, const Float3& normal, float oldNi, float newNi)
+Ray3 refract(const Ray3& r, const Vec3f& hitpos, const Vec3f& normal, float oldNi, float newNi)
 {
   float n = oldNi / newNi;
   float cosThetaI = dot(normal, -r.d);
@@ -78,7 +78,7 @@ Ray3 refract(const Ray3& r, const Float3& hitpos, const Float3& normal, float ol
 }
 
 
-Float3 planePos(const Plane3& p, float u, float v)
+Vec3f planePos(const Plane3& p, float u, float v)
 {
   return p.corner + u * p.u + v * p.v;
 }

@@ -278,17 +278,17 @@ std::string mtlParseNEWMTL(char* line, char*& col) throw(ParseException) {
 }
 
 
-Float3 mtlParseColor(char* line, char*& col) throw(ParseException) {
+Vec3f mtlParseColor(char* line, char*& col) throw(ParseException) {
   col = line;
   eatSpace(col, true);
   float r = parseFloat(col, col);
   eatSpace(col, false);
   if (isEnd(*col) || isCommentStart(*col))
-    return Float3(r, r, r);
+    return Vec3f(r, r, r);
   float g = parseFloat(col, col);
   eatSpace(col, true);
   float b = parseFloat(col, col);
-  return Float3(r, g, b);
+  return Vec3f(r, g, b);
 }
 
 
@@ -479,7 +479,7 @@ OBJFileLineType objParseLineType(char* line, char*& col) throw(ParseException) {
 }
 
 
-Float3 objParseV(char *line, char*& col) throw(ParseException) {
+Vec3f objParseV(char *line, char*& col) throw(ParseException) {
   col = line;
   eatSpace(col, true);
   float x = parseFloat(col, col);
@@ -489,45 +489,45 @@ Float3 objParseV(char *line, char*& col) throw(ParseException) {
   float z = parseFloat(col, col);
   eatSpace(col);
   if (isEnd(*col) || isCommentStart(*col))
-    return Float3(x, y, z);
+    return Vec3f(x, y, z);
   float w = parseFloat(col, col);
-  return Float3(x / w, y / w, z / w);
+  return Vec3f(x / w, y / w, z / w);
 }
 
 
-Float3 objParseVT(char *line, char*& col) throw(ParseException) {
+Vec3f objParseVT(char *line, char*& col) throw(ParseException) {
   col = line;
   eatSpace(col, true);
   float u = parseFloat(col, col);
   eatSpace(col);
   if (isEnd(*col) || isCommentStart(*col))
-    return Float3(u, 0.0f, 0.0f);
+    return Vec3f(u, 0.0f, 0.0f);
   float v = parseFloat(col, col);
   eatSpace(col);
   if (isEnd(*col) || isCommentStart(*col))
-    return Float3(u, v, 0.0f);
+    return Vec3f(u, v, 0.0f);
   float w = parseFloat(col, col);
-  return Float3(u, v, w);
+  return Vec3f(u, v, w);
 }
 
 
-Float3 objParseVP(char *line, char*& col) throw(ParseException) {
+Vec3f objParseVP(char *line, char*& col) throw(ParseException) {
   col = line;
   eatSpace(col, true);
   float u = parseFloat(col, col);
   eatSpace(col);
   if (isEnd(*col) || isCommentStart(*col))
-    return Float3(u, 0.0f, 0.0f);
+    return Vec3f(u, 0.0f, 0.0f);
   float v = parseFloat(col, col);
   eatSpace(col);
   if (isEnd(*col) || isCommentStart(*col))
-    return Float3(u, v, 0.0f);
+    return Vec3f(u, v, 0.0f);
   float w = parseFloat(col, col);
-  return Float3(u, v, w);
+  return Vec3f(u, v, w);
 }
 
 
-Float3 objParseVN(char* line, char*& col) throw(ParseException) {
+Vec3f objParseVN(char* line, char*& col) throw(ParseException) {
   col = line;
   eatSpace(col, true);
   float i = parseFloat(col, col);
@@ -535,7 +535,7 @@ Float3 objParseVN(char* line, char*& col) throw(ParseException) {
   float j = parseFloat(col, col);
   eatSpace(col, true);
   float k = parseFloat(col, col);
-  return Float3(i, j, k);
+  return Vec3f(i, j, k);
 }
 
 

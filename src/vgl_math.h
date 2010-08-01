@@ -10,41 +10,41 @@ namespace vgl {
 //
 
 template <typename Num>
-struct Triple {
+struct Vec3 {
   union {
     struct { Num x, y, z; };
     struct { Num r, g, b; };
     Num data[3];
   };
 
-  Triple() : x(0), y(0), z(0) {}
-  Triple(Num k) : x(k), y(k), z(k) {}
-  Triple(Num iX, Num iY, Num iZ) : x(iX), y(iY), z(iZ) {}
-  Triple(const Triple& a) : x(a.x), y(a.y), z(a.z) {}
+  Vec3() : x(0), y(0), z(0) {}
+  Vec3(Num k) : x(k), y(k), z(k) {}
+  Vec3(Num iX, Num iY, Num iZ) : x(iX), y(iY), z(iZ) {}
+  Vec3(const Vec3& a) : x(a.x), y(a.y), z(a.z) {}
 
   Num operator [] (unsigned int i) const { return data[i]; }
   Num& operator [] (unsigned int i) { return data[i]; }
 };
 
-typedef Triple<float> Float3;
-typedef Triple<int> Int3;
+typedef Vec3<float> Vec3f;
+typedef Vec3<int> Vec3i;
 
 
 struct Ray3 {
-  Float3 o, d;  // o is the origin, d is the direction vector.
+  Vec3f o, d;  // o is the origin, d is the direction vector.
 
   Ray3() : o(), d() {}
-  Ray3(const Float3& iO, const Float3& iD) : o(iO), d(iD) {}
+  Ray3(const Vec3f& iO, const Vec3f& iD) : o(iO), d(iD) {}
   Ray3(const Ray3& a) : o(a.o), d(a.d) {}
 };
 
 
 struct Plane3 {
-  Float3 corner;
-  Float3 u, v;
+  Vec3f corner;
+  Vec3f u, v;
 
   Plane3() : corner(), u(1, 0, 0), v(0, 1, 0) {}
-  Plane3(Float3 iCorner, Float3 iU, Float3 iV) : corner(iCorner), u(iU), v(iV) {}
+  Plane3(Vec3f iCorner, Vec3f iU, Vec3f iV) : corner(iCorner), u(iU), v(iV) {}
 };
 
 
@@ -67,60 +67,60 @@ Num sqr(Num k)
 
 
 //
-// Triple OPERATORS AND FUNCTIONS
+// Vec3 OPERATORS AND FUNCTIONS
 //
 
 template <typename Num>
-Triple<Num> operator - (const Triple<Num>& a)
+Vec3<Num> operator - (const Vec3<Num>& a)
 {
-  return Triple<Num>(-a.x, -a.y, -a.z);
+  return Vec3<Num>(-a.x, -a.y, -a.z);
 }
 
 
 template <typename Num>
-Triple<Num> operator + (const Triple<Num>& a, const Triple<Num>& b)
+Vec3<Num> operator + (const Vec3<Num>& a, const Vec3<Num>& b)
 {
-  return Triple<Num>(a.x + b.x, a.y + b.y, a.z + b.z);
+  return Vec3<Num>(a.x + b.x, a.y + b.y, a.z + b.z);
 }
 
 
 template <typename Num>
-Triple<Num> operator - (const Triple<Num>& a, const Triple<Num>& b)
+Vec3<Num> operator - (const Vec3<Num>& a, const Vec3<Num>& b)
 {
-  return Triple<Num>(a.x - b.x, a.y - b.y, a.z - b.z);
+  return Vec3<Num>(a.x - b.x, a.y - b.y, a.z - b.z);
 }
 
 
 template <typename Num>
-Triple<Num> operator * (const Triple<Num>& a, const Triple<Num>& b)
+Vec3<Num> operator * (const Vec3<Num>& a, const Vec3<Num>& b)
 {
-  return Triple<Num>(a.x * b.x, a.y * b.y, a.z * b.z);
+  return Vec3<Num>(a.x * b.x, a.y * b.y, a.z * b.z);
 }
 
 
 template <typename Num>
-Triple<Num> operator * (const Triple<Num>& a, float k)
+Vec3<Num> operator * (const Vec3<Num>& a, float k)
 {
-  return Triple<Num>(a.x * k, a.y * k, a.z * k);
+  return Vec3<Num>(a.x * k, a.y * k, a.z * k);
 }
 
 
 template <typename Num>
-Triple<Num> operator * (float k, const Triple<Num>& a)
+Vec3<Num> operator * (float k, const Vec3<Num>& a)
 {
-  return Triple<Num>(a.x * k, a.y * k, a.z * k);
+  return Vec3<Num>(a.x * k, a.y * k, a.z * k);
 }
 
 
 template <typename Num>
-Triple<Num> operator / (const Triple<Num>& a, float k)
+Vec3<Num> operator / (const Vec3<Num>& a, float k)
 {
-  return Triple<Num>(a.x / k, a.y / k, a.z / k);
+  return Vec3<Num>(a.x / k, a.y / k, a.z / k);
 }
 
 
 template <typename Num>
-const Triple<Num>& operator += (Triple<Num>& a, const Triple<Num>& b)
+const Vec3<Num>& operator += (Vec3<Num>& a, const Vec3<Num>& b)
 {
   a.x += b.x;
   a.y += b.y;
@@ -130,7 +130,7 @@ const Triple<Num>& operator += (Triple<Num>& a, const Triple<Num>& b)
 
 
 template <typename Num>
-const Triple<Num>& operator -= (Triple<Num>& a, const Triple<Num>& b)
+const Vec3<Num>& operator -= (Vec3<Num>& a, const Vec3<Num>& b)
 {
   a.x -= b.x;
   a.y -= b.y;
@@ -140,7 +140,7 @@ const Triple<Num>& operator -= (Triple<Num>& a, const Triple<Num>& b)
 
 
 template <typename Num>
-const Triple<Num>& operator *= (Triple<Num>& a, const Triple<Num>& b)
+const Vec3<Num>& operator *= (Vec3<Num>& a, const Vec3<Num>& b)
 {
   a.x *= b.x;
   a.y *= b.y;
@@ -150,7 +150,7 @@ const Triple<Num>& operator *= (Triple<Num>& a, const Triple<Num>& b)
 
 
 template <typename Num>
-const Triple<Num>& operator *= (Triple<Num>& a, Num k)
+const Vec3<Num>& operator *= (Vec3<Num>& a, Num k)
 {
   a.x *= k;
   a.y *= k;
@@ -160,7 +160,7 @@ const Triple<Num>& operator *= (Triple<Num>& a, Num k)
 
 
 template <typename Num>
-const Triple<Num>& operator /= (Triple<Num>& a, const Triple<Num>& b)
+const Vec3<Num>& operator /= (Vec3<Num>& a, const Vec3<Num>& b)
 {
   a.x /= b.x;
   a.y /= b.y;
@@ -170,7 +170,7 @@ const Triple<Num>& operator /= (Triple<Num>& a, const Triple<Num>& b)
 
 
 template <typename Num>
-const Triple<Num>& operator /= (Triple<Num>& a, Num k)
+const Vec3<Num>& operator /= (Vec3<Num>& a, Num k)
 {
   a.x /= k;
   a.y /= k;
@@ -180,44 +180,44 @@ const Triple<Num>& operator /= (Triple<Num>& a, Num k)
 
 
 template <typename Num>
-Num sum(const Triple<Num>& a)
+Num sum(const Vec3<Num>& a)
 {
   return a.x + a.y + a.z;
 }
 
 
 template <typename Num>
-float dot(const Triple<Num>& a, const Triple<Num>& b)
+float dot(const Vec3<Num>& a, const Vec3<Num>& b)
 {
   return sum(a * b);
 }
 
 
 template <typename Num>
-Triple<Num> cross(const Triple<Num>& a, const Triple<Num>& b)
+Vec3<Num> cross(const Vec3<Num>& a, const Vec3<Num>& b)
 {
-  return Triple<Num>(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
+  return Vec3<Num>(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
 }
 
 
 template <typename Num>
-Num scalarTriple(const Triple<Num>& a, const Triple<Num>& b, const Triple<Num>& c)
+Num scalarVec3(const Vec3<Num>& a, const Vec3<Num>& b, const Vec3<Num>& c)
 {
   return dot(a, cross(b, c));
 }
 
 
 template <typename Num>
-Triple<Num> pairwiseMin(const Triple<Num>& a, const Triple<Num>& b)
+Vec3<Num> pairwiseMin(const Vec3<Num>& a, const Vec3<Num>& b)
 {
-  return Triple<Num>(std::min(a.x, b.x), std::min(a.y, b.y), std::min(a.z, b.z));
+  return Vec3<Num>(std::min(a.x, b.x), std::min(a.y, b.y), std::min(a.z, b.z));
 }
 
 
 template <typename Num>
-Triple<Num> pairwiseMax(const Triple<Num>& a, const Triple<Num>& b)
+Vec3<Num> pairwiseMax(const Vec3<Num>& a, const Vec3<Num>& b)
 {
-  return Triple<Num>(std::max(a.x, b.x), std::max(a.y, b.y), std::max(a.z, b.z));
+  return Vec3<Num>(std::max(a.x, b.x), std::max(a.y, b.y), std::max(a.z, b.z));
 }
 
 
@@ -225,20 +225,20 @@ Triple<Num> pairwiseMax(const Triple<Num>& a, const Triple<Num>& b)
 // Float3 FUNCTIONS
 //
 
-float lengthSqr(const Float3& a);
-float length(const Float3& a);
+float lengthSqr(const Vec3f& a);
+float length(const Vec3f& a);
 
-Float3 pow(const Float3& a, float k);
-Float3 norm(const Float3& a);
-Float3 clamp(const Float3& a);
-Float3 rotateX(const Float3& a, float radians);
-Float3 rotateY(const Float3& a, float radians);
-Float3 rotateZ(const Float3& a, float radians);
+Vec3f pow(const Vec3f& a, float k);
+Vec3f norm(const Vec3f& a);
+Vec3f clamp(const Vec3f& a);
+Vec3f rotateX(const Vec3f& a, float radians);
+Vec3f rotateY(const Vec3f& a, float radians);
+Vec3f rotateZ(const Vec3f& a, float radians);
 
-Ray3 reflect(const Ray3& r, const Float3& hitpos, const Float3& normal);
-Ray3 refract(const Ray3& r, const Float3& hitpos, const Float3& normal, float oldNi, float newNi);
+Ray3 reflect(const Ray3& r, const Vec3f& hitpos, const Vec3f& normal);
+Ray3 refract(const Ray3& r, const Vec3f& hitpos, const Vec3f& normal, float oldNi, float newNi);
 
-Float3 planePos(const Plane3& p, float u, float v);
+Vec3f planePos(const Plane3& p, float u, float v);
 
 } // namespace vgl
 

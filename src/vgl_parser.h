@@ -69,7 +69,7 @@ public:
 
   virtual void indexAttributeParsed(const char* attr, size_t value);
   virtual void floatAttributeParsed(const char* attr, float value);
-  virtual void float3AttributeParsed(const char* attr, const Float3& value);
+  virtual void float3AttributeParsed(const char* attr, const Vec3f& value);
   virtual void textureAttributeParsed(const char* attr, const char* path);
   virtual void stringAttributeParsed(const char* attr, const char* value);
 };

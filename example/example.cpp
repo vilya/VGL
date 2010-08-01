@@ -18,7 +18,7 @@ void checkGLError(const char *errMsg, const char *okMsg=NULL)
 
 struct ExampleMesh
 {
-  std::vector<vgl::Float3> coords;
+  std::vector<vgl::Vec3f> coords;
   std::vector<GLuint> indexes;
 
   ExampleMesh() : coords(), indexes() {}
@@ -42,7 +42,7 @@ public:
       _mesh->indexes.push_back(value);
   }
 
-  virtual void float3AttributeParsed(const char* attr, const vgl::Float3& value)
+  virtual void float3AttributeParsed(const char* attr, const vgl::Vec3f& value)
   {
     if (strcmp(attr, ParserCallbacks::kCoord) == 0)
       _mesh->coords.push_back(value);
@@ -123,7 +123,7 @@ int main(int argc, char** argv)
   vgl::loadModel(builder, argv[1]);
 
   vgl::Camera* camera = new vgl::Camera(
-      vgl::Float3(0, 0, 5), vgl::Float3(0, 0, 0), vgl::Float3(0, 1, 0),
+      vgl::Vec3f(0, 0, 5), vgl::Vec3f(0, 0, 0), vgl::Vec3f(0, 1, 0),
       -1, 1, -1, 1, 30, 800, 600);
 
   ExampleRenderer* renderer = new ExampleRenderer(mesh);

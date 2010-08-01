@@ -8,7 +8,7 @@ namespace vgl {
 
 class Camera {
 public:
-  Camera(const Float3& pos, const Float3& target, const Float3& up,
+  Camera(const Vec3f& pos, const Vec3f& target, const Vec3f& up,
     float left, float right, float bottom, float top, float aperture,
     unsigned int pixelWidth, unsigned int pixelHeight);
   virtual ~Camera();
@@ -22,7 +22,7 @@ public:
   virtual void setupModelViewMatrix();
 
 private:
-  Float3 _pos, _target, _up;
+  Vec3f _pos, _target, _up;
   float _left, _right, _bottom, _top;
   float _aperture;
   unsigned int _pixelWidth, _pixelHeight;

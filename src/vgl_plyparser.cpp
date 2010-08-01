@@ -124,16 +124,16 @@ void loadPLY(ParserCallbacks* callbacks, const char* path)
         PLYVertex plyVert;
         ply_get_element(plySrc, &plyVert);
 
-        callbacks->float3AttributeParsed(ParserCallbacks::kCoord, Float3(plyVert.x, plyVert.y, plyVert.z));
+        callbacks->float3AttributeParsed(ParserCallbacks::kCoord, Vec3f(plyVert.x, plyVert.y, plyVert.z));
         if (hasTexCoords)
-          callbacks->float3AttributeParsed(ParserCallbacks::kTexCoord, Float3(plyVert.u, plyVert.v, 0.0));
+          callbacks->float3AttributeParsed(ParserCallbacks::kTexCoord, Vec3f(plyVert.u, plyVert.v, 0.0));
         if (hasNormals)
-          callbacks->float3AttributeParsed(ParserCallbacks::kVertexNormal, Float3(plyVert.nx, plyVert.ny, plyVert.nz));
+          callbacks->float3AttributeParsed(ParserCallbacks::kVertexNormal, Vec3f(plyVert.nx, plyVert.ny, plyVert.nz));
 
         if (hasRGB)
-          callbacks->float3AttributeParsed(ParserCallbacks::kDiffuseColor, Float3(plyVert.r, plyVert.g, plyVert.b));
+          callbacks->float3AttributeParsed(ParserCallbacks::kDiffuseColor, Vec3f(plyVert.r, plyVert.g, plyVert.b));
         else if (hasIntensity)
-          callbacks->float3AttributeParsed(ParserCallbacks::kIntensity, Float3(plyVert.intensity, plyVert.intensity, plyVert.intensity));
+          callbacks->float3AttributeParsed(ParserCallbacks::kIntensity, Vec3f(plyVert.intensity, plyVert.intensity, plyVert.intensity));
       }
     } else if (strcmp("face", sectionName) == 0) {
       ply_get_property(plySrc, sectionName, &faceProps[0]);

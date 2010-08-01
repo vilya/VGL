@@ -108,7 +108,7 @@ void ParserCallbacks::floatAttributeParsed(const char* attr, float value)
 }
 
 
-void ParserCallbacks::float3AttributeParsed(const char* attr, const Float3& value)
+void ParserCallbacks::float3AttributeParsed(const char* attr, const Vec3f& value)
 {
 }
 
