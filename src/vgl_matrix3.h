@@ -32,5 +32,5 @@ typedef Matrix3<float> Matrix3f;
 
 } // namespace vgl
 
-#define // vgl_matrix3_h
+#endif // vgl_matrix3_h
 
