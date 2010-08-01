@@ -8,7 +8,10 @@
 #include "vgl_camera.h"
 #include "vgl_image.h"
 #include "vgl_math.h"
+#include "vgl_matrix3.h"
 #include "vgl_parser.h"
+#include "vgl_plane3.h"
+#include "vgl_ray3.h"
 #include "vgl_renderer.h"
 #include "vgl_viewer.h"
 

@@ -30,24 +30,6 @@ typedef Vec3<float> Vec3f;
 typedef Vec3<int> Vec3i;
 
 
-struct Ray3 {
-  Vec3f o, d;  // o is the origin, d is the direction vector.
-
-  Ray3() : o(), d() {}
-  Ray3(const Vec3f& iO, const Vec3f& iD) : o(iO), d(iD) {}
-  Ray3(const Ray3& a) : o(a.o), d(a.d) {}
-};
-
-
-struct Plane3 {
-  Vec3f corner;
-  Vec3f u, v;
-
-  Plane3() : corner(), u(1, 0, 0), v(0, 1, 0) {}
-  Plane3(Vec3f iCorner, Vec3f iU, Vec3f iV) : corner(iCorner), u(iU), v(iV) {}
-};
-
-
 //
 // FUNCTIONS
 //
@@ -234,11 +216,6 @@ Vec3f clamp(const Vec3f& a);
 Vec3f rotateX(const Vec3f& a, float radians);
 Vec3f rotateY(const Vec3f& a, float radians);
 Vec3f rotateZ(const Vec3f& a, float radians);
-
-Ray3 reflect(const Ray3& r, const Vec3f& hitpos, const Vec3f& normal);
-Ray3 refract(const Ray3& r, const Vec3f& hitpos, const Vec3f& normal, float oldNi, float newNi);
-
-Vec3f planePos(const Plane3& p, float u, float v);
 
 } // namespace vgl
 

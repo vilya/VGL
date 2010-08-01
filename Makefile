@@ -46,16 +46,21 @@ LIBVGL_OBJS :=  \
                 $(OBJ)/vgl_math.o \
                 $(OBJ)/vgl_objparser.o \
                 $(OBJ)/vgl_parser.o \
+                $(OBJ)/vgl_plane3.o \
                 $(OBJ)/vgl_plyparser.o \
+                $(OBJ)/vgl_ray3.o \
                 $(OBJ)/vgl_viewer.o
 LIBVGL_INCS :=  \
                 $(DIST)/include/vgl.h \
                 $(DIST)/include/vgl_camera.h \
                 $(DIST)/include/vgl_image.h \
                 $(DIST)/include/vgl_math.h \
+                $(DIST)/include/vgl_matrix3.h \
                 $(DIST)/include/vgl_objparser.h \
                 $(DIST)/include/vgl_parser.h \
+                $(DIST)/include/vgl_plane3.h \
                 $(DIST)/include/vgl_plyparser.h \
+                $(DIST)/include/vgl_ray3.h \
                 $(DIST)/include/vgl_renderer.h \
                 $(DIST)/include/vgl_viewer.h
 THIRDPARTY_OBJS := $(THIRDPARTY_OBJ)/ply.o
