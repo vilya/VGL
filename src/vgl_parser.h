@@ -4,7 +4,7 @@
 #include <stdexcept>
 #include <string>
 
-#include "vgl_math.h"
+#include "vgl_vec3.h"
 
 namespace vgl {
 

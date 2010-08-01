@@ -1,7 +1,7 @@
 #ifndef vgl_plane_h
 #define vgl_plane_h
 
-#include "vgl_math.h"
+#include "vgl_vec3.h"
 
 namespace vgl {
 

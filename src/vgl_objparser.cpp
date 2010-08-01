@@ -1,8 +1,8 @@
 #include "vgl_objparser.h"
 
 #include "vgl_image.h"
-#include "vgl_math.h"
 #include "vgl_parser.h"
+#include "vgl_vec3.h"
 
 #include <cstdarg>
 #include <cstdio>

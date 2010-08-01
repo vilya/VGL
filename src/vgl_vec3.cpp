@@ -1,4 +1,4 @@
-#include "vgl_math.h"
+#include "vgl_vec3.h"
 
 #include "vgl_utils.h"
 

@@ -1,5 +1,5 @@
-#ifndef vgl_math_h
-#define vgl_math_h
+#ifndef vgl_vec3_h
+#define vgl_vec3_h
 
 #include <algorithm>
 
@@ -201,5 +201,5 @@ Vec3f rotateZ(const Vec3f& a, float radians);
 
 } // namespace vgl
 
-#endif // vgl_math_h
+#endif // vgl_vec3_h
 

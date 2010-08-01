@@ -1,7 +1,7 @@
 #ifndef vgl_ray_h
 #define vgl_ray_h
 
-#include "vgl_math.h"
+#include "vgl_vec3.h"
 
 namespace vgl {
 
