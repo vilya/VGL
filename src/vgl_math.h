@@ -31,24 +31,6 @@ typedef Vec3<int> Vec3i;
 
 
 //
-// FUNCTIONS
-//
-
-template <typename Num>
-Num clampf(Num k)
-{
-  return std::max(Num(0), std::min(Num(1), k));
-}
-
-
-template <typename Num>
-Num sqr(Num k)
-{
-  return k * k;
-}
-
-
-//
 // Vec3 OPERATORS AND FUNCTIONS
 //
 

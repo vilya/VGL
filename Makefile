@@ -62,6 +62,7 @@ LIBVGL_INCS :=  \
                 $(DIST)/include/vgl_plyparser.h \
                 $(DIST)/include/vgl_ray3.h \
                 $(DIST)/include/vgl_renderer.h \
+                $(DIST)/include/vgl_utils.h \
                 $(DIST)/include/vgl_viewer.h
 THIRDPARTY_OBJS := $(THIRDPARTY_OBJ)/ply.o
 

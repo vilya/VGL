@@ -1,5 +1,7 @@
 #include "vgl_ray3.h"
 
+#include "vgl_utils.h"
+
 #include <cmath>
 
 namespace vgl {
@@ -21,7 +23,6 @@ Ray3 refract(const Ray3& r, const Vec3f& hitpos, const Vec3f& normal, float oldN
   float sin2ThetaT = sqr(n) * (1.0 - sqr(cosThetaI));
   return Ray3(hitpos, n * r.d + (n * cosThetaI - sqrtf(1.0 - sin2ThetaT)) * normal);
 }
-
 
 } // namespace vgl
 

@@ -1,5 +1,7 @@
 #include "vgl_math.h"
 
+#include "vgl_utils.h"
+
 #include <cmath>
 
 namespace vgl {
@@ -35,7 +37,7 @@ Vec3f norm(const Vec3f& a)
 
 Vec3f clamp(const Vec3f& a)
 {
-  return Vec3f(clampf(a.x), clampf(a.y), clampf(a.z));
+  return Vec3f(clamp(a.x), clamp(a.y), clamp(a.z));
 }
 
 
