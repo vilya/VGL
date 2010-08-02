@@ -165,7 +165,7 @@ Vec3<Num> cross(const Vec3<Num>& a, const Vec3<Num>& b)
 
 
 template <typename Num>
-Num scalarVec3(const Vec3<Num>& a, const Vec3<Num>& b, const Vec3<Num>& c)
+Num scalarTriple(const Vec3<Num>& a, const Vec3<Num>& b, const Vec3<Num>& c)
 {
   return dot(a, cross(b, c));
 }
