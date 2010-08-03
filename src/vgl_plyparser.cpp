@@ -151,7 +151,7 @@ void loadPLY(ParserCallbacks* callbacks, const char* path)
           if (hasTexCoords)
             callbacks->indexAttributeParsed(ParserCallbacks::kTexCoordRef, v);
           if (hasNormals)
-            callbacks->indexAttributeParsed(ParserCallbacks::kVertexNormal, v);
+            callbacks->indexAttributeParsed(ParserCallbacks::kNormalRef, v);
           if (hasRGB)
             callbacks->indexAttributeParsed(ParserCallbacks::kDiffuseColor, v);
           if (hasIntensity)
