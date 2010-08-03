@@ -77,6 +77,13 @@ Vec2<Num> operator * (float k, const Vec2<Num>& a)
 
 
 template <typename Num>
+Vec2<Num> operator / (const Vec2<Num>& a, const Vec2<Num>& b)
+{
+  return Vec2<Num>(a.x / b.x, a.y / b.y);
+}
+
+
+template <typename Num>
 Vec2<Num> operator / (const Vec2<Num>& a, float k)
 {
   return Vec2<Num>(a.x / k, a.y / k);

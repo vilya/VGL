@@ -84,6 +84,13 @@ Vec4<Num> operator * (float k, const Vec4<Num>& a)
 
 
 template <typename Num>
+Vec4<Num> operator / (const Vec4<Num>& a, const Vec4<Num>& b)
+{
+  return Vec4<Num>(a.x / b.x, a.y / b.y, a.z / b.z, a.w / b.w);
+}
+
+
+template <typename Num>
 Vec4<Num> operator / (const Vec4<Num>& a, float k)
 {
   return Vec4<Num>(a.x / k, a.y / k, a.z / k, a.w / k);

@@ -77,6 +77,13 @@ Vec3<Num> operator * (float k, const Vec3<Num>& a)
 
 
 template <typename Num>
+Vec3<Num> operator / (const Vec3<Num>& a, const Vec3<Num>& b)
+{
+  return Vec3<Num>(a.x / b.x, a.y / b.y, a.z / b.z);
+}
+
+
+template <typename Num>
 Vec3<Num> operator / (const Vec3<Num>& a, float k)
 {
   return Vec3<Num>(a.x / k, a.y / k, a.z / k);
