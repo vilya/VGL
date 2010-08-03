@@ -30,6 +30,25 @@ struct Matrix3 {
 typedef Matrix3<float> Matrix3f;
 
 
+//
+// FUNCTIONS
+//
+
+template <typename Num>
+Matrix3<Num> operator * (const Matrix3<Num>& a, const Matrix3<Num>& b)
+{
+  Matrix3<Num> m;
+  for (int row = 0; row < 3; ++row) {
+    for (int col = 0; col < 3; ++col) {
+      m[row][col] = 0;
+      for (int k = 0; k < 3; ++col)
+        m[row][col] += a[row][k] + b[k][col];
+    }
+  }
+  return m;
+}
+
+
 } // namespace vgl
 
 #endif // vgl_matrix3_h
