@@ -48,13 +48,16 @@ LIBVGL_OBJS :=  \
                 $(OBJ)/vgl_plane3.o \
                 $(OBJ)/vgl_plyparser.o \
                 $(OBJ)/vgl_ray3.o \
+                $(OBJ)/vgl_vec2.o \
                 $(OBJ)/vgl_vec3.o \
+                $(OBJ)/vgl_vec4.o \
                 $(OBJ)/vgl_viewer.o
 LIBVGL_INCS :=  \
                 $(DIST)/include/vgl.h \
                 $(DIST)/include/vgl_camera.h \
                 $(DIST)/include/vgl_image.h \
                 $(DIST)/include/vgl_matrix3.h \
+                $(DIST)/include/vgl_matrix4.h \
                 $(DIST)/include/vgl_objparser.h \
                 $(DIST)/include/vgl_parser.h \
                 $(DIST)/include/vgl_plane3.h \
@@ -62,12 +65,17 @@ LIBVGL_INCS :=  \
                 $(DIST)/include/vgl_ray3.h \
                 $(DIST)/include/vgl_renderer.h \
                 $(DIST)/include/vgl_utils.h \
+                $(DIST)/include/vgl_vec2.h \
                 $(DIST)/include/vgl_vec3.h \
+                $(DIST)/include/vgl_vec4.h \
                 $(DIST)/include/vgl_viewer.h
 THIRDPARTY_OBJS := $(THIRDPARTY_OBJ)/ply.o
 
 EXAMPLE_BIN   := $(BIN)/example
 EXAMPLE_OBJS  := $(EXAMPLE_OBJ)/example.o
+
+
+.PRECIOUS: $(LIBVGL_OBJS) $(THIRDPARTY_OBJS)
 
 
 .PHONY: debug
