@@ -19,8 +19,17 @@ Ideas for things to include in the library:
   - Octree
   - Kd-tree
 
+- More image formats:
+  - EXR (using the OpenEXR libraries)
+  - DPX & CIN
+  - TIFF (using libtiff)
+
 - Code to find out where a ray hits a scene.
 
 - Use quaternions for rotations.
 
 - Support for mouse gestures.
+
+- Conditional compilation of parts which depend on external libraries.
+- Build scripts should check which libraries are installed and build
+  accordingly.
