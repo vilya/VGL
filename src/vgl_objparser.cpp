@@ -363,16 +363,16 @@ void loadMaterialLibrary(const char* path, ParserCallbacks* callbacks)
           //  throw ParseException("Redefinition of material %s", materialName.c_str());
           break;
         case MTL_LINETYPE_KA:
-          callbacks->float3AttributeParsed(ParserCallbacks::kAmbientColor, mtlParseColor(col, col));
+          callbacks->vec3fAttributeParsed(ParserCallbacks::kAmbientColor, mtlParseColor(col, col));
           break;
         case MTL_LINETYPE_KD:
-          callbacks->float3AttributeParsed(ParserCallbacks::kDiffuseColor, mtlParseColor(col, col));
+          callbacks->vec3fAttributeParsed(ParserCallbacks::kDiffuseColor, mtlParseColor(col, col));
           break;
         case MTL_LINETYPE_KS:
-          callbacks->float3AttributeParsed(ParserCallbacks::kSpecularColor, mtlParseColor(col, col));
+          callbacks->vec3fAttributeParsed(ParserCallbacks::kSpecularColor, mtlParseColor(col, col));
           break;
         case MTL_LINETYPE_TF:
-          callbacks->float3AttributeParsed(ParserCallbacks::kTransmissivity, mtlParseColor(col, col));
+          callbacks->vec3fAttributeParsed(ParserCallbacks::kTransmissivity, mtlParseColor(col, col));
           break;
         case MTL_LINETYPE_D:
           callbacks->floatAttributeParsed(ParserCallbacks::kDissolve, mtlParseFloat(col, col));
@@ -636,13 +636,13 @@ void loadOBJ(ParserCallbacks* callbacks, const char* path)
       eatSpace(col);
       switch (objParseLineType(col, col)) {
         case OBJ_LINETYPE_V:
-          callbacks->float3AttributeParsed(ParserCallbacks::kCoord, objParseV(col, col));
+          callbacks->vec3fAttributeParsed(ParserCallbacks::kCoord, objParseV(col, col));
           break;
         case OBJ_LINETYPE_VT:
-          callbacks->float3AttributeParsed(ParserCallbacks::kTexCoord, objParseVT(col, col));
+          callbacks->vec3fAttributeParsed(ParserCallbacks::kTexCoord, objParseVT(col, col));
           break;
         case OBJ_LINETYPE_VN:
-          callbacks->float3AttributeParsed(ParserCallbacks::kVertexNormal, objParseVN(col, col));
+          callbacks->vec3fAttributeParsed(ParserCallbacks::kVertexNormal, objParseVN(col, col));
           break;
         case OBJ_LINETYPE_F:
         case OBJ_LINETYPE_FO:

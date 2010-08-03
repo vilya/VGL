@@ -36,15 +36,15 @@ public:
     _mesh->indexes.clear();
   }
 
-  virtual void indexAttributeParsed(const char* attr, size_t value)
+  virtual void indexAttributeParsed(int attr, size_t value)
   {
-    if (strcmp(attr, ParserCallbacks::kCoordRef) == 0)
+    if (attr == ParserCallbacks::kCoordRef)
       _mesh->indexes.push_back(value);
   }
 
-  virtual void float3AttributeParsed(const char* attr, const vgl::Vec3f& value)
+  virtual void vec3fAttributeParsed(int attr, const vgl::Vec3f& value)
   {
-    if (strcmp(attr, ParserCallbacks::kCoord) == 0)
+    if (attr == ParserCallbacks::kCoord)
       _mesh->coords.push_back(value);
   }
 

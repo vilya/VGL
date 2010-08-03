@@ -34,26 +34,6 @@ const char* ParseException::what() const throw()
 // ParserCallbacks
 //
 
-const char* ParserCallbacks::kAmbientColor = "Ka";
-const char* ParserCallbacks::kDiffuseColor = "Kd";
-const char* ParserCallbacks::kSpecularColor = "Ks";
-const char* ParserCallbacks::kTransmissivity = "Tf";
-const char* ParserCallbacks::kDissolve = "D";
-const char* ParserCallbacks::kSpecularIndex = "Ns";
-const char* ParserCallbacks::kNormal = "N";
-const char* ParserCallbacks::kBumpMap = "Bump";
-
-const char* ParserCallbacks::kCoordRef = "vi";
-const char* ParserCallbacks::kTexCoordRef = "vti";
-const char* ParserCallbacks::kNormalRef = "vni";
-
-const char* ParserCallbacks::kMaterialName = "usemtl";
-const char* ParserCallbacks::kCoord = "v";
-const char* ParserCallbacks::kTexCoord = "vt";
-const char* ParserCallbacks::kVertexNormal = "vn";
-const char* ParserCallbacks::kIntensity = "I";
-
-
 void ParserCallbacks::beginModel(const char* path)
 {
 }
@@ -98,27 +78,47 @@ void ParserCallbacks::endMaterial()
 
 
 
-void ParserCallbacks::indexAttributeParsed(const char* attr, size_t value)
+void ParserCallbacks::indexAttributeParsed(int attr, size_t value)
 {
 }
 
 
-void ParserCallbacks::floatAttributeParsed(const char* attr, float value)
+void ParserCallbacks::floatAttributeParsed(int attr, float value)
 {
 }
 
 
-void ParserCallbacks::float3AttributeParsed(const char* attr, const Vec3f& value)
+void ParserCallbacks::matrix3fAttributeParsed(int attr, const Matrix3f& value)
 {
 }
 
 
-void ParserCallbacks::textureAttributeParsed(const char* attr, const char* path)
+void ParserCallbacks::matrix4fAttributeParsed(int attr, const Matrix4f& value)
 {
 }
 
 
-void ParserCallbacks::stringAttributeParsed(const char* attr, const char* value)
+void ParserCallbacks::vec2fAttributeParsed(int attr, const Vec2f& value)
+{
+}
+
+
+void ParserCallbacks::vec3fAttributeParsed(int attr, const Vec3f& value)
+{
+}
+
+
+void ParserCallbacks::vec4fAttributeParsed(int attr, const Vec4f& value)
+{
+}
+
+
+void ParserCallbacks::textureAttributeParsed(int attr, const char* path)
+{
+}
+
+
+void ParserCallbacks::stringAttributeParsed(int attr, const char* value)
 {
 }
 

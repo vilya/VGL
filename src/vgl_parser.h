@@ -4,7 +4,11 @@
 #include <stdexcept>
 #include <string>
 
+#include "vgl_matrix3.h"
+#include "vgl_matrix4.h"
+#include "vgl_vec2.h"
 #include "vgl_vec3.h"
+#include "vgl_vec4.h"
 
 namespace vgl {
 
@@ -32,27 +36,29 @@ public:
 // parsing behaviour.
 class ParserCallbacks {
 public:
-  // Common material attribute names.
-  static const char* kAmbientColor;
-  static const char* kDiffuseColor;
-  static const char* kSpecularColor;
-  static const char* kTransmissivity;
-  static const char* kDissolve;
-  static const char* kSpecularIndex;
-  static const char* kNormal;
-  static const char* kBumpMap;
+  enum {
+    // Common material attribute names.
+    kAmbientColor,
+    kDiffuseColor,
+    kSpecularColor,
+    kTransmissivity,
+    kDissolve,
+    kSpecularIndex,
+    kNormal,
+    kBumpMap,
 
-  // Common vertex attribute names.
-  static const char* kCoordRef;
-  static const char* kTexCoordRef;
-  static const char* kNormalRef;
+    // Common vertex attribute names.
+    kCoordRef,
+    kTexCoordRef,
+    kNormalRef,
   
-  // Common model attribute names.
-  static const char* kMaterialName;
-  static const char* kCoord;
-  static const char* kTexCoord;
-  static const char* kVertexNormal;
-  static const char* kIntensity;
+    // Common model attribute names.
+    kMaterialName,
+    kCoord,
+    kTexCoord,
+    kVertexNormal,
+    kIntensity
+  };
 
 public:
   virtual void beginModel(const char* path);
@@ -67,11 +73,15 @@ public:
   virtual void beginMaterial(const char* name);
   virtual void endMaterial();
 
-  virtual void indexAttributeParsed(const char* attr, size_t value);
-  virtual void floatAttributeParsed(const char* attr, float value);
-  virtual void float3AttributeParsed(const char* attr, const Vec3f& value);
-  virtual void textureAttributeParsed(const char* attr, const char* path);
-  virtual void stringAttributeParsed(const char* attr, const char* value);
+  virtual void indexAttributeParsed(int attr, size_t value);
+  virtual void floatAttributeParsed(int attr, float value);
+  virtual void matrix3fAttributeParsed(int attr, const Matrix3f& value);
+  virtual void matrix4fAttributeParsed(int attr, const Matrix4f& value);
+  virtual void vec2fAttributeParsed(int attr, const Vec2f& value);
+  virtual void vec3fAttributeParsed(int attr, const Vec3f& value);
+  virtual void vec4fAttributeParsed(int attr, const Vec4f& value);
+  virtual void textureAttributeParsed(int attr, const char* path);
+  virtual void stringAttributeParsed(int attr, const char* value);
 };
 
 
