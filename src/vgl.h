@@ -8,11 +8,14 @@
 #include "vgl_camera.h"
 #include "vgl_image.h"
 #include "vgl_matrix3.h"
+#include "vgl_matrix4.h"
 #include "vgl_parser.h"
 #include "vgl_plane3.h"
 #include "vgl_ray3.h"
 #include "vgl_renderer.h"
+#include "vgl_vec2.h"
 #include "vgl_vec3.h"
+#include "vgl_vec4.h"
 #include "vgl_viewer.h"
 
 #define GL_GLEXT_PROTOTYPES 1
