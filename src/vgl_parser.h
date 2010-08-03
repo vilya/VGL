@@ -43,7 +43,7 @@ public:
     kSpecularColor,
     kTransmissivity,
     kDissolve,
-    kSpecularIndex,
+    kSpecularExponent,
     kNormal,
     kBumpMap,
 

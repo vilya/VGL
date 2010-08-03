@@ -378,7 +378,7 @@ void loadMaterialLibrary(const char* path, ParserCallbacks* callbacks)
           callbacks->floatAttributeParsed(ParserCallbacks::kDissolve, mtlParseFloat(col, col));
           break;
         case MTL_LINETYPE_NS:
-          callbacks->floatAttributeParsed(ParserCallbacks::kSpecularIndex, mtlParseFloat(col, col));
+          callbacks->floatAttributeParsed(ParserCallbacks::kSpecularExponent, mtlParseFloat(col, col));
           break;
         case MTL_LINETYPE_MAP_KA:
           texPath = mtlParseTexture(col, col, baseDir);
