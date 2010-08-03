@@ -70,7 +70,7 @@ protected:
   // action handling behaviours.
   virtual void actionHandler(int action);
 
-private:
+protected:
   int _windowWidth, _windowHeight;
   int _width, _height;
   int _mouseX, _mouseY;
