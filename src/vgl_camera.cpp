@@ -20,6 +20,21 @@ namespace vgl {
 // Camera METHODS
 //
 
+Camera::Camera(unsigned int pixelWidth, unsigned int pixelHeight) :
+  _pos(Vec3f(0, 0, 10)),
+  _target(Vec3f(0, 0, 0)),
+  _up(Vec3f(0, 1, 0)), 
+  _left(-1),
+  _right(1),
+  _bottom(-1),
+  _top(-1),
+  _aperture(30),
+  _pixelWidth(pixelWidth),
+  _pixelHeight(pixelHeight)
+{
+}
+
+
 Camera::Camera(const Vec3f& pos, const Vec3f& target, const Vec3f& up,
     float left, float right, float bottom, float top, float aperture,
     unsigned int pixelWidth, unsigned int pixelHeight) :

@@ -8,6 +8,7 @@ namespace vgl {
 
 class Camera {
 public:
+  Camera(unsigned int pixelWidth, unsigned int pixelHeight);
   Camera(const Vec3f& pos, const Vec3f& target, const Vec3f& up,
     float left, float right, float bottom, float top, float aperture,
     unsigned int pixelWidth, unsigned int pixelHeight);
