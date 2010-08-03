@@ -35,6 +35,9 @@ EXAMPLE_APPS  := \
 	$(BIN)/example
 
 
+.PRECIOUS: $(OBJ)/basic.o $(OBJ)/example.o
+
+
 .PHONY: debug
 debug:
 	$(MAKE) CXXFLAGS="$(DBGFLAGS) $(CXXFLAGS)" all
