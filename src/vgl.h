@@ -13,6 +13,7 @@
 #include "vgl_plane3.h"
 #include "vgl_ray3.h"
 #include "vgl_renderer.h"
+#include "vgl_utils.h"
 #include "vgl_vec2.h"
 #include "vgl_vec3.h"
 #include "vgl_vec4.h"
