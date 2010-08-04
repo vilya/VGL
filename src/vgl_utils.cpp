@@ -85,7 +85,7 @@ GLuint loadShader(GLenum shaderType, const char* path)
 }
 
 
-GLuint linkProgram(GLuint vertexShaderID, GLuint fragmentShaderID)
+GLuint linkShader(GLuint vertexShaderID, GLuint fragmentShaderID)
 {
   GLuint programID = glCreateProgram();
   glAttachShader(programID, vertexShaderID);
