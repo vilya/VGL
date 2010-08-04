@@ -48,6 +48,7 @@ LIBVGL_OBJS :=  \
                 $(OBJ)/vgl_plane3.o \
                 $(OBJ)/vgl_plyparser.o \
                 $(OBJ)/vgl_ray3.o \
+                $(OBJ)/vgl_utils.o \
                 $(OBJ)/vgl_vec2.o \
                 $(OBJ)/vgl_vec3.o \
                 $(OBJ)/vgl_vec4.o \
