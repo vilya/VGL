@@ -32,6 +32,7 @@ endif
 
 EXAMPLE_APPS  := \
 	$(BIN)/basic \
+	$(BIN)/styled \
 	$(BIN)/example
 
 
