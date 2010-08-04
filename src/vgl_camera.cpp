@@ -111,7 +111,8 @@ void Camera::zoomBy(float dz)
 
 void Camera::setupProjectionMatrix()
 {
-  gluPerspective(_aperture, float(_pixelWidth) / float(_pixelHeight), 0.0001, 10000.0);
+  float distance = length(_target - _pos);
+  gluPerspective(_aperture, float(_pixelWidth) / float(_pixelHeight), distance * 0.1, distance * 2.0);
 }
 
 
