@@ -1,11 +1,15 @@
 VGL = Vil's Graphics Library! :-)
 
-It's a framework to take the donkey work out of writing OpenGL apps, so that
-it's easier to concentrate on the rendering and other interesting bits.
+It's a library to take the donkey work out of writing OpenGL apps, so that it's
+easier to concentrate on the rendering and other interesting bits.
 
 The goal is to be agnostic about the choice of scene data structures, rendering
-algorithms and user interation methods while providing some useful default 
+algorithms and user interaction methods while providing useful default
 implementations for each of these.
+
+A corollary to this is that it should be possible to override any behaviour
+from the library. There's always going to be *something* that any given
+program will need to do differently...
 
 So far it includes:
 - A very basic windowing system based on GLUT.

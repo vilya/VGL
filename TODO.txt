@@ -2,6 +2,7 @@ TODO
 ====
 
 - Make the Camera class more suitable for subclassing.
+- Add support for orthographic cameras.
 
 - Make the current format-specific image loading functions public.
 - Make it possible to register additional image loaders without changing the VGL code.
@@ -11,16 +12,10 @@ TODO
 - Add support for LWO files.
 
 - Comment the code properly, in a structured format that Doxygen or something can use.
-
 - Add a build target to generate the docs.
 
 - Use CMake to build the library instead of Make.
 
 - Make sure we're only exporting the public symbols from the library.
 
-- Utility functions:
-  - check for and report OpenGL errors.
-  - load shaders (reporting any errors).
-
-- Support for orthographic cameras.
 

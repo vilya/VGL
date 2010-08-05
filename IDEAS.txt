@@ -20,9 +20,10 @@ Ideas for things to include in the library:
   - Kd-tree
 
 - More image formats:
-  - EXR (using the OpenEXR libraries)
   - DPX & CIN
+  - EXR (using the OpenEXR libraries)
   - TIFF (using libtiff)
+- Support for loading/processing images in tiles.
 
 - Code to find out where a ray hits a scene.
 
