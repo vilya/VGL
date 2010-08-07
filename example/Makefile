@@ -32,8 +32,9 @@ endif
 
 EXAMPLE_APPS  := \
 	$(BIN)/basic \
-	$(BIN)/styled \
-	$(BIN)/example
+	$(BIN)/example \
+	$(BIN)/imageview \
+	$(BIN)/styled
 
 
 .PRECIOUS: $(OBJ)/basic.o $(OBJ)/example.o
