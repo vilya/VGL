@@ -33,6 +33,13 @@ public:
 
   unsigned int getTexID() const;
   void uploadTexture(unsigned int texID = 0);
+  void uploadTextureAs(int targetType, unsigned int texID = 0);
+
+  void downsampleInPlace(unsigned int downsampleX, unsigned int downsampleY);
+
+  //! Like getPixels, but this transfers ownership of the pixel memory to the
+  //! caller.
+  unsigned char* takePixels();
 
   //! Call this if you want to free up the memory used to store the pixels,
   //! (e.g. once you've uploaded them to GPU memory) without deleting the

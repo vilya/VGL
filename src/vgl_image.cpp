@@ -160,11 +160,6 @@ unsigned int RawImage::getTexID() const
 
 void RawImage::uploadTexture(unsigned int texId)
 {
-  if (texId == 0)
-    glGenTextures(1, &_texId);
-  else
-    _texId = texId;
-
   GLenum targetType;
   switch (_type) {
     case GL_BGR:
@@ -177,6 +172,16 @@ void RawImage::uploadTexture(unsigned int texId)
       targetType = _type;
       break;
   }
+  uploadTextureAs(targetType, texId);
+}
+
+
+void RawImage::uploadTextureAs(int targetType, unsigned int texId)
+{
+  if (texId == 0)
+    glGenTextures(1, &_texId);
+  else
+    _texId = texId;
 
   glEnable(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D, _texId);
@@ -191,9 +196,29 @@ void RawImage::uploadTexture(unsigned int texId)
 }
 
 
-//! Call this if you want to free up the memory used to store the pixels,
-//! (e.g. once you've uploaded them to GPU memory) without deleting the
-//! entire object.
+void RawImage::downsampleInPlace(unsigned int downsampleX, unsigned int downsampleY)
+{
+  RawImage* tmp = downsample(this, downsampleX, downsampleY);
+
+  deletePixels();
+  _type = tmp->getType();
+  _bytesPerPixel = tmp->getBytesPerPixel();
+  _width = tmp->getWidth();
+  _height = tmp->getHeight();
+  _pixels = tmp->takePixels();
+
+  delete tmp;
+}
+
+
+unsigned char* RawImage::takePixels()
+{
+  unsigned char* pixels = _pixels;
+  _pixels = NULL;
+  return pixels;
+}
+
+
 void RawImage::deletePixels()
 {
   delete _pixels;
