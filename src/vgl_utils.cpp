@@ -5,7 +5,27 @@
 namespace vgl {
 
 //
-// FUNCTIONS
+// HELPER FUNCTIONS
+//
+
+const char* resolveFilename(const char* baseDir, const char* filename)
+{
+  static char sFilename[4096];
+
+  if (baseDir == NULL || baseDir[0] == '\0' || filename == NULL || filename[0] == '\0')
+    return filename;
+
+  int len = strlen(baseDir);
+  if (baseDir[len - 1] == '/')
+    sprintf(sFilename, "%s%s", baseDir, filename);
+  else
+    sprintf(sFilename, "%s/%s", baseDir, filename);
+  return sFilename;
+}
+
+
+//
+// OPENGL HELPER FUNCTIONS
 //
 
 void drawBitmapString(float x, float y, void* font, char* str, StringAlignment alignment)

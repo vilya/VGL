@@ -45,9 +45,21 @@ enum StringAlignment {
 };
 
 
+//
+// HELPER FUNCTIONS
+//
+
+// Resolve a filename relative to a base directory. Relative filenames get the
+// base directory prepended; absolute filenames are unaffected.
+//
+// Note that the return value is a pointer to internal statically allocated
+// storage. Don't free() or delete it! It also means that this function isn't
+// thread-safe. But on the plus side, it doesn't leak memory either.
+const char* resolveFilename(const char* baseDir, const char* filename);
+
 
 //
-// FUNCTIONS
+// OPENGL HELPER FUNCTIONS
 //
 
 // Draw a text string at some position on screen. The font parameter must be

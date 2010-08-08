@@ -2,6 +2,7 @@
 
 #include "vgl_image.h"
 #include "vgl_parser.h"
+#include "vgl_utils.h"
 #include "vgl_vec3.h"
 
 #include <cstdarg>
@@ -67,13 +68,6 @@ enum OBJFileLineType {
 
 
 //
-// GLOBAL VARIABLES
-//
-
-std::map<std::string, RawImage*> gTextures;
-
-
-//
 // FUNCTIONS
 //
 
@@ -114,19 +108,6 @@ void eatChar(char ch, char*& col) throw(ParseException) {
   if (*col != ch)
     throw ParseException("Expected %c but got %c", ch, *col);
   ++col;
-}
-
-
-std::string resolvePath(const std::string& baseDir, const std::string& path) throw(ParseException) {
-  if (baseDir.size() == 0 || path[0] == '/') {
-    return path;
-  } else {
-    int len = baseDir.size();
-    if (len == 0 || baseDir[len-1] == '/')
-      return baseDir + path;
-    else
-      return baseDir + "/" + path;
-  }
 }
 
 
@@ -306,7 +287,8 @@ std::string mtlParseTexture(char* line, char*& col, const char* baseDir) throw(P
   col = line;
   eatSpace(col, true);
 
-  std::string filename = resolvePath(baseDir, parseFilename(col, col));
+  const char* resolved = resolveFilename(baseDir, parseFilename(col, col).c_str());
+  std::string filename(resolved);
 
   fprintf(stderr, "Loading texture %s...", filename.c_str());
 
@@ -588,7 +570,8 @@ void objParseMTLLIB(char* line, char*& col,
   while (!isEnd(*col) && !isCommentStart(*col)) {
     eatSpace(col, true);
     if (!isEnd(*col) && !isCommentStart(*col)) {
-      std::string filename = resolvePath(baseDir, parseFilename(col, col));
+      const char* resolved = resolveFilename(baseDir, parseFilename(col, col).c_str());
+      std::string filename(resolved);
       loadMaterialLibrary(filename.c_str(), callbacks);
     }
   }
