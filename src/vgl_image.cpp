@@ -43,7 +43,7 @@ const char* ImageException::what() const throw()
 
 RawImage::RawImage(const char *path) throw(ImageException) :
   _type(GL_RGB),
-  _texId((unsigned int)-1),
+  _texId(0),
   _bytesPerPixel(0),
   _width(0),
   _height(0),
@@ -89,7 +89,7 @@ RawImage::RawImage(const char *path) throw(ImageException) :
 
 RawImage::RawImage(int type, int bytesPerPixel, int width, int height) :
   _type(type),
-  _texId((unsigned int)-1),
+  _texId(0),
   _bytesPerPixel(bytesPerPixel),
   _width(width),
   _height(height),
@@ -104,7 +104,7 @@ RawImage::RawImage(int type, int bytesPerPixel, int width, int height) :
 
 RawImage::RawImage(const RawImage& img) :
   _type(img._type),
-  _texId((unsigned int)-1),
+  _texId(0),
   _bytesPerPixel(img._bytesPerPixel),
   _width(img._width),
   _height(img._height),
@@ -118,8 +118,86 @@ RawImage::RawImage(const RawImage& img) :
 
 RawImage::~RawImage()
 {
-  if (_pixels != NULL)
-    delete[] _pixels;
+  delete[] _pixels;
+}
+
+
+int RawImage::getType() const
+{
+  return _type;
+}
+
+
+unsigned int RawImage::getBytesPerPixel() const
+{
+  return _bytesPerPixel;
+}
+
+
+unsigned int RawImage::getWidth() const
+{
+  return _width;
+}
+
+
+unsigned int RawImage::getHeight() const
+{
+  return _height;
+}
+
+
+unsigned char* RawImage::getPixels()
+{
+  return _pixels;
+}
+
+
+unsigned int RawImage::getTexID() const
+{
+  return _texId;
+}
+
+
+void RawImage::uploadTexture(unsigned int texId)
+{
+  if (texId == 0)
+    glGenTextures(1, &_texId);
+  else
+    _texId = texId;
+
+  GLenum targetType;
+  switch (_type) {
+    case GL_BGR:
+      targetType = GL_RGB;
+      break;
+    case GL_BGRA:
+      targetType = GL_RGBA;
+      break;
+    default:
+      targetType = _type;
+      break;
+  }
+
+  glEnable(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D, _texId);
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+  glTexImage2D(GL_TEXTURE_2D, 0, targetType,
+      _width, _height, 0, _type, GL_UNSIGNED_BYTE, _pixels);
+}
+
+
+//! Call this if you want to free up the memory used to store the pixels,
+//! (e.g. once you've uploaded them to GPU memory) without deleting the
+//! entire object.
+void RawImage::deletePixels()
+{
+  delete _pixels;
+  _pixels = NULL;
 }
 
 

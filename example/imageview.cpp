@@ -67,33 +67,7 @@ ImageViewRenderer::ImageViewRenderer(vgl::RawImage* img) :
 
 void ImageViewRenderer::setup()
 {
-  // Load the image as a texture.
-  glGenTextures(1, &_texID);
-
-  GLenum targetType;
-  switch (_img->getType()) {
-    case GL_BGR:
-      targetType = GL_RGB;
-      break;
-    case GL_BGRA:
-      targetType = GL_RGBA;
-      break;
-    default:
-      targetType = _img->getType();
-      break;
-  }
-
-  glEnable(GL_TEXTURE_2D);
-  glBindTexture(GL_TEXTURE_2D, _texID);
-  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-  glTexImage2D(GL_TEXTURE_2D, 0, targetType,
-      _img->getWidth(), _img->getHeight(),
-      0, _img->getType(), GL_UNSIGNED_BYTE, _img->getPixels());
+  _img->uploadTexture();
 }
 
 

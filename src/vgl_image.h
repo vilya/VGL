@@ -25,19 +25,19 @@ public:
   RawImage(const RawImage& img);
   ~RawImage();
 
-  int getType() const { return _type; }
-  unsigned int getBytesPerPixel() const { return _bytesPerPixel; }
-  unsigned int getWidth() const { return _width; }
-  unsigned int getHeight() const { return _height; }
-  unsigned char* getPixels() { return _pixels; }
+  int getType() const;
+  unsigned int getBytesPerPixel() const;
+  unsigned int getWidth() const;
+  unsigned int getHeight() const;
+  unsigned char* getPixels();
 
-  unsigned int getTexID() const { return _texId; }
-  void setTexID(unsigned int texId) { _texId = texId; }
+  unsigned int getTexID() const;
+  void uploadTexture(unsigned int texID = 0);
 
   //! Call this if you want to free up the memory used to store the pixels,
   //! (e.g. once you've uploaded them to GPU memory) without deleting the
   //! entire object.
-  void deletePixels() { delete _pixels; _pixels = NULL; }
+  void deletePixels();
 
 private:
   void loadBMP(FILE* file) throw(ImageException);
