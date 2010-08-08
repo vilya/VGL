@@ -27,7 +27,6 @@ public:
 
 private:
   vgl::RawImage* _img;
-  GLuint _texID;
 };
 
 
@@ -59,14 +58,15 @@ void OrthoCamera::setupModelViewMatrix()
 //
 
 ImageViewRenderer::ImageViewRenderer(vgl::RawImage* img) :
-  _img(img),
-  _texID(0)
+  _img(img)
 {
 }
 
 
 void ImageViewRenderer::setup()
 {
+  // This leaves the texture bound after uploading it, so we don't need to
+  // re-bind it later.
   _img->uploadTexture();
 }
 
