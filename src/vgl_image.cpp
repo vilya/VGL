@@ -6,6 +6,7 @@
 #include <cstdio>
 #include <jpeglib.h>  // Required for jpeg support.
 #include <png.h>      // Required for png support.
+#include <tiffio.h>   // Required for tiff support.
 
 #ifdef linux
 #include <GL/gl.h>
@@ -71,6 +72,8 @@ RawImage::RawImage(const char *path) throw(ImageException) :
       loadJPG(file);
     } else if (strcasecmp(ext, ".png") == 0) {
       loadPNG(file);
+    } else if (strcasecmp(ext, ".tif") == 0 || strcasecmp(ext, ".tiff") == 0) {
+      loadTIFF(path);
     } else {
       throw ImageException("Unknown image format: %s", ext);
     }
@@ -346,6 +349,7 @@ void RawImage::loadPNG(FILE* file) throw(ImageException)
 {
   png_structp pngData = NULL;
   png_infop pngInfo = NULL;
+  unsigned char** rowPtrs = NULL;
 
   try {
     pngData = png_create_read_struct(PNG_LIBPNG_VER_STRING,
@@ -403,16 +407,39 @@ void RawImage::loadPNG(FILE* file) throw(ImageException)
     }
 
     _pixels = new unsigned char[_bytesPerPixel * _width * _height];
-    unsigned char** rowPtrs = new unsigned char*[_height];
+    rowPtrs = new unsigned char*[_height];
     for (size_t i = 0; i < _height; ++i)
       rowPtrs[i] = &_pixels[_bytesPerPixel * _width * (_height - i - 1)];
     png_read_image(pngData, rowPtrs);
 
     png_destroy_read_struct(&pngData, &pngInfo, NULL);
+    delete[] rowPtrs;
   } catch (ImageException& e) {
     png_destroy_read_struct(&pngData, &pngInfo, NULL);
+    if (rowPtrs != NULL)
+      delete[] rowPtrs;
     throw e;
   }
+}
+
+
+void RawImage::loadTIFF(const char* filename) throw(ImageException)
+{
+  TIFF* tiff = TIFFOpen(filename, "rb");
+  if (!tiff)
+    throw ImageException("Unable to open TIFF file.");
+
+  _type = GL_RGBA;
+  _bytesPerPixel = 4;
+  TIFFGetField(tiff, TIFFTAG_IMAGEWIDTH, &_width);
+  TIFFGetField(tiff, TIFFTAG_IMAGELENGTH, &_height);
+
+  size_t numPixels = _width * _height;
+  _pixels = new unsigned char[_bytesPerPixel * numPixels];
+  bool readOK = TIFFReadRGBAImage(tiff, _width, _height, (uint32*)_pixels, 0);
+  TIFFClose(tiff);
+  if (!readOK)
+    throw ImageException("Error reading TIFF data.");
 }
 
 

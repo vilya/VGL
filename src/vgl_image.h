@@ -45,6 +45,7 @@ private:
   void loadPPM(FILE* file) throw(ImageException);
   void loadJPG(FILE* file) throw(ImageException);
   void loadPNG(FILE* file) throw(ImageException);
+  void loadTIFF(const char* filename) throw(ImageException);
 
   void tgaLoadUncompressed(FILE* file, unsigned int numPixels,
       unsigned int bytesPerPixel, unsigned char *pixels)

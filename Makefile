@@ -37,7 +37,7 @@ LDFLAGS_EXE := -framework OpenGL -framework GLUT \
 	-Wl,-syslibroot,/Developer/SDKs/MacOSX10.6.sdk -arch x86_64 \
 	-Wl,-rpath,@loader_path/
 INCLUDE   := -I/opt/local/include -I$(THIRDPARTY_SRC)
-LIBS      := -L/opt/local/lib -ljpeg -lpng
+LIBS      := -L/opt/local/lib -ljpeg -lpng -ltiff
 endif
 
 LIBVGL_OBJS :=  \
