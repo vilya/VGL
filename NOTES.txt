@@ -1,0 +1,18 @@
+Mouse handling
+--------------
+Arcballs pretend there is an invisible sphere around an object and when you
+drag, the point on the sphere that was under the mouse at the beginning should
+remain under the mouse at the end.
+
+There are some good resources on the web if you search for "virtual trackball"
+or something like that.
+
+You can apply the same principle moving the camera left/right/up/down: pretend
+there's a plane in front of the camera (perpendicular to the view ray), find the
+point that is initially under the mouse then translate to ensure that the point
+is still under the mouse when you release.
+
+This will mean unprojecting the screen coordinates from the previous and current
+mouse positions and subtracting the previous from the current to find the
+translation vector. Add that vector to the camera position & that should be it,
+I think?

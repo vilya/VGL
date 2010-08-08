@@ -34,3 +34,24 @@ Ideas for things to include in the library:
 - Conditional compilation of parts which depend on external libraries.
 - Build scripts should check which libraries are installed and build
   accordingly.
+
+- Plugin architecture for file format support.
+  - Plugins are dynamic libraries.
+  - Have a standard search path for them.
+  - Loaded lazily at runtime.
+  - Plugins advertise the file extensions they can load.
+  - The first plugin found in the search path for a particular format is the
+    one which gets used.
+  - Different interfaces for image plugins, geometry plugins, etc.
+  - Users can add support for extra file formats by just dropping a new dynamic
+    library supporting the appropriate interface into a directory in the plugin
+    search path and restarting the program.
+  - All plugins have these methods:
+    * int pluginCategory();
+    * const char* pluginName();
+    * const char** pluginFormats();
+  - Image format plugins also have:
+    * RawImage* loadImage(const char* filename);
+  - Geometry format plugins also have:
+    * void loadModel(ParserCallbacks* callbacks, const char* filename);
+  ...or something like that.
