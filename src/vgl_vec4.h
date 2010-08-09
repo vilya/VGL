@@ -1,7 +1,10 @@
 #ifndef vgl_vec4_h
 #define vgl_vec4_h
 
+#include "vgl_utils.h"
+
 #include <algorithm>
+#include <cmath>
 
 namespace vgl {
 
@@ -34,6 +37,7 @@ struct Vec4 {
 };
 
 typedef Vec4<float> Vec4f;
+typedef Vec4<double> Vec4d;
 typedef Vec4<int> Vec4i;
 
 
@@ -205,19 +209,67 @@ Vec4<Num> pairwiseMax(const Vec4<Num>& a, const Vec4<Num>& b)
 }
 
 
-//
-// Vec4f FUNCTIONS
-//
+template <typename Num>
+Num lengthSqr(const Vec4<Num>& a)
+{
+  return dot(a, a);
+}
 
-float lengthSqr(const Vec4f& a);
-float length(const Vec4f& a);
 
-Vec4f pow(const Vec4f& a, float k);
-Vec4f norm(const Vec4f& a);
-Vec4f clamp(const Vec4f& a);
-Vec4f rotateX(const Vec4f& a, float radians);
-Vec4f rotateY(const Vec4f& a, float radians);
-Vec4f rotateZ(const Vec4f& a, float radians);
+template <typename Num>
+Num length(const Vec4<Num>& a)
+{
+  return std::sqrt(lengthSqr(a));
+}
+
+
+template <typename Num>
+Vec4<Num> pow(const Vec4<Num>& a, Num k)
+{
+  return Vec4<Num>(std::pow(a.x, k), std::pow(a.y, k), std::pow(a.z, k), std::pow(a.w, k));
+}
+
+
+template <typename Num>
+Vec4<Num> norm(const Vec4<Num>& a)
+{
+  return a / length(a);
+}
+
+
+template <typename Num>
+Vec4<Num> clamp(const Vec4<Num>& a)
+{
+  return Vec4<Num>(clamp(a.x), clamp(a.y), clamp(a.z), clamp(a.w));
+}
+
+
+template <typename Num>
+Vec4<Num> rotateX(const Vec4<Num>& a, Num radians)
+{
+  Num c = std::cos(radians);
+  Num s = std::sin(radians);
+  return Vec4<Num>(a.x, c * a.y - s * a.z, s * a.y + c * a.z, a.w);
+}
+
+
+template <typename Num>
+Vec4<Num> rotateY(const Vec4<Num>& a, Num radians)
+{
+  Num c = std::cos(radians);
+  Num s = std::sin(radians);
+  return Vec4<Num>(c * a.x + s * a.z, a.y, -s * a.x + c * a.z, a.w);
+}
+
+
+template <typename Num>
+Vec4<Num> rotateZ(const Vec4<Num>& a, Num radians)
+{
+  Num c = std::cos(radians);
+  Num s = std::sin(radians);
+  return Vec4<Num>(c * a.x - s * a.y, s * a.x + c * a.y, a.z, a.w);
+}
+
 
 } // namespace vgl
 
