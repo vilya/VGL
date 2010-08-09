@@ -1,7 +1,10 @@
 #ifndef vgl_vec3_h
 #define vgl_vec3_h
 
+#include "vgl_utils.h"
+
 #include <algorithm>
+#include <cmath>
 
 namespace vgl {
 
@@ -27,6 +30,7 @@ struct Vec3 {
 };
 
 typedef Vec3<float> Vec3f;
+typedef Vec3<double> Vec3d;
 typedef Vec3<int> Vec3i;
 
 
@@ -192,19 +196,67 @@ Vec3<Num> pairwiseMax(const Vec3<Num>& a, const Vec3<Num>& b)
 }
 
 
-//
-// Float3 FUNCTIONS
-//
+template <typename Num>
+Num lengthSqr(const Vec3<Num>& a)
+{
+  return dot(a, a);
+}
 
-float lengthSqr(const Vec3f& a);
-float length(const Vec3f& a);
 
-Vec3f pow(const Vec3f& a, float k);
-Vec3f norm(const Vec3f& a);
-Vec3f clamp(const Vec3f& a);
-Vec3f rotateX(const Vec3f& a, float radians);
-Vec3f rotateY(const Vec3f& a, float radians);
-Vec3f rotateZ(const Vec3f& a, float radians);
+template <typename Num>
+Num length(const Vec3<Num>& a)
+{
+  return std::sqrt(lengthSqr(a));
+}
+
+
+template <typename Num>
+Vec3<Num> pow(const Vec3<Num>& a, Num k)
+{
+  return Vec3<Num>(std::pow(a.x, k), std::pow(a.y, k), std::pow(a.z, k));
+}
+
+
+template <typename Num>
+Vec3<Num> norm(const Vec3<Num>& a)
+{
+  return a / length(a);
+}
+
+
+template <typename Num>
+Vec3<Num> clamp(const Vec3<Num>& a)
+{
+  return Vec3<Num>(clamp(a.x), clamp(a.y), clamp(a.z));
+}
+
+
+template <typename Num>
+Vec3<Num> rotateX(const Vec3<Num>& a, Num radians)
+{
+  Num c = std::cos(radians);
+  Num s = std::sin(radians);
+  return Vec3<Num>(a.x, c * a.y - s * a.z, s * a.y + c * a.z);
+}
+
+
+template <typename Num>
+Vec3<Num> rotateY(const Vec3<Num>& a, Num radians)
+{
+  Num c = std::cos(radians);
+  Num s = std::sin(radians);
+  return Vec3<Num>(c * a.x + s * a.z, a.y, -s * a.x + c * a.z);
+}
+
+
+template <typename Num>
+Vec3<Num> rotateZ(const Vec3<Num>& a, Num radians)
+{
+  Num c = std::cos(radians);
+  Num s = std::sin(radians);
+  return Vec3<Num>(c * a.x - s * a.y, s * a.x + c * a.y, a.z);
+}
+
 
 } // namespace vgl
 
