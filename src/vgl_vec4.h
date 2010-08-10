@@ -24,7 +24,7 @@ struct Vec4 {
   union {
     struct { Num x, y, z, w; };
     struct { Num r, g, b, a; };
-    Num data[3];
+    Num data[4];
   };
 
   Vec4() : x(0), y(0), z(0), w(1) {}

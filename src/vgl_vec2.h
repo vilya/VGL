@@ -17,7 +17,7 @@ struct Vec2 {
   union {
     struct { Num x, y; };
     struct { Num u, v; };
-    Num data[3];
+    Num data[2];
   };
 
   Vec2() : x(0), y(0) {}
