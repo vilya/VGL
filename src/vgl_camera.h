@@ -22,7 +22,7 @@ public:
   virtual void setupProjectionMatrix();
   virtual void setupModelViewMatrix();
 
-private:
+protected:
   Vec3f _pos, _target, _up;
   float _left, _right, _bottom, _top;
   float _aperture;
