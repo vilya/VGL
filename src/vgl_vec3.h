@@ -67,14 +67,14 @@ Vec3<Num> operator * (const Vec3<Num>& a, const Vec3<Num>& b)
 
 
 template <typename Num>
-Vec3<Num> operator * (const Vec3<Num>& a, float k)
+Vec3<Num> operator * (const Vec3<Num>& a, Num k)
 {
   return Vec3<Num>(a.x * k, a.y * k, a.z * k);
 }
 
 
 template <typename Num>
-Vec3<Num> operator * (float k, const Vec3<Num>& a)
+Vec3<Num> operator * (Num k, const Vec3<Num>& a)
 {
   return Vec3<Num>(a.x * k, a.y * k, a.z * k);
 }
@@ -88,7 +88,7 @@ Vec3<Num> operator / (const Vec3<Num>& a, const Vec3<Num>& b)
 
 
 template <typename Num>
-Vec3<Num> operator / (const Vec3<Num>& a, float k)
+Vec3<Num> operator / (const Vec3<Num>& a, Num k)
 {
   return Vec3<Num>(a.x / k, a.y / k, a.z / k);
 }
@@ -162,7 +162,7 @@ Num sum(const Vec3<Num>& a)
 
 
 template <typename Num>
-float dot(const Vec3<Num>& a, const Vec3<Num>& b)
+Num dot(const Vec3<Num>& a, const Vec3<Num>& b)
 {
   return sum(a * b);
 }

@@ -74,14 +74,14 @@ Vec4<Num> operator * (const Vec4<Num>& a, const Vec4<Num>& b)
 
 
 template <typename Num>
-Vec4<Num> operator * (const Vec4<Num>& a, float k)
+Vec4<Num> operator * (const Vec4<Num>& a, Num k)
 {
   return Vec4<Num>(a.x * k, a.y * k, a.z * k, a.w * k);
 }
 
 
 template <typename Num>
-Vec4<Num> operator * (float k, const Vec4<Num>& a)
+Vec4<Num> operator * (Num k, const Vec4<Num>& a)
 {
   return Vec4<Num>(a.x * k, a.y * k, a.z * k, a.w * k);
 }
@@ -95,7 +95,7 @@ Vec4<Num> operator / (const Vec4<Num>& a, const Vec4<Num>& b)
 
 
 template <typename Num>
-Vec4<Num> operator / (const Vec4<Num>& a, float k)
+Vec4<Num> operator / (const Vec4<Num>& a, Num k)
 {
   return Vec4<Num>(a.x / k, a.y / k, a.z / k, a.w / k);
 }
@@ -175,7 +175,7 @@ Num sum(const Vec4<Num>& a)
 
 
 template <typename Num>
-float dot(const Vec4<Num>& a, const Vec4<Num>& b)
+Num dot(const Vec4<Num>& a, const Vec4<Num>& b)
 {
   return a.x * b.x + a.y * b.y + a.z * b.z;
 }
