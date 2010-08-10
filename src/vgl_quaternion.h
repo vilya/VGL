@@ -65,7 +65,10 @@ Quaternion<Num> operator - (const Quaternion<Num>& a, const Quaternion<Num>& b)
 template <typename Num>
 Quaternion<Num> operator * (const Quaternion<Num>& a, const Quaternion<Num>& b)
 {
-  // TODO
+  Vec3<Num> av(a.x, a.y, a.z);
+  Vec3<Num> bv(b.x, b.y, b.z);
+  Vec3<Num> rv = a.w * bv + b.w * av + cross(av, bv);
+  return Quaternion<Num>(rv.x, rv.y, rv.z, a.w * b.w - dot(av, bv));
 }
 
 
@@ -142,14 +145,14 @@ const Quaternion<Num>& operator /= (Quaternion<Num>& a, Num k)
 template <typename Num>
 Num lengthSqr(const Quaternion<Num>& a)
 {
-  // TODO
+  return sqr(a.x) + sqr(a.y) + sqr(a.z) + sqr(a.w);
 }
 
 
 template <typename Num>
 Num length(const Quaternion<Num>& a)
 {
-  // TODO
+  std::sqrt(lengthSqr(a));
 }
 
 
@@ -164,6 +167,46 @@ template <typename Num>
 Quaternion<Num> norm(const Quaternion<Num>& a)
 {
   // TODO
+}
+
+
+template <typename Num>
+Quaternion<Num> conjugate(const Quaternion<Num>& a)
+{
+  return Quaternion<Num>(-a.x, -a.y, -a.z, a.w);
+}
+
+
+template <typename Num>
+Quaternion<Num> inverse(const Quaternion<Num>& a)
+{
+  const Quaternion<Num> c = conjugate(a);
+  return c / (a * c);
+}
+
+
+// Rotate vector v by quaternion q.
+template <typename Num>
+Vec3<Num> rotate(const Quaternion<Num>& q, const Vec3<Num>& v)
+{
+  // FIXME: need to define multiplication operators for quaternion * vec3  and vec3 * quaternion
+  return q * v * inverse(q);
+}
+
+
+// Rotate vector v by quaternion q.
+template <typename Num>
+Vec4<Num> rotate(const Quaternion<Num>& q, const Vec4<Num>& v)
+{
+  // FIXME: need to define multiplication operators for quaternion * vec3  and vec3 * quaternion
+  return q * v * inverse(q);
+}
+
+
+template <typename Num>
+Quaternion<Num> slerp(const Quaternion<Num>& a, const Quaternion<Num>& b, Num k)
+{
+  return k * a + (1 - k) * b;
 }
 
 

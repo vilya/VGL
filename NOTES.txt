@@ -16,3 +16,7 @@ This will mean unprojecting the screen coordinates from the previous and current
 mouse positions and subtracting the previous from the current to find the
 translation vector. Add that vector to the camera position & that should be it,
 I think?
+
+A decent (and mercifully brief!) explanation of quaternions is at:
+http://www.genesis3d.com/~kdtop/Quaternions-UsingToRepresentRotation.htm
+
