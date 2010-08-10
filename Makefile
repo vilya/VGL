@@ -47,6 +47,7 @@ LIBVGL_OBJS :=  \
                 $(OBJ)/vgl_parser.o \
                 $(OBJ)/vgl_plane3.o \
                 $(OBJ)/vgl_plyparser.o \
+                $(OBJ)/vgl_quaternion.o \
                 $(OBJ)/vgl_ray3.o \
                 $(OBJ)/vgl_utils.o \
                 $(OBJ)/vgl_vec2.o \
@@ -63,6 +64,7 @@ LIBVGL_INCS :=  \
                 $(DIST)/include/vgl_parser.h \
                 $(DIST)/include/vgl_plane3.h \
                 $(DIST)/include/vgl_plyparser.h \
+                $(DIST)/include/vgl_quaternion.h \
                 $(DIST)/include/vgl_ray3.h \
                 $(DIST)/include/vgl_renderer.h \
                 $(DIST)/include/vgl_utils.h \
