@@ -24,7 +24,7 @@ CXXFLAGS  := -Wall -m64 -fPIC -shared
 LDFLAGS   := -m64 -fopenmp -Wl,--rpath,\$$ORIGIN -fPIC -shared
 LDFLAGS_EXE := -m64 -fopenmp -Wl,--rpath,\$$ORIGIN
 INCLUDE   := -I$(THIRDPARTY_SRC)
-LIBS      := -lglut -lpthread -ljpeg -lpng
+LIBS      := -lglut -lpthread -ljpeg -lpng -ltiff
 else
 DYLIB_PRE := lib
 DYLIB_EXT := .dylib

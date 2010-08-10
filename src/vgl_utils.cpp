@@ -1,6 +1,7 @@
 #include "vgl_utils.h"
 
 #include <cstdio>
+#include <cstring>
 
 namespace vgl {
 
