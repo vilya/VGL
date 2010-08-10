@@ -31,6 +31,13 @@ typedef Ray3<double> Ray3d;
 //
 
 template <typename Num>
+Vec3<Num> evaluate(const Ray3<Num>& r, Num t)
+{
+  return r.o + t * r.d;
+}
+
+
+template <typename Num>
 Ray3<Num> reflect(const Ray3<Num>& r, const Vec3<Num>& hitpos, const Vec3<Num>& normal)
 {
   return Ray3<Num>(hitpos, r.d - 2 * dot(r.d, normal) * normal);
