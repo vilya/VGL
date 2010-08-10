@@ -54,6 +54,35 @@ Ray3<Num> refract(const Ray3<Num>& r, const Vec3<Num>& hitpos, const Vec3<Num>& 
 }
 
 
+template <typename Num>
+bool intersectRaySphere(const Ray3<Num>& ray, const Vec3<Num>& sphereCenter, Num sphereRadius, Vec3<Num>& hitPoint)
+{
+  const Num kMinT = 1e-4;
+  const Num kMaxT = 1e10;
+
+	Vec3<Num> m(ray.o - sphereCenter);
+
+	Num a = dot(ray.d, ray.d);
+	Num b = 2 * dot(ray.d, m);
+	Num c = dot(m, m) - sphereRadius * sphereRadius;
+
+	Num discriminant = b * b - 4 * a * c;
+	if (discriminant > 0) {
+		float sqrt_discriminant = std::sqrt(discriminant);
+		float t = (-b - sqrt_discriminant) / (2 * a);
+		if (t < kMinT)
+			t = (-b + sqrt_discriminant) / (2 * a);
+		if (t < kMinT || t > kMaxT)
+			return false;
+
+    hitPoint = evaluate(ray, t);
+		return true;
+	}
+
+	return false;
+}
+
+
 } // namespace vgl
 
 #endif // vgl_ray_h

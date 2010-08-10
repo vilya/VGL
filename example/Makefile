@@ -31,13 +31,14 @@ LIBS      := -L$(DIST)/lib -lvgl
 endif
 
 EXAMPLE_APPS  := \
+	$(BIN)/arcball \
 	$(BIN)/basic \
 	$(BIN)/example \
 	$(BIN)/imageview \
 	$(BIN)/styled
 
 
-.PRECIOUS: $(OBJ)/basic.o $(OBJ)/example.o
+.PRECIOUS: $(OBJ)/arcball.o $(OBJ)/basic.o $(OBJ)/example.o $(OBJ)/imageview.o $(OBJ)/styled.o
 
 
 .PHONY: debug

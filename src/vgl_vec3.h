@@ -258,6 +258,34 @@ Vec3<Num> rotateZ(const Vec3<Num>& a, Num radians)
 }
 
 
+template <typename Num>
+Vec3<Num> rotate(const Vec3<Num>& a, const Vec3<Num>& axis, Num radians)
+{
+  Num c = std::cos(radians);
+  Num s = std::cos(radians);
+
+  Vec3<Num> n = norm(axis);
+  Num x = n.x;
+  Num y = n.y;
+  Num z = n.z;
+
+  Vec3<Num> out(
+    ( (sqr(x) * (1 - c) + c) * a.x +
+      (x * y * (1 - c) - z * s) * a.y + 
+      (x * z * (1 - c) + y * s) * a.z ),
+
+    ( (y * x * (1 - c) + z * s) * a.x +
+      (sqr(y) * (1 - c) + c) * a.y +
+      (y * z * (1 - c) - x * s) * a.z ),
+
+    ( (x * z * (1 - c) - y * s) * a.x +
+      (y * z * (1 - c) + x * s) * a.y +
+      (sqr(z) * (1 - c) + c) * a.z )
+  );
+  return out;
+}
+
+
 } // namespace vgl
 
 #endif // vgl_vec3_h
