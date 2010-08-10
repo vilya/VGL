@@ -27,7 +27,9 @@ struct Matrix3 {
   Num* operator [] (unsigned int index) { return rows[index]; }
 };
 
+
 typedef Matrix3<float> Matrix3f;
+typedef Matrix3<double> Matrix3d;
 
 
 //
