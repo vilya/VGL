@@ -69,10 +69,8 @@ public:
     if ( intersectRaySphere(prevRay, _target, sphereRadius, prevHit) &&
          intersectRaySphere(currRay, _target, sphereRadius, currHit) )
     {
-      vgl::Vec3f axisOfRotation = cross(prevHit - _target, currHit - _target);
-      float angleOfRotation = std::acos(dot(currHit, prevHit));
-
-      _pos = rotate(_pos - _target, axisOfRotation, angleOfRotation) + _target;
+      vgl::Quaternionf q(cross(prevHit - _target, currHit - _target), std::acos(dot(currHit, prevHit)));
+      _pos = rotate(q, _pos - _target) + _target;
     }
   }
 };
