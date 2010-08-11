@@ -57,19 +57,24 @@ public:
 
   void arcballRoll(int prevX, int prevY, int currX, int currY)
   {
+    if (prevX == currX && prevY == currY)
+      return;
+
     vgl::Vec3f prev = unproject(prevX, prevY);
     vgl::Vec3f curr = unproject(currX, currY);
 
     float sphereRadius = std::tan(_aperture / 2.0f) * length(_target - _pos);
 
     vgl::Ray3f prevRay(_pos, prev - _pos);
-    vgl::Ray3f currRay(_pos, prev - _pos);
+    vgl::Ray3f currRay(_pos, curr - _pos);
 
     vgl::Vec3f prevHit, currHit;
     if ( intersectRaySphere(prevRay, _target, sphereRadius, prevHit) &&
          intersectRaySphere(currRay, _target, sphereRadius, currHit) )
     {
-      vgl::Quaternionf q(cross(prevHit - _target, currHit - _target), std::acos(dot(currHit, prevHit)));
+      float c = dot(norm(currHit), norm(prevHit));
+      vgl::Quaternionf q = vgl::rotation(
+          cross(prevHit - _target, currHit - _target), std::acos(c));
       _pos = rotate(q, _pos - _target) + _target;
     }
   }
@@ -85,13 +90,10 @@ public:
   {}
   
   virtual void actionHandler(int action) {
-    if (action != ACTION_ROLL_CAMERA)
+    if (action != ACTION_ROLL_CAMERA) {
       vgl::Viewer::actionHandler(action);
-    else
-      arcballRoll();
-  }
-
-  void arcballRoll() {
+      return;
+    }
     ArcballCamera* cam = dynamic_cast<ArcballCamera*>(_camera);
     if (cam == NULL)
       return;

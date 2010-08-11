@@ -31,6 +31,13 @@ typedef Quaternion<double> Quaterniond;
 //
 
 template <typename Num>
+Quaternion<Num> operator - (const Quaternion<Num>& a)
+{
+  return Quaternion<Num>(-a.v, -a.s);
+}
+
+
+template <typename Num>
 Quaternion<Num> operator + (const Quaternion<Num>& a, const Quaternion<Num>& b)
 {
   return Quaternion<Num>(a.v + b.v, a.s + b.s);
@@ -128,7 +135,18 @@ Quaternion<Num> conjugate(const Quaternion<Num>& a)
 template <typename Num>
 Quaternion<Num> inverse(const Quaternion<Num>& a)
 {
-  return conjugate(a) / length(a);
+  return conjugate(a) / lengthSqr(a);
+}
+
+
+// Construct a quaternion to represent a rotation around the given axis of the
+// specified angle in radians.
+template <typename Num>
+Quaternion<Num> rotation(const Vec3<Num>& axis, Num angleInRadians)
+{
+  float c = std::cos(angleInRadians / 2);
+  float s = std::sin(angleInRadians / 2);
+  return Quaternion<Num>(s * axis, c);
 }
 
 
@@ -138,16 +156,6 @@ Vec3<Num> rotate(const Quaternion<Num>& q, const Vec3<Num>& v)
 {
   Quaternion<Num> result = q * Quaternion<Num>(v, 0) * conjugate(q);
   return result.v;
-}
-
-
-// Rotate vector v by quaternion q.
-template <typename Num>
-Vec4<Num> rotate(const Quaternion<Num>& q, const Vec4<Num>& v)
-{
-  Quaternion<Num> vv(v);
-  Quaternion<Num> result = q * Quaternion<Num>(v.x, v.y, v.z, 0) * conjugate(q);
-  return result.v4;
 }
 
 

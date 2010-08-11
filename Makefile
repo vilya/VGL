@@ -14,12 +14,13 @@ BIN := bin
 THIRDPARTY_SRC := thirdparty
 THIRDPARTY_OBJ := build/thirdparty
 EXAMPLE_SRC := example
-EXAMPLE_OBJ := build/example
+TEST_SRC := test
 
 ifeq ($(OSTYPE), linux-gnu)
 DYLIB_PRE := lib
 DYLIB_EXT := .so
-LIBVGL_BIN  := $(DIST)/lib/$(DYLIB_PRE)vgl$(DYLIB_EXT)
+LIBVGL    := $(DYLIB_PRE)vgl$(DYLIB_EXT)
+LIBVGL_BIN  := $(DIST)/lib/$(LIBVGL)
 CXXFLAGS  := -Wall -m64 -fPIC -shared
 LDFLAGS   := -m64 -fopenmp -Wl,--rpath,\$$ORIGIN -fPIC -shared
 LDFLAGS_EXE := -m64 -fopenmp -Wl,--rpath,\$$ORIGIN
@@ -28,11 +29,12 @@ LIBS      := -lglut -lpthread -ljpeg -lpng -ltiff
 else
 DYLIB_PRE := lib
 DYLIB_EXT := .dylib
-LIBVGL_BIN  := $(DIST)/lib/$(DYLIB_PRE)vgl$(DYLIB_EXT)
+LIBVGL    := $(DYLIB_PRE)vgl$(DYLIB_EXT)
+LIBVGL_BIN  := $(DIST)/lib/$(LIBVGL)
 CXXFLAGS  := -Wall -isysroot /Developer/SDKs/MacOSX10.6.sdk -arch x86_64 -shared
 LDFLAGS   := -framework OpenGL -framework GLUT \
 	-Wl,-syslibroot,/Developer/SDKs/MacOSX10.6.sdk -arch x86_64 -shared \
-	-install_name @rpath/$(DYLIB_PRE)vgl$(DYLIB_EXT)
+	-install_name @rpath/$(LIBVGL)
 LDFLAGS_EXE := -framework OpenGL -framework GLUT \
 	-Wl,-syslibroot,/Developer/SDKs/MacOSX10.6.sdk -arch x86_64 \
 	-Wl,-rpath,@loader_path/
@@ -72,10 +74,8 @@ LIBVGL_INCS :=  \
                 $(DIST)/include/vgl_vec3.h \
                 $(DIST)/include/vgl_vec4.h \
                 $(DIST)/include/vgl_viewer.h
-THIRDPARTY_OBJS := $(THIRDPARTY_OBJ)/ply.o
 
-EXAMPLE_BIN   := $(BIN)/example
-EXAMPLE_OBJS  := $(EXAMPLE_OBJ)/example.o
+THIRDPARTY_OBJS := $(THIRDPARTY_OBJ)/ply.o
 
 
 .PRECIOUS: $(LIBVGL_OBJS) $(THIRDPARTY_OBJS)
@@ -92,7 +92,7 @@ release:
 
 
 .PHONY: all
-all: build_libvgl build_example
+all: build_libvgl build_example build_test
 
 
 .PHONY: dirs
@@ -105,13 +105,21 @@ dirs:
 
 
 .PHONY: build_example
-build_example: dirs build_libvgl
+build_example: dirs build_libvgl $(BIN)/$(LIBVGL)
 	$(MAKE) -C $(EXAMPLE_SRC) CXXFLAGS="$(CXXFLAGS)" all
-	cp $(LIBVGL_BIN) $(BIN)
+
+
+.PHONY: build_test
+build_test: dirs build_libvgl $(BIN)/$(LIBVGL)
+	$(MAKE) -C $(TEST_SRC) CXXFLAGS="$(CXXFLAGS)" all
 
 
 .PHONY: build_libvgl
 build_libvgl: dirs $(LIBVGL_BIN) $(LIBVGL_INCS)
+
+
+$(BIN)/$(LIBVGL): $(LIBVGL_BIN)
+	cp $^ $@
 
 
 $(LIBVGL_BIN): $(LIBVGL_OBJS) $(THIRDPARTY_OBJS)
