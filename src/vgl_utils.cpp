@@ -1,5 +1,6 @@
 #include "vgl_utils.h"
 
+#include <cmath>
 #include <cstdio>
 #include <cstring>
 
@@ -8,6 +9,18 @@ namespace vgl {
 //
 // HELPER FUNCTIONS
 //
+
+bool equal(float a, float b, float epsilon)
+{
+  return std::abs(a - b) < epsilon;
+}
+
+
+bool equal(double a, double b, double epsilon)
+{
+  return std::abs(a - b) < epsilon;
+}
+
 
 const char* resolveFilename(const char* baseDir, const char* filename)
 {

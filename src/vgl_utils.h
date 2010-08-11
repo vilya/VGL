@@ -49,6 +49,9 @@ enum StringAlignment {
 // HELPER FUNCTIONS
 //
 
+bool equal(float a, float b, float epsilon=1e-5f);
+bool equal(double a, double b, double epsilon=1e-10);
+
 // Resolve a filename relative to a base directory. Relative filenames get the
 // base directory prepended; absolute filenames are unaffected.
 //
