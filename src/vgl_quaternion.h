@@ -146,7 +146,7 @@ Quaternion<Num> rotation(const Vec3<Num>& axis, Num angleInRadians)
 {
   float c = std::cos(angleInRadians / 2);
   float s = std::sin(angleInRadians / 2);
-  return Quaternion<Num>(s * axis, c);
+  return Quaternion<Num>(s * norm(axis), c);
 }
 
 

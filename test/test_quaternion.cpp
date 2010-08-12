@@ -127,21 +127,27 @@ protected:
 
 
   void testRotate() {
-    vgl::Quaternionf xAxis = vgl::rotation(vgl::Vec3f(1, 0, 0), (float)M_PI_2); // a rotation of 90 degrees around the x axis
-    vgl::Quaternionf yAxis = vgl::rotation(vgl::Vec3f(0, 1, 0), (float)M_PI_2); // a rotation of 90 degrees around the y axis
-    vgl::Quaternionf zAxis = vgl::rotation(vgl::Vec3f(0, 0, 1), (float)M_PI_2); // a rotation of 90 degrees around the z axis
+    // Using a non-unit length vector for the axis to make sure the length doesn't affect the results.
+    vgl::Quaternionf xAxis = vgl::rotation(vgl::Vec3f(2, 0, 0), (float)M_PI_2); // a rotation of 90 degrees around the x axis
+    vgl::Quaternionf yAxis = vgl::rotation(vgl::Vec3f(0, 3, 0), (float)M_PI_2); // a rotation of 90 degrees around the y axis
+    vgl::Quaternionf zAxis = vgl::rotation(vgl::Vec3f(0, 0, 4), (float)M_PI_2); // a rotation of 90 degrees around the z axis
 
     vgl::Vec3f xPoint(1, 0, 0);
     vgl::Vec3f yPoint(0, 1, 0);
     vgl::Vec3f zPoint(0, 0, 1);
 
-    vgl::Vec3f xRot = rotate(xAxis, xPoint);
-    vgl::Vec3f yRot = rotate(yAxis, yPoint);
-    vgl::Vec3f zRot = rotate(zAxis, zPoint);
+    CPPUNIT_ASSERT( rotate(xAxis, xPoint) == xPoint );
+    CPPUNIT_ASSERT( rotate(yAxis, yPoint) == yPoint );
+    CPPUNIT_ASSERT( rotate(zAxis, zPoint) == zPoint );
 
-    CPPUNIT_ASSERT( xRot == xPoint );
-    CPPUNIT_ASSERT( yRot == yPoint );
-    CPPUNIT_ASSERT( zRot == zPoint );
+    CPPUNIT_ASSERT( rotate(yAxis, xPoint) == -zPoint );
+    CPPUNIT_ASSERT( rotate(zAxis, xPoint) == yPoint );
+
+    CPPUNIT_ASSERT( rotate(xAxis, yPoint) == zPoint );
+    CPPUNIT_ASSERT( rotate(zAxis, yPoint) == -xPoint );
+
+    CPPUNIT_ASSERT( rotate(xAxis, zPoint) == -yPoint );
+    CPPUNIT_ASSERT( rotate(yAxis, zPoint) == xPoint );
   }
 };
 
