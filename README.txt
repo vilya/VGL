@@ -44,8 +44,13 @@ Foundation's website at http://www.gnu.org/licenses/gpl.html
 Pre-requisites
 ==============
 - Linux or Mac OS X (tested on Ubuntu 9.10 and OS X 10.6.4)
-- Glut, libpng and libjpeg installed on your system.
 - A graphics card which supports OpenGL 2.1 or higher.
+- The following libraries installed on your system:
+  - GLUT
+  - libpng
+  - libjpeg6b
+  - libtiff
+  - cppunit   (for the unit tests)
 
 
 Getting the code
@@ -63,14 +68,14 @@ Compiling it
 paths if you've got your libraries installed in custom locations.
 
 After a successful make, the library and headers will be inside the dist
-directory; the example program (and a second copy of the library) will be inside
-the bin directory.
+directory; the example programs (and a second copy of the library) will be
+inside the bin directory along with the test programs.
 
 
 Running the examples
 ====================
 If you're in the project root folder, you should be able to run the example
-program by typing
+programs by typing (for example):
 
   ./bin/example
 
