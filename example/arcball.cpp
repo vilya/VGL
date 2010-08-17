@@ -36,7 +36,7 @@ public:
   {}
 
 
-  vgl::Vec3f unproject(double x, double y, double z = 0)
+  vgl::Vec3f unproject(double x, double y, double z = 0.5)
   {
     vgl::Matrix4d projectionMatrix;
     vgl::Matrix4d modelViewMatrix;
@@ -63,23 +63,44 @@ public:
     vgl::Vec3f prev = unproject(prevX, prevY);
     vgl::Vec3f curr = unproject(currX, currY);
 
-    //float sphereRadius = std::tan(_aperture / 2.0f) * length(_target - _pos);
-    float sphereRadius = 1;
+    const float kSphereRadius = 2;
+    const float kSpeed = 2;
 
     vgl::Ray3f prevRay(_pos, prev - _pos);
     vgl::Ray3f currRay(_pos, curr - _pos);
 
     vgl::Vec3f prevHit, currHit;
-    if ( intersectRaySphere(prevRay, _target, sphereRadius, prevHit) &&
-         intersectRaySphere(currRay, _target, sphereRadius, currHit) )
-    {
+    bool didPrevHit = intersectRaySphere(prevRay, _target, kSphereRadius, prevHit);
+    bool didCurrHit = intersectRaySphere(currRay, _target, kSphereRadius, currHit);
+    if ( didPrevHit && didCurrHit ) {
       float c = dot(norm(currHit), norm(prevHit));
       // Need to use the inverse rotation, since we're rotating the camera
       // rather than the object.
       vgl::Quaternionf q = inverse(vgl::rotation(
-          cross(prevHit - _target, currHit - _target), std::acos(c)));
+          cross(prevHit - _target, currHit - _target), kSpeed * std::acos(c)));
       _pos = rotate(q, _pos - _target) + _target;
     }
+  }
+
+
+  void arcballMove(int prevX, int prevY, int currX, int currY)
+  {
+    if (prevX == currX && prevY == currY)
+      return;
+
+    vgl::Vec3f curr = unproject(currX, currY, 0.1);
+    vgl::Vec3f prev = unproject(prevX, prevY, 0.1);
+
+    // WTF?!?!? This gives a zero vector:
+    //vgl::Vec3f delta = curr - prev;
+
+    // ...but this doesn't:
+    vgl::Vec3f delta = prev - curr;
+
+    // WTF is going on?
+
+    _pos += delta;
+    _target += delta;
   }
 };
 
@@ -93,16 +114,24 @@ public:
   {}
   
   virtual void actionHandler(int action) {
-    if (action != ACTION_ROLL_CAMERA) {
+    ArcballCamera* cam = dynamic_cast<ArcballCamera*>(_camera);
+    if (cam == NULL) {
       vgl::Viewer::actionHandler(action);
       return;
     }
-    ArcballCamera* cam = dynamic_cast<ArcballCamera*>(_camera);
-    if (cam == NULL)
-      return;
 
-    cam->arcballRoll(_prevMouseX, (_height - 1) - _prevMouseY, _mouseX, (_height - 1) - _mouseY);
-    glutPostRedisplay();
+    switch (action) {
+      case ACTION_ROLL_CAMERA:
+        cam->arcballRoll(_prevMouseX, (_height - 1) - _prevMouseY, _mouseX, (_height - 1) - _mouseY);
+        glutPostRedisplay();
+        break;
+      case ACTION_MOVE_CAMERA:
+        cam->arcballMove(_prevMouseX, (_height - 1) - _prevMouseY, _mouseX, (_height - 1) - _mouseY);
+        glutPostRedisplay();
+      default:
+        vgl::Viewer::actionHandler(action);
+        break;
+    }
   }
 };
 
