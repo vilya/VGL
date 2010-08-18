@@ -45,6 +45,7 @@ endif
 LIBVGL_OBJS :=  \
                 $(OBJ)/vgl_basecamera.o \
                 $(OBJ)/vgl_camera.o \
+                $(OBJ)/vgl_funcs.o \
                 $(OBJ)/vgl_image.o \
                 $(OBJ)/vgl_objparser.o \
                 $(OBJ)/vgl_orthocamera.o \
@@ -62,6 +63,7 @@ LIBVGL_INCS :=  \
                 $(DIST)/include/vgl.h \
                 $(DIST)/include/vgl_basecamera.h \
                 $(DIST)/include/vgl_camera.h \
+                $(DIST)/include/vgl_funcs.h \
                 $(DIST)/include/vgl_image.h \
                 $(DIST)/include/vgl_matrix3.h \
                 $(DIST)/include/vgl_matrix4.h \

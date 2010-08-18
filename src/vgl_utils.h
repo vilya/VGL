@@ -1,6 +1,13 @@
 #ifndef vgl_utils_h
 #define vgl_utils_h
 
+// IMPORTANT: this header is not allowed to include any of the other VGL header
+// files. Some of them depend on this and more may in future and, frankly,
+// no-one likes circular dependencies. They're not big and they're not clever.
+//
+// If you're looking for helper functions that do clever things with the VGL
+// classes, check out vgl_funcs.h instead. Thank you, that is all.
+
 #include <algorithm>
 
 #define GL_GLEXT_PROTOTYPES 1

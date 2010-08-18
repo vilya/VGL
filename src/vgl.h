@@ -33,8 +33,10 @@
 #include "vgl_viewer.h"
 
 // Miscellaneous
+#include "vgl_funcs.h"
 #include "vgl_utils.h"
 
+// OpenGL
 #define GL_GLEXT_PROTOTYPES 1
 #ifdef linux
 #include <GL/gl.h>
