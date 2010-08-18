@@ -132,12 +132,10 @@ void Viewer::render()
   // Set up the camera.
   if (_camera != NULL) {
     glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
     glLoadIdentity();
     _camera->setupProjectionMatrix();
 
     glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
     glLoadIdentity();
     _camera->setupModelViewMatrix();
   }
@@ -148,14 +146,6 @@ void Viewer::render()
     _renderer->render();
   else
     glutSolidTeapot(1.0);
-
-  // Clean up.
-  if (_camera != NULL) {
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
-    glPopMatrix();
-  }
 
   // Swap the buffers.
   glutSwapBuffers();
