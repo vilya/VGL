@@ -16,6 +16,7 @@
 #include "vgl_quaternion.h"
 
 // Cameras
+#include "vgl_arcballcamera.h"
 #include "vgl_basecamera.h"
 #include "vgl_camera.h"
 #include "vgl_orthocamera.h"

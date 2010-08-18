@@ -43,6 +43,7 @@ LIBS      := -L/opt/local/lib -ljpeg -lpng -ltiff
 endif
 
 LIBVGL_OBJS :=  \
+                $(OBJ)/vgl_arcballcamera.o \
                 $(OBJ)/vgl_basecamera.o \
                 $(OBJ)/vgl_camera.o \
                 $(OBJ)/vgl_funcs.o \
@@ -61,6 +62,7 @@ LIBVGL_OBJS :=  \
                 $(OBJ)/vgl_viewer.o
 LIBVGL_INCS :=  \
                 $(DIST)/include/vgl.h \
+                $(DIST)/include/vgl_arcballcamera.h \
                 $(DIST)/include/vgl_basecamera.h \
                 $(DIST)/include/vgl_camera.h \
                 $(DIST)/include/vgl_funcs.h \
