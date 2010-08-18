@@ -63,8 +63,7 @@ public:
     vgl::Vec3f prev = unproject(prevX, prevY);
     vgl::Vec3f curr = unproject(currX, currY);
 
-    const float kSphereRadius = 2;
-    const float kSpeed = 2;
+    const float kSphereRadius = 1;
 
     vgl::Ray3f prevRay(_pos, prev - _pos);
     vgl::Ray3f currRay(_pos, curr - _pos);
@@ -77,7 +76,7 @@ public:
       // Need to use the inverse rotation, since we're rotating the camera
       // rather than the object.
       vgl::Quaternionf q = inverse(vgl::rotation(
-          cross(prevHit - _target, currHit - _target), kSpeed * std::acos(c)));
+          cross(prevHit - _target, currHit - _target), std::acos(c)));
       _pos = rotate(q, _pos - _target) + _target;
     }
   }
@@ -88,19 +87,12 @@ public:
     if (prevX == currX && prevY == currY)
       return;
 
-    vgl::Vec3f curr = unproject(currX, currY, 0.1);
     vgl::Vec3f prev = unproject(prevX, prevY, 0.1);
+    vgl::Vec3f curr = unproject(currX, currY, 0.1);
+    vgl::Vec3f delta = curr - prev;
 
-    // WTF?!?!? This gives a zero vector:
-    //vgl::Vec3f delta = curr - prev;
-
-    // ...but this doesn't:
-    vgl::Vec3f delta = prev - curr;
-
-    // WTF is going on?
-
-    _pos += delta;
-    _target += delta;
+    _pos = (_pos + delta);
+    _target = (_target + delta);
   }
 };
 
