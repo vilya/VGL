@@ -75,36 +75,59 @@ Camera::~Camera()
 }
 
 
-void Camera::panBy(float dx, float dy, float dz)
+void Camera::pan(int prevX, int prevY, int currX, int currY)
 {
+  float dx = (currX - prevX) / 2.0f;
+  float dy = (currY - prevY) / 2.0f;
+
   Vec3f viewVec = _target - _pos;
-  viewVec = rotateX(viewVec, dx / (float)(2 * M_PI));
-  viewVec = rotateZ(viewVec, dz / (float)(2 * M_PI));
-  viewVec = rotateY(viewVec, dy / (float)(2 * M_PI));
+  viewVec = rotateX(viewVec, dy / (float)(2 * M_PI));
+  viewVec = rotateY(viewVec, dx / (float)(2 * M_PI));
   _target = viewVec + _pos;
 }
 
 
-void Camera::rollBy(float dx, float dy, float dz)
+void Camera::roll(int prevX, int prevY, int currX, int currY)
 {
+  float dx = (currX - prevX) / 2.0f;
+  float dy = (currY - prevY) / 2.0f;
+
   Vec3f viewVec = _pos - _target;
-  viewVec = rotateX(viewVec, dx / (float)(2 * M_PI));
-  viewVec = rotateZ(viewVec, dz / (float)(2 * M_PI));
-  viewVec = rotateY(viewVec, dy / (float)(2 * M_PI));
+  viewVec = rotateX(viewVec, dy / (float)(2 * M_PI));
+  viewVec = rotateY(viewVec, dx / (float)(2 * M_PI));
   _pos = viewVec + _target;
 }
 
 
-void Camera::moveBy(float dx, float dy, float dz)
+void Camera::move(int prevX, int prevY, int currX, int currY)
 {
-  Vec3f delta(dx, dy, dz);
+  float dx = (currX - prevX) / (float)_pixelWidth;
+  float dy = (currY - prevY) / (float)_pixelHeight;
+
+  Vec3f delta(dx, dy, 0);
   _pos += delta;
   _target += delta;
 }
 
 
-void Camera::zoomBy(float dz)
+void Camera::dolly(int prevX, int prevY, int currX, int currY)
 {
+  float dx = (currX - prevX) / (float)_pixelWidth;
+  float dy = (currY - prevY) / (float)_pixelHeight;
+  float dz = (abs(dx) >= abs(dy)) ? dx : -dy;
+
+  dz *= 2;
+  _pos.z += dz;
+  _target.z += dz;
+}
+
+
+void Camera::zoom(int prevX, int prevY, int currX, int currY)
+{
+  float dx = (currX - prevX) / (float)_pixelWidth;
+  float dy = (currY - prevY) / (float)_pixelHeight;
+  float dz = (abs(dx) >= abs(dy)) ? dx : -dy;
+
   _aperture *= powf(1.1, -dz / 2.0f);
 }
 

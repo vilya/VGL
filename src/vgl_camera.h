@@ -14,10 +14,11 @@ public:
     unsigned int pixelWidth, unsigned int pixelHeight);
   virtual ~Camera();
 
-  virtual void panBy(float dx, float dy, float dz);
-  virtual void rollBy(float dx, float dy, float dz);
-  virtual void moveBy(float dx, float dy, float dz);
-  virtual void zoomBy(float dz);
+  virtual void pan(int prevX, int prevY, int currX, int currY);
+  virtual void roll(int prevX, int prevY, int currX, int currY);
+  virtual void move(int prevX, int prevY, int currX, int currY);
+  virtual void dolly(int prevX, int prevY, int currX, int currY);
+  virtual void zoom(int prevX, int prevY, int currX, int currY);
 
   virtual void setupProjectionMatrix();
   virtual void setupModelViewMatrix();

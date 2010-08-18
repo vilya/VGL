@@ -267,6 +267,10 @@ int Viewer::actionForMouseDrag(int x, int y)
 
 void Viewer::actionHandler(int action)
 {
+  // If it's any camera action but we don't have a camera, abort now.
+  if (_camera == NULL && action >= ACTION_RESET_CAMERA && action <= ACTION_ROLL_CAMERA)
+    return;
+
   switch (action) {
   case ACTION_QUIT:
     exit(0);
@@ -294,85 +298,21 @@ void Viewer::actionHandler(int action)
       glutReshapeWindow(_windowWidth, _windowHeight);
     break;
 
-  case ACTION_PAN_CAMERA:
-    if (_camera != NULL) {
-      float dx = _mouseX - _prevMouseX;
-      float dy = _mouseY - _prevMouseY;
-      _camera->panBy(dy / 2.0, dx / 2.0, 0);
-      glutPostRedisplay();
-    }
-    break;
-
-  case ACTION_ROLL_CAMERA:
-    if (_camera != NULL) {
-      float dx = _mouseX - _prevMouseX;
-      float dy = _mouseY - _prevMouseY;
-      _camera->rollBy(dy / 2.0, dx / 2.0, 0);
-      glutPostRedisplay();
-    }
-    break;
-
-  case ACTION_MOVE_CAMERA:
-    if (_camera != NULL) {
-      float dx = (_mouseX - _prevMouseX) / (float)_width;
-      float dy = (_mouseY - _prevMouseY) / (float)_height;
-      _camera->moveBy(-2 * dx, 2 * dy, 0);
-      glutPostRedisplay();
-    }
-    break;
-
-  case ACTION_DOLLY_CAMERA:
-    if (_camera != NULL) {
-      float dx = (_mouseX - _prevMouseX) / (float)_width;
-      float dy = (_mouseY - _prevMouseY) / (float)_height;
-      float dz = (abs(dx) >= abs(dy)) ? dx : -dy;
-      _camera->moveBy(0, 0, 2 * dz);
-      glutPostRedisplay();
-    }
-    break;
-
-  case ACTION_DOLLY_CAMERA_IN:
-    if (_camera != NULL) {
-      _camera->moveBy(0, 0, 0.1);
-      glutPostRedisplay();
-    }
-    break;
-
-  case ACTION_DOLLY_CAMERA_OUT:
-    if (_camera != NULL) {
-      _camera->moveBy(0, 0, -0.1);
-      glutPostRedisplay();
-    }
-    break;
-
-  case ACTION_ZOOM_CAMERA:
-    if (_camera != NULL) {
-      float dx = _mouseX - _prevMouseX;
-      float dy = _mouseY - _prevMouseY;
-      float zoom = (abs(dx) >= abs(dy)) ? dx : -dy;
-      _camera->zoomBy(zoom);
-      glutPostRedisplay();
-    }
-    break;
-
-  case ACTION_ZOOM_CAMERA_IN:
-    if (_camera != NULL) {
-      _camera->zoomBy(5);
-      glutPostRedisplay();
-    }
-    break;
-
-  case ACTION_ZOOM_CAMERA_OUT:
-    if (_camera != NULL) {
-      _camera->zoomBy(-5);
-      glutPostRedisplay();
-    }
-    break;
+  case ACTION_PAN_CAMERA:       _camera->pan(_prevMouseX, _prevMouseY, _mouseX, _mouseY); break;
+  case ACTION_ROLL_CAMERA:      _camera->roll(_prevMouseX, _prevMouseY, _mouseX, _mouseY); break;
+  case ACTION_MOVE_CAMERA:      _camera->move(_prevMouseX, _prevMouseY, _mouseX, _mouseY); break;
+  case ACTION_DOLLY_CAMERA:     _camera->move(_prevMouseX, _prevMouseY, _mouseX, _mouseY); break;
+  case ACTION_DOLLY_CAMERA_IN:  _camera->dolly(0, _width * 0.05, 0, 0); break;
+  case ACTION_DOLLY_CAMERA_OUT: _camera->dolly(0, _width * -0.05, 0, 0); break;
+  case ACTION_ZOOM_CAMERA:      _camera->zoom(_prevMouseX, _prevMouseY, _mouseX, _mouseY); break;
+  case ACTION_ZOOM_CAMERA_IN:   _camera->zoom(0, 2.5 * _width, 0, 0); break;
+  case ACTION_ZOOM_CAMERA_OUT:  _camera->zoom(0, -2.5 * _width, 0, 0); break;
 
   case ACTION_IGNORE:
   default:
     break;
   }
+  glutPostRedisplay();
 }
 
 } // namespace vgl
