@@ -47,6 +47,7 @@ LIBVGL_OBJS :=  \
                 $(OBJ)/vgl_camera.o \
                 $(OBJ)/vgl_image.o \
                 $(OBJ)/vgl_objparser.o \
+                $(OBJ)/vgl_orthocamera.o \
                 $(OBJ)/vgl_parser.o \
                 $(OBJ)/vgl_plane3.o \
                 $(OBJ)/vgl_plyparser.o \
@@ -65,6 +66,7 @@ LIBVGL_INCS :=  \
                 $(DIST)/include/vgl_matrix3.h \
                 $(DIST)/include/vgl_matrix4.h \
                 $(DIST)/include/vgl_objparser.h \
+                $(DIST)/include/vgl_orthocamera.h \
                 $(DIST)/include/vgl_parser.h \
                 $(DIST)/include/vgl_plane3.h \
                 $(DIST)/include/vgl_plyparser.h \

@@ -5,21 +5,35 @@
 // individually. You may still wish to include them separately to help keep 
 // compile times down, though.
 
-#include "vgl_basecamera.h"
-#include "vgl_camera.h"
-#include "vgl_image.h"
+// Maths
 #include "vgl_matrix3.h"
 #include "vgl_matrix4.h"
-#include "vgl_parser.h"
 #include "vgl_plane3.h"
-#include "vgl_quaternion.h"
 #include "vgl_ray3.h"
-#include "vgl_renderer.h"
-#include "vgl_utils.h"
 #include "vgl_vec2.h"
 #include "vgl_vec3.h"
 #include "vgl_vec4.h"
+#include "vgl_quaternion.h"
+
+// Cameras
+#include "vgl_basecamera.h"
+#include "vgl_camera.h"
+#include "vgl_orthocamera.h"
+
+// Image files
+#include "vgl_image.h"
+
+// Model files
+#include "vgl_parser.h"
+
+// Rendering
+#include "vgl_renderer.h"
+
+// GUI
 #include "vgl_viewer.h"
+
+// Miscellaneous
+#include "vgl_utils.h"
 
 #define GL_GLEXT_PROTOTYPES 1
 #ifdef linux

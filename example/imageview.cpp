@@ -7,16 +7,6 @@
 // CLASSES
 //
 
-class OrthoCamera : public vgl::BaseCamera
-{
-public:
-  OrthoCamera(unsigned int pixelWidth, unsigned int pixelHeight);
-
-  virtual void setupProjectionMatrix();
-  virtual void setupModelViewMatrix();
-};
-
-
 class ImageViewRenderer : public vgl::Renderer
 {
 public:
@@ -28,29 +18,6 @@ public:
 private:
   vgl::RawImage* _img;
 };
-
-
-//
-// OrthoCamera METHODS
-//
-
-OrthoCamera::OrthoCamera(unsigned int pixelWidth, unsigned int pixelHeight) :
-  vgl::BaseCamera(pixelWidth, pixelHeight)
-{
-}
-
-
-void OrthoCamera::setupProjectionMatrix()
-{
-  int viewport[4];
-  glGetIntegerv(GL_VIEWPORT, viewport);
-  glOrtho(viewport[0], viewport[2], viewport[1], viewport[3], -0.5, 0.5);
-}
-
-
-void OrthoCamera::setupModelViewMatrix()
-{
-}
 
 
 //
@@ -109,7 +76,7 @@ int main(int argc, char** argv)
   }
 
   vgl::RawImage* img = new vgl::RawImage(argv[1]);
-  OrthoCamera* camera = new OrthoCamera(img->getWidth(), img->getHeight());
+  vgl::Camera* camera = new vgl::OrthoCamera(img->getWidth(), img->getHeight());
   ImageViewRenderer* renderer = new ImageViewRenderer(img);
   vgl::Viewer viewer("VGL Image Viewer",
       img->getWidth(), img->getHeight(), camera, renderer);
