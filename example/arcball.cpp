@@ -55,10 +55,13 @@ public:
   }
 
 
-  void arcballRoll(int prevX, int prevY, int currX, int currY)
+  void roll(int prevX, int prevY, int currX, int currY)
   {
     if (prevX == currX && prevY == currY)
       return;
+
+    prevY = (_pixelHeight - 1) - prevY;
+    currY = (_pixelHeight - 1) - currY;
 
     vgl::Vec3f prev = unproject(prevX, prevY);
     vgl::Vec3f curr = unproject(currX, currY);
@@ -74,7 +77,7 @@ public:
     if ( didPrevHit && didCurrHit ) {
       float c = dot(norm(currHit), norm(prevHit));
       // Need to use the inverse rotation, since we're rotating the camera
-      // rather than the object.
+      // rather than the scene.
       vgl::Quaternionf q = inverse(vgl::rotation(
           cross(prevHit - _target, currHit - _target), std::acos(c)));
       _pos = rotate(q, _pos - _target) + _target;
@@ -82,48 +85,24 @@ public:
   }
 
 
-  void arcballMove(int prevX, int prevY, int currX, int currY)
+  void move(int prevX, int prevY, int currX, int currY)
   {
     if (prevX == currX && prevY == currY)
       return;
 
-    vgl::Vec3f prev = unproject(prevX, prevY, 0.1);
-    vgl::Vec3f curr = unproject(currX, currY, 0.1);
+    // The viewer gives us y coordinates which increase downwards. We want ones
+    // which increase upwards, so we need to invert them.
+    prevY = (_pixelHeight - 1) - prevY;
+    currY = (_pixelHeight - 1) - currY;
+
+    vgl::Vec3f prev = unproject(prevX, prevY, 0.6);
+    vgl::Vec3f curr = unproject(currX, currY, 0.6);
     vgl::Vec3f delta = curr - prev;
 
-    _pos = (_pos + delta);
-    _target = (_target + delta);
-  }
-};
-
-
-class ArcballViewer : public vgl::Viewer
-{
-public:
-  ArcballViewer(int width, int height,
-                vgl::Camera* camera, vgl::Renderer* renderer) :
-    vgl::Viewer("Arcball Test", width, height, camera, renderer)
-  {}
-  
-  virtual void actionHandler(int action) {
-    ArcballCamera* cam = dynamic_cast<ArcballCamera*>(_camera);
-    if (cam == NULL) {
-      vgl::Viewer::actionHandler(action);
-      return;
-    }
-
-    switch (action) {
-      case ACTION_ROLL_CAMERA:
-        cam->arcballRoll(_prevMouseX, (_height - 1) - _prevMouseY, _mouseX, (_height - 1) - _mouseY);
-        glutPostRedisplay();
-        break;
-      case ACTION_MOVE_CAMERA:
-        cam->arcballMove(_prevMouseX, (_height - 1) - _prevMouseY, _mouseX, (_height - 1) - _mouseY);
-        glutPostRedisplay();
-      default:
-        vgl::Viewer::actionHandler(action);
-        break;
-    }
+    // Because we're moving the camera not the scene, we need to do the
+    // opposite movement.
+    _pos = (_pos - delta);
+    _target = (_target - delta);
   }
 };
 
@@ -137,7 +116,7 @@ int main(int argc, char** argv)
       vgl::Vec3f(0, 0, 5), vgl::Vec3f(0, 0, 0), vgl::Vec3f(0, 1, 0),
       -1, 1, -1, 1, 30, kWidth, kHeight);
   ArcballRenderer renderer;
-  ArcballViewer viewer(kWidth, kHeight, &camera, &renderer);
+  vgl::Viewer viewer("Arcball Test", kWidth, kHeight, &camera, &renderer);
   viewer.run();
   return 0;
 }
