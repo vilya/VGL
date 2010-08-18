@@ -43,6 +43,7 @@ LIBS      := -L/opt/local/lib -ljpeg -lpng -ltiff
 endif
 
 LIBVGL_OBJS :=  \
+                $(OBJ)/vgl_basecamera.o \
                 $(OBJ)/vgl_camera.o \
                 $(OBJ)/vgl_image.o \
                 $(OBJ)/vgl_objparser.o \
@@ -58,6 +59,7 @@ LIBVGL_OBJS :=  \
                 $(OBJ)/vgl_viewer.o
 LIBVGL_INCS :=  \
                 $(DIST)/include/vgl.h \
+                $(DIST)/include/vgl_basecamera.h \
                 $(DIST)/include/vgl_camera.h \
                 $(DIST)/include/vgl_image.h \
                 $(DIST)/include/vgl_matrix3.h \

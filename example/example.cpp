@@ -122,7 +122,7 @@ int main(int argc, char** argv)
   MeshBuilder* builder = new MeshBuilder(mesh);
   vgl::loadModel(builder, argv[1]);
 
-  vgl::Camera* camera = new vgl::Camera(
+  vgl::Camera* camera = new vgl::BaseCamera(
       vgl::Vec3f(0, 0, 5), vgl::Vec3f(0, 0, 0), vgl::Vec3f(0, 1, 0),
       -1, 1, -1, 1, 30, 800, 600);
 

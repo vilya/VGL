@@ -49,7 +49,7 @@ private:
 
 int main(int argc, char** argv)
 {
-  vgl::Camera* camera = new vgl::Camera(
+  vgl::Camera* camera = new vgl::BaseCamera(
       vgl::Vec3f(0, 0, 5), vgl::Vec3f(0, 0, 0), vgl::Vec3f(0, 1, 0),
       -1, 1, -1, 1, 30, 800, 600);
   ExampleRenderer* renderer = new ExampleRenderer();

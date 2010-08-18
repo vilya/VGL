@@ -5,6 +5,7 @@
 // individually. You may still wish to include them separately to help keep 
 // compile times down, though.
 
+#include "vgl_basecamera.h"
 #include "vgl_camera.h"
 #include "vgl_image.h"
 #include "vgl_matrix3.h"

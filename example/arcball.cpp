@@ -26,13 +26,13 @@ public:
 };
 
 
-class ArcballCamera : public vgl::Camera
+class ArcballCamera : public vgl::BaseCamera
 {
 public:
   ArcballCamera(const vgl::Vec3f& pos, const vgl::Vec3f& target, const vgl::Vec3f& up,
       float left, float right, float bottom, float top, float aperture,
       unsigned int pixelWidth, unsigned int pixelHeight) :
-    vgl::Camera(pos, target, up, left, right, bottom, top, aperture, pixelWidth, pixelHeight)
+    vgl::BaseCamera(pos, target, up, left, right, bottom, top, aperture, pixelWidth, pixelHeight)
   {}
 
 

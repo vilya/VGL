@@ -7,7 +7,7 @@
 // CLASSES
 //
 
-class OrthoCamera : public vgl::Camera
+class OrthoCamera : public vgl::BaseCamera
 {
 public:
   OrthoCamera(unsigned int pixelWidth, unsigned int pixelHeight);
@@ -35,7 +35,7 @@ private:
 //
 
 OrthoCamera::OrthoCamera(unsigned int pixelWidth, unsigned int pixelHeight) :
-  vgl::Camera(pixelWidth, pixelHeight)
+  vgl::BaseCamera(pixelWidth, pixelHeight)
 {
 }
 
