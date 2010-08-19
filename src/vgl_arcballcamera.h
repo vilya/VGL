@@ -7,10 +7,10 @@
 namespace vgl {
 
 
-class ArcballCamera : public vgl::BaseCamera
+class ArcballCamera : public BaseCamera
 {
 public:
-  ArcballCamera(const vgl::Vec3f& pos, const vgl::Vec3f& target, const vgl::Vec3f& up,
+  ArcballCamera(const Vec3f& pos, const Vec3f& target, const Vec3f& up,
       float left, float right, float bottom, float top, float aperture,
       unsigned int pixelWidth, unsigned int pixelHeight);
 

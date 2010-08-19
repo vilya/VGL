@@ -37,22 +37,22 @@ void ArcballCamera::roll(int prevX, int prevY, int currX, int currY)
   prevY = (_pixelHeight - 1) - prevY;
   currY = (_pixelHeight - 1) - currY;
 
-  vgl::Vec3f prev = unproject(prevX, prevY);
-  vgl::Vec3f curr = unproject(currX, currY);
+  Vec3f prev = unproject(prevX, prevY);
+  Vec3f curr = unproject(currX, currY);
 
   const float kSphereRadius = 1;
 
-  vgl::Ray3f prevRay(_pos, prev - _pos);
-  vgl::Ray3f currRay(_pos, curr - _pos);
+  Ray3f prevRay(_pos, prev - _pos);
+  Ray3f currRay(_pos, curr - _pos);
 
-  vgl::Vec3f prevHit, currHit;
+  Vec3f prevHit, currHit;
   bool didPrevHit = intersectRaySphere(prevRay, _target, kSphereRadius, prevHit);
   bool didCurrHit = intersectRaySphere(currRay, _target, kSphereRadius, currHit);
   if ( didPrevHit && didCurrHit ) {
     float c = dot(norm(currHit), norm(prevHit));
     // Need to use the inverse rotation, since we're rotating the camera
     // rather than the scene.
-    vgl::Quaternionf q = inverse(vgl::rotation(
+    Quaternionf q = inverse(rotation(
         cross(prevHit - _target, currHit - _target), std::acos(c)));
     _pos = rotate(q, _pos - _target) + _target;
   }
@@ -69,9 +69,9 @@ void ArcballCamera::move(int prevX, int prevY, int currX, int currY)
   prevY = (_pixelHeight - 1) - prevY;
   currY = (_pixelHeight - 1) - currY;
 
-  vgl::Vec3f prev = unproject(prevX, prevY, 0.6);
-  vgl::Vec3f curr = unproject(currX, currY, 0.6);
-  vgl::Vec3f delta = curr - prev;
+  Vec3f prev = unproject(prevX, prevY, 0.6);
+  Vec3f curr = unproject(currX, currY, 0.6);
+  Vec3f delta = curr - prev;
 
   // Because we're moving the camera not the scene, we need to do the
   // opposite movement.

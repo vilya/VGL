@@ -10,7 +10,7 @@ namespace vgl {
 // OpenGL helper functions.
 //
 
-vgl::Vec3f unproject(double x, double y, double z = 0.5);
+Vec3f unproject(double x, double y, double z = 0.5);
 
 
 } // namespace vgl

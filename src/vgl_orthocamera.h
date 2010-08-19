@@ -6,7 +6,7 @@
 namespace vgl {
 
 
-class OrthoCamera : public vgl::BaseCamera
+class OrthoCamera : public BaseCamera
 {
 public:
   OrthoCamera(unsigned int pixelWidth, unsigned int pixelHeight);
