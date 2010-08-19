@@ -1,6 +1,8 @@
 #ifndef vgl_viewer_h
 #define vgl_viewer_h
 
+#include <cstdlib>
+
 namespace vgl {
 
 //
@@ -40,7 +42,8 @@ public:
   };
 
 public:
-  Viewer(const char* title, int width, int height, Renderer* renderer, Camera* camera);
+  Viewer(const char* title, int width, int height,
+      Renderer* renderer, Camera* camera = NULL);
   virtual ~Viewer();
 
   virtual void render();

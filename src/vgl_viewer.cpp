@@ -1,5 +1,6 @@
 #include "vgl_viewer.h"
 
+#include "vgl_arcballcamera.h"
 #include "vgl_camera.h"
 #include "vgl_renderer.h"
 #include "vgl_vec3.h"
@@ -110,6 +111,12 @@ Viewer::Viewer(
   glutKeyboardFunc(vgl::keyPressed);
   glutMouseFunc(vgl::mousePressed);
   glutMotionFunc(vgl::mouseDragged);
+
+  if (_camera == NULL) {
+    _camera = new vgl::ArcballCamera(
+        vgl::Vec3f(0, 0, 5), vgl::Vec3f(0, 0, 0), vgl::Vec3f(0, 1, 0),
+        -1, 1, -1, 1, 30, _width, _height);
+  }
 
   if (_renderer != NULL)
     _renderer->setup();
