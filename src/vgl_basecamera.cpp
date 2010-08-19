@@ -110,7 +110,8 @@ void BaseCamera::zoom(int prevX, int prevY, int currX, int currY)
   float dy = (currY - prevY) / (float)_pixelHeight;
   float dz = (abs(dx) >= abs(dy)) ? dx : -dy;
 
-  _aperture *= powf(1.1, -dz / 2.0f);
+  dz *= -2;
+  _aperture *= powf(1.1, dz);
 }
 
 
