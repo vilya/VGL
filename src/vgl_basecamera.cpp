@@ -49,24 +49,6 @@ BaseCamera::BaseCamera(const Vec3f& pos, const Vec3f& target, const Vec3f& up,
   _pixelWidth(pixelWidth),
   _pixelHeight(pixelHeight)
 {
-  /* My old lookAt code from the Ray project:
-  Vec3f dir = target - pos;
-  Vec3f w = norm(dir);
-  Vec3f u = norm(cross(up, dir));
-  Vec3f v = cross(w, u);
-
-  Camera* cam = new Camera();
-
-  cam->proj.corner = pos + left * u + bottom * v + length(dir) * w;
-  cam->proj.u = (right - left) * u / pixelWidth;
-  cam->proj.v = (top - bottom) * v / pixelHeight;
-
-  cam->lens.corner = pos - (0.5 * aperture) * u - (0.5 * aperture) * v;
-  cam->lens.u = aperture * u;
-  cam->lens.v = aperture * v;
-
-  return cam;
-  */
 }
 
 
