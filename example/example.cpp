@@ -5,17 +5,6 @@
 #include <vector>
 
 
-void checkGLError(const char *errMsg, const char *okMsg=NULL)
-{
-  GLenum err = glGetError();
-  if (err != GL_NO_ERROR) {
-    fprintf(stderr, "%s: %s (%d)\n", errMsg, gluErrorString(err), err);
-  } else if (okMsg != NULL) {
-    fprintf(stderr, "%s\n", okMsg);
-  }
-}
-
-
 struct ExampleMesh
 {
   std::vector<vgl::Vec3f> coords;
@@ -65,44 +54,44 @@ public:
     glGenBuffers(1, &_bufferID);
     glBindBuffer(GL_ARRAY_BUFFER, _bufferID);
     glBufferData(GL_ARRAY_BUFFER, bufferSize, NULL, GL_STATIC_DRAW);
-    checkGLError("Error setting up vertex buffer");
+    vgl::checkGLError("Error setting up vertex buffer");
     
     // Copy the coords into the vertex buffer.
     GLfloat* vertexBuffer = (GLfloat*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
     memcpy(vertexBuffer, &_mesh->coords[0], bufferSize);
     glUnmapBuffer(GL_ARRAY_BUFFER);
-    checkGLError("Error filling vertex buffer");
+    vgl::checkGLError("Error filling vertex buffer");
 
     // Get a buffer ID for the indexes, upload them and clear out the local copy.
     bufferSize = sizeof(GLuint) * _mesh->indexes.size();
     glGenBuffers(1, &_indexesID);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexesID);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, bufferSize, NULL, GL_STATIC_DRAW);
-    checkGLError("Error setting up index buffer");
+    vgl::checkGLError("Error setting up index buffer");
 
     // Copy the indexes into the index buffer
     GLuint* indexBuffer = (GLuint*)glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
     memcpy(indexBuffer, &_mesh->indexes[0], bufferSize);
     glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
-    checkGLError("Error filling index buffer");
+    vgl::checkGLError("Error filling index buffer");
   }
 
   virtual void render() {
     glBindBuffer(GL_ARRAY_BUFFER, _bufferID);
-    checkGLError("Unable to bind vertex buffer");
+    vgl::checkGLError("Unable to bind vertex buffer");
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexesID);
-    checkGLError("Unable to bind index buffer");
+    vgl::checkGLError("Unable to bind index buffer");
 
     glEnableClientState(GL_VERTEX_ARRAY);
-    checkGLError("Unable to enable vertex array client state");
+    vgl::checkGLError("Unable to enable vertex array client state");
     glVertexPointer(3, GL_FLOAT, 0, 0);
     glDrawElements(GL_TRIANGLES, _mesh->indexes.size(), GL_UNSIGNED_INT, 0);
-    checkGLError("Unable to draw mesh");
+    vgl::checkGLError("Unable to draw mesh");
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    checkGLError("Unable to unbind vertex buffer");
+    vgl::checkGLError("Unable to unbind vertex buffer");
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    checkGLError("Unable to unbind index buffer");
+    vgl::checkGLError("Unable to unbind index buffer");
   }
 
 private:
