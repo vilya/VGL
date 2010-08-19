@@ -302,11 +302,11 @@ void Viewer::actionHandler(int action)
   case ACTION_ROLL_CAMERA:      _camera->roll(_prevMouseX, _prevMouseY, _mouseX, _mouseY); break;
   case ACTION_MOVE_CAMERA:      _camera->move(_prevMouseX, _prevMouseY, _mouseX, _mouseY); break;
   case ACTION_DOLLY_CAMERA:     _camera->move(_prevMouseX, _prevMouseY, _mouseX, _mouseY); break;
-  case ACTION_DOLLY_CAMERA_IN:  _camera->dolly(0, _width * 0.05, 0, 0); break;
-  case ACTION_DOLLY_CAMERA_OUT: _camera->dolly(0, _width * -0.05, 0, 0); break;
+  case ACTION_DOLLY_CAMERA_IN:  _camera->dolly(0, 0, 0.5 * _width, 0); break;
+  case ACTION_DOLLY_CAMERA_OUT: _camera->dolly(0, 0, -0.5 * _width, 0); break;
   case ACTION_ZOOM_CAMERA:      _camera->zoom(_prevMouseX, _prevMouseY, _mouseX, _mouseY); break;
-  case ACTION_ZOOM_CAMERA_IN:   _camera->zoom(0, 2.5 * _width, 0, 0); break;
-  case ACTION_ZOOM_CAMERA_OUT:  _camera->zoom(0, -2.5 * _width, 0, 0); break;
+  case ACTION_ZOOM_CAMERA_IN:   _camera->zoom(0, 0, 2 * _width, 0); break;
+  case ACTION_ZOOM_CAMERA_OUT:  _camera->zoom(0, 0, -2 * _width, 0); break;
 
   case ACTION_IGNORE:
   default:
