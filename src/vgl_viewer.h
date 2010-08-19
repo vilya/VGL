@@ -40,7 +40,7 @@ public:
   };
 
 public:
-  Viewer(const char* title, int width, int height, Camera* camera, Renderer* renderer);
+  Viewer(const char* title, int width, int height, Renderer* renderer, Camera* camera);
   virtual ~Viewer();
 
   virtual void render();
@@ -79,8 +79,8 @@ protected:
   bool _shiftDown, _altDown, _ctrlDown;
   bool _fullscreen;
 
-  Camera* _camera;
   Renderer* _renderer;
+  Camera* _camera;
 };
 
 

@@ -31,11 +31,11 @@ int main(int argc, char** argv)
   const int kWidth = 800;
   const int kHeight = 600;
 
+  ArcballRenderer renderer;
   vgl::ArcballCamera camera(
       vgl::Vec3f(0, 0, 5), vgl::Vec3f(0, 0, 0), vgl::Vec3f(0, 1, 0),
       -1, 1, -1, 1, 30, kWidth, kHeight);
-  ArcballRenderer renderer;
-  vgl::Viewer viewer("Arcball Test", kWidth, kHeight, &camera, &renderer);
+  vgl::Viewer viewer("Arcball Test", kWidth, kHeight, &renderer, &camera);
   viewer.run();
   return 0;
 }

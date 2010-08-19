@@ -70,8 +70,8 @@ Viewer::Viewer(
     const char* title,
     int width,
     int height,
-    Camera* camera,
-    Renderer* renderer) :
+    Renderer* renderer,
+    Camera* camera) :
   _windowWidth(width),
   _windowHeight(height),
   _width(width),
@@ -87,8 +87,8 @@ Viewer::Viewer(
   _altDown(false),
   _ctrlDown(false),
   _fullscreen(false),
-  _camera(camera),
-  _renderer(renderer)
+  _renderer(renderer),
+  _camera(camera)
 {
   int argc = 0;
   char* argv[] = { NULL };
@@ -118,8 +118,8 @@ Viewer::Viewer(
 
 Viewer::~Viewer()
 {
-  delete _camera;
   delete _renderer;
+  delete _camera;
 }
 
 

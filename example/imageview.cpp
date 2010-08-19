@@ -76,10 +76,10 @@ int main(int argc, char** argv)
   }
 
   vgl::RawImage* img = new vgl::RawImage(argv[1]);
-  vgl::Camera* camera = new vgl::OrthoCamera(img->getWidth(), img->getHeight());
-  ImageViewRenderer* renderer = new ImageViewRenderer(img);
+  ImageViewRenderer renderer(img);
+  vgl::OrthoCamera camera(img->getWidth(), img->getHeight());
   vgl::Viewer viewer("VGL Image Viewer",
-      img->getWidth(), img->getHeight(), camera, renderer);
+      img->getWidth(), img->getHeight(), &renderer, &camera);
   viewer.run();
 }
 
