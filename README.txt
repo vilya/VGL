@@ -16,20 +16,27 @@ So far it includes:
   - Single window, set up for drawing into with OpenGL.
   - Customisable (by overriding) mapping of input events to GUI actions.
   - Default behaviour which maps input events to camera controls.
-- The usual 3D math classes.
+- The usual 3D math classes:
+  - Templated Vec2, Vec3 and Vec4 classes
+  - Templated Matrix3 and Matrix4 classes
+  - A templated Quaternion class
 - Support for loading (but not saving) a number of 2d image formats:
   - BMP
   - PNG
   - JPG
   - TGA
+  - TIF
   Note that you're expected to have libpng and libjpeg already installed on
   your system somewhere.
 - Support for a loading (but not saving) a number of 3d geometry formats:
   - OBJ
   - PLY
-- A simple camera class (designed to be overridden if you want to support other
-  types of camera).
+- Some camera classes:
+  - An arcball-style perspective camera (the default).
+  - An orthorgrahic camera.
+  - A base class, intended for subclassing.
 - A *very* simple renderer abstraction.
+- Helper functions for dealing with OpenGL shaders.
 - An example program which draws a lit teapot.
 - An example program which loads and displays a model file.
 

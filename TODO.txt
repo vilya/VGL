@@ -1,10 +1,6 @@
 TODO
 ====
 
-- Make the Camera class more suitable for subclassing.
-- Add support for orthographic cameras.
-- Add a proper arcball implementation.
-
 - Make the current format-specific image loading functions public.
 - Make it possible to register additional image loaders without changing the VGL code.
 
@@ -19,3 +15,4 @@ TODO
 
 - Make sure we're only exporting the public symbols from the library.
 
+- Get rid of the BaseCamera class (or gut it, so that it's better for subclassing).

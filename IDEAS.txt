@@ -22,8 +22,11 @@ Ideas for things to include in the library:
 - More image formats:
   - DPX & CIN
   - EXR (using the OpenEXR libraries)
-  - TIFF (using libtiff)
 - Support for loading/processing images in tiles.
+
+- Split the current image abstraction into two parts:
+  - Texture (which describes data in texture memory on the GPU).
+  - Image (which describes a grid of pixels in RAM).
 
 - Code to find out where a ray hits a scene.
 
@@ -53,3 +56,7 @@ Ideas for things to include in the library:
   - Geometry format plugins also have:
     * void loadModel(ParserCallbacks* callbacks, const char* filename);
   ...or something like that.
+
+- Divide the source code up into subdirectories.
+  - Maybe into sub-namespaces as well?
+
