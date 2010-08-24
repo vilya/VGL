@@ -9,6 +9,16 @@ include(FindOpenGL)
 include(FindOpenMP)
 include(FindTIFF)
 
+# There's no ready-made CMake module for setting up cppunit, so it's DIY time...
+find_library(CPPUNIT_LIBRARY cppunit)
+if (CPPUNIT_LIBRARY STREQUAL "CPPUNIT_LIBRARY-NOTFOUND")
+  message(WARNING "Unable to find cppunit. Tests won't be built.")
+  set(CPPUNIT_FOUND 0)
+else (CPPUNIT_LIBRARY STREQUAL "CPPUNIT_LIBRARY-NOTFOUND")
+  message(STATUS "Found cppunit: ${CPPUNIT_LIBRARY}")
+  set(CPPUNIT_FOUND 1)
+endif (CPPUNIT_LIBRARY STREQUAL "CPPUNIT_LIBRARY-NOTFOUND")
+
 
 # General build properties.
 file(GLOB VGL_SOURCES src/*.cpp thirdparty/*.c)
@@ -24,7 +34,6 @@ include_directories(src thirdparty
   ${JPEG_INCLUDE_DIR}
   ${PNG_INCLUDE_DIR}
   ${TIFF_INCLUDE_DIR})
-link_directories(/opt/local/lib)
 
 
 # Helper function which creates an example program.
@@ -38,8 +47,7 @@ endfunction(example)
 # Helper function which creates a test program.
 function (test test_NAME)
   add_executable(${test_NAME} test/${test_NAME}.cpp)
-  target_link_libraries(${test_NAME} vgl cppunit)
-  install(TARGETS ${test_NAME} DESTINATION bin)
+  target_link_libraries(${test_NAME} vgl ${CPPUNIT_LIBRARY})
   add_test(NAME run-${test_NAME} COMMAND ${test_NAME})
 endfunction(test)
 
@@ -52,13 +60,15 @@ target_link_libraries(vgl
   ${JPEG_LIBRARIES}
   ${PNG_LIBRARIES}
   ${TIFF_LIBRARIES})
-install(FILES ${VGL_HEADERS} DESTINATION dist/include)
-install(TARGETS vgl LIBRARY DESTINATION dist/lib)
+install(FILES ${VGL_HEADERS} DESTINATION include)
+install(TARGETS vgl LIBRARY DESTINATION lib)
 
 
 # The unit tests.
-enable_testing()
-test(test_quaternion)
+if (CPPUNIT_FOUND)
+  enable_testing()
+  test(test_quaternion)
+endif (CPPUNIT_FOUND)
 
 
 # The example programs.
