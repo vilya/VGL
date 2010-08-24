@@ -16,18 +16,18 @@ So far it includes:
   - Single window, set up for drawing into with OpenGL.
   - Customisable (by overriding) mapping of input events to GUI actions.
   - Default behaviour which maps input events to camera controls.
-- The usual 3D math classes:
-  - Templated Vec2, Vec3 and Vec4 classes
-  - Templated Matrix3 and Matrix4 classes
-  - A templated Quaternion class
+- The usual templated 3D math classes:
+  - Vec2, Vec3 and Vec4
+  - Matrix3 and Matrix4
+  - Quaternion
 - Support for loading (but not saving) a number of 2d image formats:
   - BMP
   - PNG
   - JPG
   - TGA
   - TIF
-  Note that you're expected to have libpng and libjpeg already installed on
-  your system somewhere.
+  Note that you're expected to have libpng, libjpeg and libtiff already
+  installed on your system somewhere.
 - Support for a loading (but not saving) a number of 3d geometry formats:
   - OBJ
   - PLY
@@ -37,8 +37,8 @@ So far it includes:
   - A base class, intended for subclassing.
 - A *very* simple renderer abstraction.
 - Helper functions for dealing with OpenGL shaders.
-- An example program which draws a lit teapot.
-- An example program which loads and displays a model file.
+- Some example programs which demonstrate various aspects of the library.
+- A build system using CMake
 
 
 License
@@ -57,7 +57,7 @@ Pre-requisites
   - libpng
   - libjpeg6b
   - libtiff
-  - cppunit   (for the unit tests)
+  - cppunit   (optional; only needed for the unit tests)
 
 
 Getting the code
@@ -66,17 +66,38 @@ Getting the code
   git clone http://github.com/vilya
 
 
-Compiling it
-============
+Building it
+===========
 
+VGL uses CMake, so you have the option of generating Makefiles or project files
+for various IDEs.
+
+Building with make
+------------------
+I recommend doing an out-of-source build. If you're inside the top-level VGL
+directory, this should do the trick:
+
+  mkdir build
+  cd build
+  cmake ..
   make
 
-...should do the trick. You may need to adjust the include paths and library
-paths if you've got your libraries installed in custom locations.
+If you want to see the command line it's passing to the compiler, just write:
 
-After a successful make, the library and headers will be inside the dist
-directory; the example programs (and a second copy of the library) will be
-inside the bin directory along with the test programs.
+  make VERBOSE=1
+
+The build is set up to try and autodetect the location of the libraries it
+needs; if you have them installed in non-standard locations, you'll need to
+tell CMake where to find them:
+
+  cmake -DCMAKE_LIBRARY_PATH=/path/to/your/library/dir ..
+
+The generated makefile includes targets for running tests, installing the
+library and so on:
+
+  make test     Run all the tests
+  make install  Install the library
+  make help     List out all the targets provided by the makefile.
 
 
 Running the examples
@@ -84,7 +105,7 @@ Running the examples
 If you're in the project root folder, you should be able to run the example
 programs by typing (for example):
 
-  ./bin/example
+  ./build/arcball
 
 
 Reporting bugs
