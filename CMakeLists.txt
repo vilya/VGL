@@ -3,8 +3,11 @@ cmake_minimum_required(VERSION 2.6)
 
 # External libraries that we use.
 include(FindGLUT)
+include(FindJPEG)
+include(FindPNG)
 include(FindOpenGL)
 include(FindOpenMP)
+include(FindTIFF)
 
 
 # General build properties.
@@ -12,9 +15,15 @@ file(GLOB VGL_SOURCES src/*.cpp thirdparty/*.c)
 file(GLOB VGL_HEADERS src/*.h)
 file(GLOB VGL_EXTRAS test/*.cpp example/*.cpp)
 
+
 # Compilation and linking properties.
-set_source_files_properties(${VGL_SOURCES} ${VGL_EXTRAS} COMPILE_FLAGS "${OpenMP_CXX_FLAGS}")
-include_directories(src thirdparty /opt/local/include ${GLUT_INCLUDE_DIR})
+set_source_files_properties(${VGL_SOURCES} ${VGL_EXTRAS}
+  COMPILE_FLAGS "${OpenMP_CXX_FLAGS}")
+include_directories(src thirdparty
+  ${GLUT_INCLUDE_DIR}
+  ${JPEG_INCLUDE_DIR}
+  ${PNG_INCLUDE_DIR}
+  ${TIFF_INCLUDE_DIR})
 link_directories(/opt/local/lib)
 
 
@@ -24,6 +33,7 @@ function (example example_NAME)
   target_link_libraries(${example_NAME} vgl)
   install(TARGETS ${example_NAME} DESTINATION bin)
 endfunction(example)
+
 
 # Helper function which creates a test program.
 function (test test_NAME)
@@ -36,8 +46,12 @@ endfunction(test)
 
 # The VGL shared library.
 add_library(vgl SHARED ${VGL_SOURCES} ${VGL_THIRDPARTY_SOURCES})
-#target_link_libraries(vgl ${OpenGL_LIB} ${GLUT_LIB} pthread png jpeg tiff)
-target_link_libraries(vgl ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} png jpeg tiff)
+target_link_libraries(vgl
+  ${OPENGL_LIBRARIES}
+  ${GLUT_LIBRARIES}
+  ${JPEG_LIBRARIES}
+  ${PNG_LIBRARIES}
+  ${TIFF_LIBRARIES})
 install(FILES ${VGL_HEADERS} DESTINATION dist/include)
 install(TARGETS vgl LIBRARY DESTINATION dist/lib)
 
