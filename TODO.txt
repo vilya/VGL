@@ -11,8 +11,6 @@ TODO
 - Comment the code properly, in a structured format that Doxygen or something can use.
 - Add a build target to generate the docs.
 
-- Use CMake to build the library instead of Make.
-
 - Make sure we're only exporting the public symbols from the library.
 
 - Get rid of the BaseCamera class (or gut it, so that it's better for subclassing).

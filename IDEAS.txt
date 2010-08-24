@@ -28,6 +28,11 @@ Ideas for things to include in the library:
   - Texture (which describes data in texture memory on the GPU).
   - Image (which describes a grid of pixels in RAM).
 
+- Helper code for rendering to a FBO.
+
+- Helper code for working with CUDA?
+- Helper code for working with OpenCL?
+
 - Code to find out where a ray hits a scene.
 
 - Support for mouse gestures.
