@@ -1,19 +1,20 @@
 project(VGL)
 cmake_minimum_required(VERSION 2.6)
 
+# External libraries that we use.
+include(FindGLUT)
 include(FindOpenGL)
 include(FindOpenMP)
 
-# General build properties
+
+# General build properties.
 file(GLOB VGL_SOURCES src/*.cpp thirdparty/*.c)
 file(GLOB VGL_HEADERS src/*.h)
 file(GLOB VGL_EXTRAS test/*.cpp example/*.cpp)
 
-#find_library(OpenGL_LIB OpenGL gl)
-find_library(GLUT_LIB GLUT glut)
+# Compilation and linking properties.
 set_source_files_properties(${VGL_SOURCES} ${VGL_EXTRAS} COMPILE_FLAGS "${OpenMP_CXX_FLAGS}")
-
-include_directories(src thirdparty /opt/local/include)
+include_directories(src thirdparty /opt/local/include ${GLUT_INCLUDE_DIR})
 link_directories(/opt/local/lib)
 
 
@@ -33,20 +34,20 @@ function (test test_NAME)
 endfunction(test)
 
 
-# The VGL shared library
+# The VGL shared library.
 add_library(vgl SHARED ${VGL_SOURCES} ${VGL_THIRDPARTY_SOURCES})
 #target_link_libraries(vgl ${OpenGL_LIB} ${GLUT_LIB} pthread png jpeg tiff)
-target_link_libraries(vgl ${OPENGL_LIBRARIES} ${GLUT_LIB} pthread png jpeg tiff)
+target_link_libraries(vgl ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} png jpeg tiff)
 install(FILES ${VGL_HEADERS} DESTINATION dist/include)
 install(TARGETS vgl LIBRARY DESTINATION dist/lib)
 
 
-# The unit test programs
+# The unit tests.
 enable_testing()
 test(test_quaternion)
 
 
-# The example programs
+# The example programs.
 example(arcball)
 example(basic)
 example(example)
