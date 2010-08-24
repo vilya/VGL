@@ -99,6 +99,18 @@ library and so on:
   make install  Install the library
   make help     List out all the targets provided by the makefile.
 
+Building with XCode
+-------------------
+On OS X you can use CMake to generate an XCode project for VGL. If you're
+inside the top-level VGL directory, do this:
+
+  mkdir project
+  cd project
+  cmake -g Xcode ..
+
+This will create VGL.xcodeproj inside the current directory, which you can open
+up directly with XCode.
+
 
 Running the examples
 ====================
