@@ -21,8 +21,19 @@ public:
   virtual void dolly(int prevX, int prevY, int currX, int currY);
   virtual void zoom(int prevX, int prevY, int currX, int currY);
 
+  virtual void centerView(const Vec3f& low, const Vec3f& high);
+  virtual void frontView(const Vec3f& low, const Vec3f& high);
+  virtual void backView(const Vec3f& low, const Vec3f& high);
+  virtual void leftView(const Vec3f& low, const Vec3f& high);
+  virtual void rightView(const Vec3f& low, const Vec3f& high);
+  virtual void topView(const Vec3f& low, const Vec3f& high);
+  virtual void bottomView(const Vec3f& low, const Vec3f& high);
+
   virtual void setupProjectionMatrix();
   virtual void setupModelViewMatrix();
+
+protected:
+  float distanceFrom(float highU, float lowU, float highV, float lowV) const;
 
 protected:
   Vec3f _pos, _target, _up;

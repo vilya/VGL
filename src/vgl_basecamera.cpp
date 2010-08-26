@@ -115,10 +115,89 @@ void BaseCamera::zoom(int prevX, int prevY, int currX, int currY)
 }
 
 
+void BaseCamera::centerView(const Vec3f& low, const Vec3f& high)
+{
+  _target = (high + low) / 2.0f;
+  float distance = (high.z - low.z) / 10.0f;
+  _pos = _target + Vec3f(0, 0, distance);
+  _up = Vec3f(0, 1, 0);
+}
+
+
+void BaseCamera::frontView(const Vec3f& low, const Vec3f& high)
+{
+  _target = (high + low) / 2.0f;
+  float distance = (high.z - low.z) / 2.0f +
+      distanceFrom(high.x, low.x, high.y, low.y);
+  _pos = _target + Vec3f(0, 0, distance);
+  _up = Vec3f(0, 1, 0);
+}
+
+
+void BaseCamera::backView(const Vec3f& low, const Vec3f& high)
+{
+  _target = (high + low) / 2.0f;
+  float distance = (high.z - low.z) / 2.0f +
+      distanceFrom(high.x, low.x, high.y, low.y);
+  _pos = _target + Vec3f(0, 0, -distance);
+  _up = Vec3f(0, 1, 0);
+}
+
+
+void BaseCamera::leftView(const Vec3f& low, const Vec3f& high)
+{
+  _target = (high + low) / 2.0f;
+  float distance = (high.x - low.x) / 2.0f +
+      distanceFrom(high.z, low.z, high.y, low.y);
+  _pos = _target + Vec3f(-distance, 0, 0);
+  _up = Vec3f(0, 1, 0);
+}
+
+
+void BaseCamera::rightView(const Vec3f& low, const Vec3f& high)
+{
+  _target = (high + low) / 2.0f;
+  float distance = (high.x - low.x) / 2.0f +
+      distanceFrom(high.z, low.z, high.y, low.y);
+  _pos = _target + Vec3f(distance, 0, 0);
+  _up = Vec3f(0, 1, 0);
+}
+
+
+void BaseCamera::topView(const Vec3f& low, const Vec3f& high)
+{
+  _target = (high + low) / 2.0f;
+  float distance = (high.y - low.y) +
+      distanceFrom(high.x, low.x, high.z, low.z);
+  _pos = _target + Vec3f(0, distance, 0);
+  _up = Vec3f(0, 0, -1);
+}
+
+
+void BaseCamera::bottomView(const Vec3f& low, const Vec3f& high)
+{
+  _target = (high + low) / 2.0f;
+  float distance = (high.y - low.y) +
+      distanceFrom(high.x, low.x, high.z, low.z);
+  _pos = _target + Vec3f(0, -distance, 0);
+  _up = Vec3f(0, 0, 1);
+}
+
+
+float BaseCamera::distanceFrom(float highU, float lowU, float highV, float lowV) const
+{
+  float opposite = std::max(highU - lowU, highV - lowV) / 2.0;
+  float angle = (_aperture / 2.0) * M_PI / 180.0;
+  float adjacent = (opposite / tanf(angle));
+  return adjacent;
+}
+
+
 void BaseCamera::setupProjectionMatrix()
 {
   float distance = length(_target - _pos);
-  gluPerspective(_aperture, float(_pixelWidth) / float(_pixelHeight), distance * 0.1, distance * 2.0);
+  gluPerspective(_aperture, float(_pixelWidth) / float(_pixelHeight),
+      distance * 0.1, distance * 2.0);
 }
 
 
