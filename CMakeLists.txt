@@ -2,12 +2,14 @@ project(VGL)
 cmake_minimum_required(VERSION 2.6)
 
 # External libraries that we use.
-include(FindGLUT)
-include(FindJPEG)
-include(FindPNG)
-include(FindOpenGL)
-include(FindOpenMP)
-include(FindTIFF)
+find_package(GLUT)
+find_package(JPEG)
+find_package(PNG)
+find_package(OpenGL)
+find_package(OpenMP)
+find_package(TIFF)
+
+add_definitions(${PNG_DEFINITIONS})
 
 # There's no ready-made CMake module for setting up cppunit, so it's DIY time...
 find_library(CPPUNIT_LIBRARY cppunit)
