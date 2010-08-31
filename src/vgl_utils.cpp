@@ -10,6 +10,12 @@ namespace vgl {
 // HELPER FUNCTIONS
 //
 
+int sign(int i)
+{
+  return (i < 0) ? -1 : 1;
+}
+
+
 bool equal(float a, float b, float epsilon)
 {
   return std::abs(a - b) < epsilon;

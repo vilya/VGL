@@ -56,6 +56,7 @@ enum StringAlignment {
 // HELPER FUNCTIONS
 //
 
+int sign(int i);
 bool equal(float a, float b, float epsilon=1e-5f);
 bool equal(double a, double b, double epsilon=1e-10);
 
