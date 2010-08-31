@@ -32,6 +32,7 @@ struct Vec3 {
 typedef Vec3<float> Vec3f;
 typedef Vec3<double> Vec3d;
 typedef Vec3<int> Vec3i;
+typedef Vec3<unsigned int> Vec3ui;
 
 
 //
@@ -193,6 +194,24 @@ template <typename Num>
 Vec3<Num> pairwiseMax(const Vec3<Num>& a, const Vec3<Num>& b)
 {
   return Vec3<Num>(std::max(a.x, b.x), std::max(a.y, b.y), std::max(a.z, b.z));
+}
+
+
+template <typename Num>
+unsigned int minIndex(const Vec3<Num>& a)
+{
+  unsigned int index = (a[0] <= a[1]) ? 0 : 1;
+  index = (a[index] <= a[2]) ? index : 2;
+  return index;
+}
+
+
+template <typename Num>
+unsigned int maxIndex(const Vec3<Num>& a)
+{
+  unsigned int index = (a[0] >= a[1]) ? 0 : 1;
+  index = (a[index] >= a[2]) ? index : 2;
+  return index;
 }
 
 

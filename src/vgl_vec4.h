@@ -39,6 +39,7 @@ struct Vec4 {
 typedef Vec4<float> Vec4f;
 typedef Vec4<double> Vec4d;
 typedef Vec4<int> Vec4i;
+typedef Vec4<unsigned int> Vec4ui;
 
 
 //
@@ -206,6 +207,26 @@ template <typename Num>
 Vec4<Num> pairwiseMax(const Vec4<Num>& a, const Vec4<Num>& b)
 {
   return Vec4<Num>(std::max(a.x, b.x), std::max(a.y, b.y), std::max(a.z, b.z), std::max(a.w, b.w));
+}
+
+
+template <typename Num>
+unsigned int minIndex(const Vec4<Num>& a)
+{
+  unsigned int index = (a[0] <= a[1]) ? 0 : 1;
+  index = (a[index] <= a[2]) ? index : 2;
+  index = (a[index] <= a[3]) ? index : 3;
+  return index;
+}
+
+
+template <typename Num>
+unsigned int maxIndex(const Vec4<Num>& a)
+{
+  unsigned int index = (a[0] >= a[1]) ? 0 : 1;
+  index = (a[index] >= a[2]) ? index : 2;
+  index = (a[index] >= a[3]) ? index : 3;
+  return index;
 }
 
 
