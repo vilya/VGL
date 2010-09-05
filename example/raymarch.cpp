@@ -80,6 +80,9 @@ public:
   void toggleDrawIntersections() { _showIntersections = !_showIntersections; }
   void toggleDrawIntersectedCells() { _showIntersectedCells = !_showIntersectedCells; }
 
+  vgl::Vec3f sceneBoundLow() const { return _grid.lowCorner; }
+  vgl::Vec3f sceneBoundHigh() const { return _grid.highCorner; }
+
   virtual void setup();
   virtual void render();
 
@@ -113,7 +116,15 @@ public:
     ACTION_TOGGLE_DRAW_GRID,
     ACTION_TOGGLE_DRAW_RAY,
     ACTION_TOGGLE_DRAW_INTERSECTIONS,
-    ACTION_TOGGLE_DRAW_INTERSECTED_CELLS
+    ACTION_TOGGLE_DRAW_INTERSECTED_CELLS,
+
+    ACTION_VIEW_CENTER,
+    ACTION_VIEW_FRONT,
+    ACTION_VIEW_BACK,
+    ACTION_VIEW_LEFT,
+    ACTION_VIEW_RIGHT,
+    ACTION_VIEW_TOP,
+    ACTION_VIEW_BOTTOM
   };
 
 public:
@@ -279,49 +290,53 @@ bool Marcher::initialHit()
 
 void RayMarchRenderer::setup()
 {
-    _gridList = glGenLists(1);
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    vgl::Vec3f size = (_grid.highCorner - _grid.lowCorner)
-                    / vgl::Vec3f(_grid.dim[0], _grid.dim[1], _grid.dim[2]);
+  _gridList = glGenLists(1);
 
-    glNewList(_gridList, GL_COMPILE);
-    glColor4f(0.6, 0.6, 0.6, 0.5);
-    glBegin(GL_LINES);
-    // Horizontal lines
+  vgl::Vec3f size = (_grid.highCorner - _grid.lowCorner)
+                  / vgl::Vec3f(_grid.dim[0], _grid.dim[1], _grid.dim[2]);
+
+  glNewList(_gridList, GL_COMPILE);
+  glLineWidth(0.5);
+  glColor4f(0.6, 0.6, 0.6, 0.5);
+  glBegin(GL_LINES);
+  // Horizontal lines
+  for (unsigned int j = 0; j <= _grid.dim.y; ++j) {
+    float y = _grid.lowCorner.y + j * size.y;
+    float x1 = _grid.lowCorner.x;
+    float x2 = _grid.highCorner.x;
+    for (unsigned int k = 0; k <= _grid.dim.z; ++k) {
+      float z = _grid.lowCorner.z + k * size.z;
+      glVertex3f(x1, y, z);
+      glVertex3f(x2, y, z);
+    }
+  }
+  // Vertical lines
+  for (unsigned int i = 0; i <= _grid.dim.x; ++i) {
+    float x = _grid.lowCorner.x + i * size.x;
+    float y1 = _grid.lowCorner.y;
+    float y2 = _grid.highCorner.y;
+    for (unsigned int k = 0; k <= _grid.dim.z; ++k) {
+      float z = _grid.lowCorner.z + k * size.z;
+      glVertex3f(x, y1, z);
+      glVertex3f(x, y2, z);
+    }
+  }
+  // Pokey-outey lines
+  for (unsigned int i = 0; i <= _grid.dim.x; ++i) {
+    float x = _grid.lowCorner.x + i * size.x;
+    float z1 = _grid.lowCorner.z;
+    float z2 = _grid.highCorner.z;
     for (unsigned int j = 0; j <= _grid.dim.y; ++j) {
       float y = _grid.lowCorner.y + j * size.y;
-      float x1 = _grid.lowCorner.x;
-      float x2 = _grid.highCorner.x;
-      for (unsigned int k = 0; k <= _grid.dim.z; ++k) {
-        float z = _grid.lowCorner.z + k * size.z;
-        glVertex3f(x1, y, z);
-        glVertex3f(x2, y, z);
-      }
+      glVertex3f(x, y, z1);
+      glVertex3f(x, y, z2);
     }
-    // Vertical lines
-    for (unsigned int i = 0; i <= _grid.dim.x; ++i) {
-      float x = _grid.lowCorner.x + i * size.x;
-      float y1 = _grid.lowCorner.y;
-      float y2 = _grid.highCorner.y;
-      for (unsigned int k = 0; k <= _grid.dim.z; ++k) {
-        float z = _grid.lowCorner.z + k * size.z;
-        glVertex3f(x, y1, z);
-        glVertex3f(x, y2, z);
-      }
-    }
-    // Pokey-outey lines
-    for (unsigned int i = 0; i <= _grid.dim.x; ++i) {
-      float x = _grid.lowCorner.x + i * size.x;
-      float z1 = _grid.lowCorner.z;
-      float z2 = _grid.highCorner.z;
-      for (unsigned int j = 0; j <= _grid.dim.y; ++j) {
-        float y = _grid.lowCorner.y + j * size.y;
-        glVertex3f(x, y, z1);
-        glVertex3f(x, y, z2);
-      }
-    }
-    glEnd();
-    glEndList();
+  }
+  glEnd();
+  glEndList();
 }
 
 
@@ -347,6 +362,7 @@ void RayMarchRenderer::renderGrid()
 void RayMarchRenderer::renderRay() const
 {
   glColor3f(1, 0, 0);
+  glLineWidth(2.0);
   glBegin(GL_LINES);
   glVertex3fv(_ray.o.data);
   glVertex3fv( (_ray.o + _ray.d).data );
@@ -356,7 +372,8 @@ void RayMarchRenderer::renderRay() const
 
 void RayMarchRenderer::renderIntersections() const
 {
-  glColor4f(1, 0.7, 0.7, 0.5);
+  glColor4f(1, 0.7, 0.7, 0.8);
+  glLineWidth(1.0);
   Marcher m(_ray, _grid);
   while (m.hasNext()) {
     renderIntersection(m.position(), 0.1);
@@ -367,7 +384,7 @@ void RayMarchRenderer::renderIntersections() const
 
 void RayMarchRenderer::renderIntersectedCells() const
 {
-  glColor4f(0.3, 0.3, 0.7, 0.2);
+  glColor4f(0.3, 0.3, 0.7, 0.3);
   Marcher m(_ray, _grid);
   while (m.hasNext()) {
     renderIntersectedCell(m.index(), 0.99);
@@ -422,6 +439,13 @@ int RayMarchViewer::actionForKeyPress(unsigned int key, int x, int y)
     case 'r': return ACTION_TOGGLE_DRAW_RAY;
     case 'i': return ACTION_TOGGLE_DRAW_INTERSECTIONS;
     case 'c': return ACTION_TOGGLE_DRAW_INTERSECTED_CELLS;
+    case '0': return ACTION_VIEW_CENTER;
+    case '1': return ACTION_VIEW_FRONT;
+    case '2': return ACTION_VIEW_BACK;
+    case '3': return ACTION_VIEW_LEFT;
+    case '4': return ACTION_VIEW_RIGHT;
+    case '5': return ACTION_VIEW_TOP;
+    case '6': return ACTION_VIEW_BOTTOM;
     default: return vgl::Viewer::actionForKeyPress(key, x, y);
   }
 }
@@ -430,19 +454,21 @@ int RayMarchViewer::actionForKeyPress(unsigned int key, int x, int y)
 void RayMarchViewer::actionHandler(int action)
 {
   RayMarchRenderer* renderer = dynamic_cast<RayMarchRenderer*>(_renderer);
+  vgl::Vec3f low = renderer->sceneBoundLow();
+  vgl::Vec3f high = renderer->sceneBoundHigh();
+
   switch (action) {
-    case ACTION_TOGGLE_DRAW_GRID:
-      renderer->toggleDrawGrid();
-      break;
-    case ACTION_TOGGLE_DRAW_RAY:
-      renderer->toggleDrawRay();
-      break;
-    case ACTION_TOGGLE_DRAW_INTERSECTIONS:
-      renderer->toggleDrawIntersections();
-      break;
-    case ACTION_TOGGLE_DRAW_INTERSECTED_CELLS:
-      renderer->toggleDrawIntersectedCells();
-      break;
+    case ACTION_TOGGLE_DRAW_GRID: renderer->toggleDrawGrid(); break;
+    case ACTION_TOGGLE_DRAW_RAY: renderer->toggleDrawRay(); break;
+    case ACTION_TOGGLE_DRAW_INTERSECTIONS: renderer->toggleDrawIntersections(); break;
+    case ACTION_TOGGLE_DRAW_INTERSECTED_CELLS: renderer->toggleDrawIntersectedCells(); break;
+    case ACTION_VIEW_CENTER: _camera->centerView(low, high); break;
+    case ACTION_VIEW_FRONT: _camera->frontView(low, high); break;
+    case ACTION_VIEW_BACK: _camera->backView(low, high); break;
+    case ACTION_VIEW_LEFT: _camera->leftView(low, high); break;
+    case ACTION_VIEW_RIGHT: _camera->rightView(low, high); break;
+    case ACTION_VIEW_TOP: _camera->topView(low, high); break;
+    case ACTION_VIEW_BOTTOM: _camera->bottomView(low, high); break;
     default:
       vgl::Viewer::actionHandler(action);
       break;
@@ -500,7 +526,7 @@ int main(int argc, char** argv)
   }
 
   Grid g(x, y, z, vgl::Vec3f(-2, -2, -2), vgl::Vec3f(2, 2, 2));
-  vgl::Ray3f r(vgl::Vec3f(-3, -3, 3), vgl::Vec3f(4, 5, -6));
+  vgl::Ray3f r(vgl::Vec3f(-2, -2, 3), vgl::Vec3f(4, 5, -6));
   RayMarchRenderer renderer(g, r);
   RayMarchViewer gui(&renderer);
   gui.run();
