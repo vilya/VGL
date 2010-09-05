@@ -66,7 +66,14 @@ private:
 class RayMarchRenderer : public vgl::Renderer {
 public:
   RayMarchRenderer(const Grid& g, const vgl::Ray3f& r) :
-    _gridList(0), _grid(g), _ray(r) {}
+    _gridList(0),
+    _grid(g),
+    _ray(r),
+    _showGrid(true),
+    _showRay(true),
+    _showIntersections(true),
+    _showIntersectedCells(true)
+  {}
 
   void toggleDrawGrid() { _showGrid = !_showGrid; }
   void toggleDrawRay() { _showRay = !_showRay; }
