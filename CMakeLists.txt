@@ -78,6 +78,7 @@ example(arcball)
 example(basic)
 example(example)
 example(imageview)
+example(picking)
 example(raymarch)
 example(styled)
 
