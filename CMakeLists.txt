@@ -38,6 +38,13 @@ include_directories(src thirdparty
   ${TIFF_INCLUDE_DIR})
 
 
+add_custom_command(
+  OUTPUT  pick.vert pick.frag draw.vert draw.frag
+  DEPENDS example/pick.vert example/pick.frag example/draw.vert example/draw.frag
+  COMMAND cp ${VGL_SOURCE_DIR}/example/pick.vert ${VGL_SOURCE_DIR}/example/pick.frag ${VGL_SOURCE_DIR}/example/draw.vert ${VGL_SOURCE_DIR}/example/draw.frag ${VGL_BINARY_DIR}
+)
+
+
 # Helper function which creates an example program.
 function (example example_NAME)
   add_executable(${example_NAME} example/${example_NAME}.cpp)
@@ -78,7 +85,11 @@ example(arcball)
 example(basic)
 example(example)
 example(imageview)
-example(picking)
 example(raymarch)
 example(styled)
+
+#example(picking)
+add_executable(picking example/picking.cpp pick.frag pick.vert draw.frag draw.vert)
+target_link_libraries(picking vgl)
+install(TARGETS picking DESTINATION bin)
 
