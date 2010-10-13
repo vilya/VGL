@@ -1,5 +1,7 @@
 #include "vgl.h"
 #include <cstring> // for memcpy
+#include <vector>
+
 
 //
 // Constants
@@ -53,7 +55,7 @@ private:
   GLuint _pbo;        // Pixel buffer for reading the pick data back into CPU memory.
 
   unsigned int _mode; // The user-selected drawing mode.
-  BufType* _pickData; // The local copy of the pick data.
+  std::vector<BufType> _pickData; // The local copy of the pick data.
 };
 
 
@@ -99,9 +101,8 @@ PickingRenderer::PickingRenderer() :
   _pickDepth(0),
   _pbo(0),
   _mode(0),
-  _pickData(NULL)
+  _pickData()
 {
-  _pickData = new BufType[3 * kBufferWidth * kBufferHeight];
 }
 
 
@@ -115,24 +116,27 @@ PickingRenderer::~PickingRenderer()
     glDeleteRenderbuffers(1, &_pickDepth);
   if (_pbo)
     glDeleteBuffers(1, &_pbo);
-
-  delete[] _pickData;
 }
 
 
 void PickingRenderer::setup()
 {
   glEnable(GL_DEPTH_TEST);
+
+  GLint vp[4];
+  glGetIntegerv(GL_VIEWPORT, vp);
+  unsigned int width = vp[2];
+  unsigned int height = vp[3];
  
   // Set up the pick buffer.
   glGenRenderbuffers(1, &_pickBuffer);
   glBindRenderbuffer(GL_RENDERBUFFER, _pickBuffer);
-  glRenderbufferStorage(GL_RENDERBUFFER, kBufInternalFormat, kBufferWidth, kBufferHeight);
+  glRenderbufferStorage(GL_RENDERBUFFER, kBufInternalFormat, width, height);
 
   // Set up the depth buffer.
   glGenRenderbuffers(1, &_pickDepth);
   glBindRenderbuffer(GL_RENDERBUFFER, _pickDepth);
-  glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, kBufferWidth, kBufferHeight);
+  glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
 
   // Set up the FBO.
   glGenFramebuffers(1, &_fbo);
@@ -143,7 +147,7 @@ void PickingRenderer::setup()
   // Set up the PBO for reading back the pick data from the FBO.
   glGenBuffers(1, &_pbo);
   glBindBuffer(GL_PIXEL_PACK_BUFFER, _pbo);
-  glBufferData(GL_PIXEL_PACK_BUFFER, sizeof(BufType) * 3 * kBufferWidth * kBufferWidth, NULL, GL_DYNAMIC_READ);
+  glBufferData(GL_PIXEL_PACK_BUFFER, sizeof(BufType) * 3 * width * height, NULL, GL_DYNAMIC_READ);
 
   // Check that everything is OK.
   GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
@@ -156,13 +160,31 @@ void PickingRenderer::setup()
 
 void PickingRenderer::render()
 {
+  GLint vp[4];
+  glGetIntegerv(GL_VIEWPORT, vp);
+  unsigned int width = vp[2];
+  unsigned int height = vp[3];
+
+  fprintf(stderr, "width = %u, height = %u\n", width, height);
+
+  unsigned int newBufSize = width * height * 3;
+  if (newBufSize != _pickData.size()) {
+    _pickData.resize(newBufSize);
+    glBindRenderbuffer(GL_RENDERBUFFER, _pickBuffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, kBufInternalFormat, width, height);
+    glBindRenderbuffer(GL_RENDERBUFFER, _pickDepth);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, _pbo);
+    glBufferData(GL_PIXEL_PACK_BUFFER, sizeof(BufType) * 3 * width * height, NULL, GL_DYNAMIC_READ);
+  }
+
   // Render the selectable data
   glBindFramebuffer(GL_FRAMEBUFFER, _pickBuffer);
   renderPickImage();
 
   // Start reading the selectable data back asynchronously
   glBindBuffer(GL_PIXEL_PACK_BUFFER, _pbo);
-  glReadPixels(0, 0, kBufferWidth, kBufferHeight, kBufFormat, kBufType, (void*)0);
+  glReadPixels(0, 0, width, height, kBufFormat, kBufType, (void*)0);
 
   // Render the visual data
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -174,17 +196,22 @@ void PickingRenderer::render()
   // Map the selectable data so we can use it.
   float* buf = (float*)glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
   if (buf) {
-    memcpy(_pickData, buf, sizeof(BufType) * 3 * kBufferWidth * kBufferHeight);
+    memcpy(_pickData.data(), buf, sizeof(BufType) * 3 * width * height);
     glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
   }
   glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 }
 
 
-bool PickingRenderer::objectAt(unsigned int sx, unsigned int sy, unsigned int& type, unsigned int& id)
+bool PickingRenderer::objectAt(unsigned int x, unsigned int y, unsigned int& type, unsigned int& id)
 {
-  sy = kBufferHeight + 1 - sy;
-  unsigned int index = (sy * kBufferWidth + sx) * 3;
+  GLint vp[4];
+  glGetIntegerv(GL_VIEWPORT, vp);
+  unsigned int width = vp[2];
+  unsigned int height = vp[3];
+
+  y = height + 1 - y;
+  unsigned int index = (y * width + x) * 3;
 
   if (_pickData[index] == 0)
     return false;
@@ -400,9 +427,7 @@ int PickingViewer::actionForMousePress(int button, int state, int x, int y)
     unsigned int type = 0;
     unsigned int id = 0;
     if (x >= 0 && x < _width && y >= 0 && y < _height) {
-      unsigned int sx = (unsigned int)x * kBufferWidth / _width;
-      unsigned int sy = (unsigned int)y * kBufferHeight / _height;
-      if (picker->objectAt(sx, sy, type, id)) {
+      if (picker->objectAt(x, y, type, id)) {
         switch (type) {
           case 1: _selectedFace = id;   return ACTION_PICK_FACE;
           case 2: _selectedEdge = id;   return ACTION_PICK_EDGE;
