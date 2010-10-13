@@ -13,14 +13,14 @@ const unsigned int kBufferHeight = 600;
 // Buffer
 //
 
-typedef unsigned char BufType;
-const GLenum kBufInternalFormat = GL_RGB8;
+typedef unsigned short BufType;
+const GLenum kBufInternalFormat = GL_RGB16;
 const GLenum kBufFormat = GL_RGB;
-const GLenum kBufType = GL_UNSIGNED_BYTE;
+const GLenum kBufType = GL_UNSIGNED_SHORT;
 
 const BufType kTypeShift = sizeof(BufType) * 8 - 2;
-const BufType kIDShift = sizeof(BufType) * 8 - 8;
-#define PickColor glColor3ub
+const BufType kIDShift = 0;
+#define PickColor glColor3us
 
 //
 // PickingRenderer class
