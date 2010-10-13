@@ -30,12 +30,19 @@ file(GLOB VGL_EXTRAS test/*.cpp example/*.cpp)
 
 # Compilation and linking properties.
 set_source_files_properties(${VGL_SOURCES} ${VGL_EXTRAS}
-  COMPILE_FLAGS "${OpenMP_CXX_FLAGS}")
+  COMPILE_FLAGS "${OpenMP_CXX_FLAGS} -g3")
 include_directories(src thirdparty
   ${GLUT_INCLUDE_DIR}
   ${JPEG_INCLUDE_DIR}
   ${PNG_INCLUDE_DIR}
   ${TIFF_INCLUDE_DIR})
+
+
+add_custom_command(
+  OUTPUT  pick.vert pick.frag draw.vert draw.frag
+  DEPENDS example/pick.vert example/pick.frag example/draw.vert example/draw.frag
+  COMMAND cp ${VGL_SOURCE_DIR}/example/pick.vert ${VGL_SOURCE_DIR}/example/pick.frag ${VGL_SOURCE_DIR}/example/draw.vert ${VGL_SOURCE_DIR}/example/draw.frag ${VGL_BINARY_DIR}
+)
 
 
 # Helper function which creates an example program.
@@ -80,4 +87,9 @@ example(example)
 example(imageview)
 example(raymarch)
 example(styled)
+
+#example(picking)
+add_executable(picking example/picking.cpp pick.frag pick.vert draw.frag draw.vert)
+target_link_libraries(picking vgl)
+install(TARGETS picking DESTINATION bin)
 
