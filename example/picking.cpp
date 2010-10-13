@@ -124,7 +124,6 @@ void PickingRenderer::setup()
 {
   glEnable(GL_DEPTH_TEST);
  
-/*
   // Set up the pick buffer.
   glGenRenderbuffers(1, &_pickBuffer);
   glBindRenderbuffer(GL_RENDERBUFFER, _pickBuffer);
@@ -152,22 +151,26 @@ void PickingRenderer::setup()
     fprintf(stderr, "Framebuffer incomplete. Aborting.\n");
     exit(-1);
   }
-*/
 }
 
 
 void PickingRenderer::render()
 {
   // Render the selectable data
-//  glBindFramebuffer(GL_FRAMEBUFFER, _pickBuffer);
+  glBindFramebuffer(GL_FRAMEBUFFER, _pickBuffer);
   renderPickImage();
 
   // Start reading the selectable data back asynchronously
-//  glBindBuffer(GL_PIXEL_PACK_BUFFER, _pbo);
-  //glReadPixels(0, 0, kBufferWidth, kBufferHeight, kBufFormat, kBufType, (void*)0);
-  glReadPixels(0, 0, kBufferWidth, kBufferHeight, kBufFormat, kBufType, (void*)_pickData);
+  glBindBuffer(GL_PIXEL_PACK_BUFFER, _pbo);
+  glReadPixels(0, 0, kBufferWidth, kBufferHeight, kBufFormat, kBufType, (void*)0);
 
-/*
+  // Render the visual data
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  if (_mode == 0)
+    renderVisualImage();
+  else
+    renderPickImage();
+
   // Map the selectable data so we can use it.
   float* buf = (float*)glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
   if (buf) {
@@ -175,14 +178,6 @@ void PickingRenderer::render()
     glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
   }
   glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
-
-  // Render the visual data
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
-*/
-  if (_mode == 0)
-    renderVisualImage();
-  else
-    renderPickImage();
 }
 
 
