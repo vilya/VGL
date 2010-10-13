@@ -8,11 +8,19 @@
 const unsigned int kBufferWidth = 800;
 const unsigned int kBufferHeight = 600;
 
-const char* kPickingVertexShaderPath = "pick.vert";
-const char* kPickingFragmentShaderPath = "pick.frag";
-const char* kDrawingVertexShaderPath = "draw.vert";
-const char* kDrawingFragmentShaderPath = "draw.frag";
 
+//
+// Buffer
+//
+
+typedef unsigned char BufType;
+const GLenum kBufInternalFormat = GL_RGB8;
+const GLenum kBufFormat = GL_RGB;
+const GLenum kBufType = GL_UNSIGNED_BYTE;
+
+const BufType kTypeShift = sizeof(BufType) * 8 - 2;
+const BufType kIDShift = sizeof(BufType) * 8 - 8;
+#define PickColor glColor3ub
 
 //
 // PickingRenderer class
@@ -29,10 +37,14 @@ public:
 
   bool objectAt(unsigned int x, unsigned int y, unsigned int& type, unsigned int& id);
 
+  void nextDrawingMode();
+
 private:
   void renderPickImage();
   void renderVisualImage();
-  void cube(GLenum polygonMode, const vgl::Vec3f color);
+  void drawMode(GLenum polygonMode);
+  void cube(const vgl::Vec3f& color);
+  void pickableCube(BufType itemType);
 
 private:
   GLuint _fbo;        // The framebuffer object we draw the pick info to.
@@ -40,12 +52,8 @@ private:
   GLuint _pickDepth;  // The renderbuffer object for the depth data while picking.
   GLuint _pbo;        // Pixel buffer for reading the pick data back into CPU memory.
 
-  GLuint _drawingProg;  // The shader program for rendering the drawing.
-  GLuint _pickingProg;  // The shader program for rendering the picking data
-
-  GLuint _vbo[2];
-
-  float* _pickData;  // The local copy of the pick data.
+  unsigned int _mode; // The user-selected drawing mode.
+  BufType* _pickData; // The local copy of the pick data.
 };
 
 
@@ -60,7 +68,9 @@ public:
   enum {
     ACTION_PICK_FACE = 100, // Selected a face.
     ACTION_PICK_EDGE,       // Selected an edge.
-    ACTION_PICK_VERTEX      // Selected a vertex.
+    ACTION_PICK_VERTEX,     // Selected a vertex.
+
+    ACTION_NEXT_MODE        // Switch to the next drawing mode.
   };
 
 public:
@@ -69,6 +79,7 @@ public:
 
 protected:
   virtual int actionForMousePress(int button, int state, int x, int y);
+  virtual int actionForKeyPress(unsigned int key, int x, int y);
   virtual void actionHandler(int action);
 
 protected:
@@ -87,11 +98,10 @@ PickingRenderer::PickingRenderer() :
   _pickBuffer(0),
   _pickDepth(0),
   _pbo(0),
-  _pickingProg(0),
+  _mode(0),
   _pickData(NULL)
 {
-  _vbo[0] = _vbo[1] = 0;
-  _pickData = new float[3 * kBufferWidth * kBufferHeight];
+  _pickData = new BufType[3 * kBufferWidth * kBufferHeight];
 }
 
 
@@ -106,11 +116,6 @@ PickingRenderer::~PickingRenderer()
   if (_pbo)
     glDeleteBuffers(1, &_pbo);
 
-  // TODO: clean up the shaders
-
-  if (_vbo[0] || _vbo[1])
-    glDeleteBuffers(2, _vbo);
-
   delete[] _pickData;
 }
 
@@ -118,12 +123,12 @@ PickingRenderer::~PickingRenderer()
 void PickingRenderer::setup()
 {
   glEnable(GL_DEPTH_TEST);
-  glPointSize(5);
-
+ 
+/*
   // Set up the pick buffer.
   glGenRenderbuffers(1, &_pickBuffer);
   glBindRenderbuffer(GL_RENDERBUFFER, _pickBuffer);
-  glRenderbufferStorage(GL_RENDERBUFFER, GL_RGB, kBufferWidth, kBufferHeight);
+  glRenderbufferStorage(GL_RENDERBUFFER, kBufInternalFormat, kBufferWidth, kBufferHeight);
 
   // Set up the depth buffer.
   glGenRenderbuffers(1, &_pickDepth);
@@ -139,7 +144,7 @@ void PickingRenderer::setup()
   // Set up the PBO for reading back the pick data from the FBO.
   glGenBuffers(1, &_pbo);
   glBindBuffer(GL_PIXEL_PACK_BUFFER, _pbo);
-  glBufferData(GL_PIXEL_PACK_BUFFER, sizeof(float) * 3 * kBufferWidth * kBufferWidth, NULL, GL_DYNAMIC_READ);
+  glBufferData(GL_PIXEL_PACK_BUFFER, sizeof(BufType) * 3 * kBufferWidth * kBufferWidth, NULL, GL_DYNAMIC_READ);
 
   // Check that everything is OK.
   GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
@@ -147,86 +152,58 @@ void PickingRenderer::setup()
     fprintf(stderr, "Framebuffer incomplete. Aborting.\n");
     exit(-1);
   }
-
-  // Load and link the drawing shaders
-  GLuint drawingVertexShader = vgl::loadShader(GL_VERTEX_SHADER, kDrawingVertexShaderPath);
-  GLuint drawingFragmentShader = vgl::loadShader(GL_FRAGMENT_SHADER, kDrawingFragmentShaderPath);
-  if (drawingVertexShader == 0 || drawingFragmentShader == 0) {
-    fprintf(stderr, "Unable to load drawing shaders. Aborting.\n");
-    exit(-1);
-  }
-  _drawingProg = vgl::linkShader(drawingVertexShader, drawingFragmentShader);
-
-  // Load and link the picking shaders
-  GLuint pickingVertexShader = vgl::loadShader(GL_VERTEX_SHADER, kPickingVertexShaderPath);
-  GLuint pickingFragmentShader = vgl::loadShader(GL_FRAGMENT_SHADER, kPickingFragmentShaderPath);
-  if (pickingVertexShader == 0 || pickingFragmentShader == 0) {
-    fprintf(stderr, "Unable to load picking shaders. Aborting.\n");
-    exit(-1);
-  }
-  _pickingProg = vgl::linkShader(pickingVertexShader, pickingFragmentShader);
-
-  // Set up the vertex buffer for the cube.
-  const unsigned int kFloatsPerVertex = 6; // x, y, z, type, object ID, vertex ID
-  const unsigned int kNumVertices = 8;
-  const unsigned int kNumTriangles = 12;
-  const vgl::Vec3f lo(-0.5, -0.5, -0.5);
-  const vgl::Vec3f hi(0.5, 0.5, 0.5);
-  const float vertexData[] = {
-    lo.x, lo.y, lo.z, 1, 1, 0,
-    hi.x, lo.y, lo.z, 1, 1, 1,
-    hi.x, hi.y, lo.z, 1, 1, 2,
-    lo.x, hi.y, lo.z, 1, 1, 3,
-  
-    lo.x, lo.y, hi.z, 1, 1, 4,
-    hi.x, lo.y, hi.z, 1, 1, 5,
-    hi.x, hi.y, hi.z, 1, 1, 6,
-    lo.x, hi.y, hi.z, 1, 1, 7
-  };
-  const unsigned int indexData[] = {
-    0, 1, 2,
-    2, 3, 0,
-    4, 5, 6,
-    6, 7, 4,
-    1, 5, 6,
-    6, 2, 1,
-    0, 4, 7,
-    7, 3, 0,
-    3, 2, 6,
-    6, 7, 3,
-    0, 1, 5,
-    5, 4, 0
-  };
-  glGenBuffers(2, _vbo);
-  glBindBuffer(GL_ARRAY_BUFFER, _vbo[0]);
-  glBufferData(GL_ARRAY_BUFFER, kFloatsPerVertex * kNumVertices * sizeof(float), vertexData, GL_STATIC_DRAW);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _vbo[1]);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, kNumTriangles * 3 * sizeof(unsigned int), indexData, GL_STATIC_DRAW);
+*/
 }
 
 
 void PickingRenderer::render()
 {
   // Render the selectable data
-  glBindFramebuffer(GL_FRAMEBUFFER, _pickBuffer);
+//  glBindFramebuffer(GL_FRAMEBUFFER, _pickBuffer);
   renderPickImage();
 
   // Start reading the selectable data back asynchronously
-  glBindBuffer(GL_PIXEL_PACK_BUFFER, _pbo);
-  glReadPixels(0, 0, kBufferWidth, kBufferHeight, GL_RGB, GL_UNSIGNED_INT, (void*)0);
+//  glBindBuffer(GL_PIXEL_PACK_BUFFER, _pbo);
+  //glReadPixels(0, 0, kBufferWidth, kBufferHeight, kBufFormat, kBufType, (void*)0);
+  glReadPixels(0, 0, kBufferWidth, kBufferHeight, kBufFormat, kBufType, (void*)_pickData);
 
+/*
   // Map the selectable data so we can use it.
   float* buf = (float*)glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY);
   if (buf) {
-    memcpy(_pickData, buf, sizeof(float) * 3 * kBufferWidth * kBufferHeight);
+    memcpy(_pickData, buf, sizeof(BufType) * 3 * kBufferWidth * kBufferHeight);
     glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
   }
   glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 
   // Render the visual data
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
-  //renderVisualImage();
-  renderPickImage();
+*/
+  if (_mode == 0)
+    renderVisualImage();
+  else
+    renderPickImage();
+}
+
+
+bool PickingRenderer::objectAt(unsigned int sx, unsigned int sy, unsigned int& type, unsigned int& id)
+{
+  sy = kBufferHeight + 1 - sy;
+  unsigned int index = (sy * kBufferWidth + sx) * 3;
+
+  if (_pickData[index] == 0)
+    return false;
+
+  type = (unsigned int)_pickData[index] >> kTypeShift;
+  id = (unsigned int)_pickData[index + 2] >> kIDShift;
+  return true;
+}
+
+
+void PickingRenderer::nextDrawingMode()
+{
+  _mode = 1 - _mode;
+  glutPostRedisplay();
 }
 
 
@@ -235,11 +212,14 @@ void PickingRenderer::renderPickImage()
   glClearColor(0, 0, 0, 1);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glLineWidth(8.0);
-  glUseProgram(_pickingProg);
-  glEnableClientState(GL_COLOR_ARRAY);
-  cube(GL_FILL, vgl::Vec3f(0.3, 0.3, 0.3)); // Draw the faces
-  cube(GL_LINE, vgl::Vec3f(0.6, 0.6, 0.6)); // Draw the lines 
-  cube(GL_POINT, vgl::Vec3f(0.9, 0.9, 0.9)); // Draw the points
+  glPointSize(10.0);
+
+  drawMode(GL_FILL);
+  pickableCube(1); // Draw the faces
+  drawMode(GL_LINE);
+  pickableCube(2); // Draw the lines 
+  drawMode(GL_POINT);
+  pickableCube(3); // Draw the points
 }
 
 
@@ -248,37 +228,30 @@ void PickingRenderer::renderVisualImage()
   glClearColor(0.2, 0.2, 0.2, 1.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glLineWidth(1.0);
-  glUseProgram(_drawingProg);
-  glDisableClientState(GL_COLOR_ARRAY);
-  cube(GL_FILL, vgl::Vec3f(0.3, 0.3, 0.3)); // Draw the faces
-  cube(GL_LINE, vgl::Vec3f(0.6, 0.6, 0.6)); // Draw the lines 
-  cube(GL_POINT, vgl::Vec3f(0.9, 0.9, 0.9)); // Draw the points
+  glPointSize(5.0);
+
+  drawMode(GL_FILL);
+  cube(vgl::Vec3f(0.3, 0.3, 0.3)); // Draw the faces
+  drawMode(GL_LINE);
+  cube(vgl::Vec3f(0.6, 0.6, 0.6)); // Draw the lines 
+  drawMode(GL_POINT);
+  cube(vgl::Vec3f(0.9, 0.9, 0.9)); // Draw the points
 }
 
 
-bool PickingRenderer::objectAt(unsigned int sx, unsigned int sy, unsigned int& type, unsigned int& id)
+void PickingRenderer::drawMode(GLenum polygonMode)
 {
-  unsigned int index = (sy * kBufferWidth + sx) * 3;
-
-  if (_pickData[index] == 0)
-    return false;
-
-  type = _pickData[index];
-  id = _pickData[index + 1];
-  return true;
-}
-
-
-void PickingRenderer::cube(GLenum polygonMode, const vgl::Vec3f color)
-{
+  glPolygonMode(GL_FRONT_AND_BACK, polygonMode);
   switch (polygonMode) {
   case GL_LINE:
+    glDisable(GL_POLYGON_OFFSET_POINT);
     glEnable(GL_POLYGON_OFFSET_LINE);
     glPolygonOffset(-1,  -3);
     break;
   case GL_POINT:
     glPolygonOffset(-1,  -5);
     glEnable(GL_POLYGON_OFFSET_POINT);
+    glDisable(GL_POLYGON_OFFSET_LINE);
     break;
   case GL_FILL:
   default:
@@ -287,26 +260,122 @@ void PickingRenderer::cube(GLenum polygonMode, const vgl::Vec3f color)
     glPolygonOffset(0, 0);
     break;
   }
-  glPolygonMode(GL_FRONT_AND_BACK, polygonMode);
+}
+
+
+void PickingRenderer::cube(const vgl::Vec3f& color)
+{
+  vgl::Vec3f lo(-0.5, -0.5, -0.5);
+  vgl::Vec3f hi( 0.5,  0.5,  0.5);
+
   glColor3fv(color.data);
+  glBegin(GL_QUADS);
 
-  glBindBuffer(GL_ARRAY_BUFFER, _vbo[0]);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _vbo[1]);
+  glVertex3f(lo.x, lo.y, lo.z);
+  glVertex3f(hi.x, lo.y, lo.z);
+  glVertex3f(hi.x, hi.y, lo.z);
+  glVertex3f(lo.x, hi.y, lo.z);
 
-  const unsigned int kStride = 6 * sizeof(float);
-  glEnableClientState(GL_VERTEX_ARRAY);
-  glVertexPointer(3, GL_FLOAT, kStride, 0);
-  glColorPointer(3, GL_FLOAT, kStride, (const GLvoid*)(3 * sizeof(float)));
+  glVertex3f(lo.x, lo.y, hi.z);
+  glVertex3f(hi.x, lo.y, hi.z);
+  glVertex3f(hi.x, hi.y, hi.z);
+  glVertex3f(lo.x, hi.y, hi.z);
 
-  glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+  glVertex3f(lo.x, lo.y, lo.z);
+  glVertex3f(lo.x, lo.y, hi.z);
+  glVertex3f(lo.x, hi.y, hi.z);
+  glVertex3f(lo.x, hi.y, lo.z);
 
-  glDisableClientState(GL_VERTEX_ARRAY);
-  glDisableClientState(GL_COLOR_ARRAY);
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  glVertex3f(hi.x, lo.y, lo.z);
+  glVertex3f(hi.x, lo.y, hi.z);
+  glVertex3f(hi.x, hi.y, hi.z);
+  glVertex3f(hi.x, hi.y, lo.z);
 
-  glDisable(GL_POLYGON_OFFSET_LINE);
-  glDisable(GL_POLYGON_OFFSET_POINT);
+  glVertex3f(lo.x, lo.y, lo.z);
+  glVertex3f(hi.x, lo.y, lo.z);
+  glVertex3f(hi.x, lo.y, hi.z);
+  glVertex3f(lo.x, lo.y, hi.z);
+
+  glVertex3f(lo.x, hi.y, lo.z);
+  glVertex3f(hi.x, hi.y, lo.z);
+  glVertex3f(hi.x, hi.y, hi.z);
+  glVertex3f(lo.x, hi.y, hi.z);
+
+  glEnd();
+}
+
+
+void PickingRenderer::pickableCube(BufType itemType)
+{
+  vgl::Vec3f lo(-0.5, -0.5, -0.5);
+  vgl::Vec3f hi( 0.5,  0.5,  0.5);
+
+  const float kVerts[24][3] = {
+    { lo.x, lo.y, lo.z },
+    { hi.x, lo.y, lo.z },
+    { hi.x, hi.y, lo.z },
+    { lo.x, hi.y, lo.z },
+
+    { lo.x, lo.y, hi.z },
+    { hi.x, lo.y, hi.z },
+    { hi.x, hi.y, hi.z },
+    { lo.x, hi.y, hi.z },
+
+    { lo.x, lo.y, lo.z },
+    { lo.x, lo.y, hi.z },
+    { lo.x, hi.y, hi.z },
+    { lo.x, hi.y, lo.z },
+
+    { hi.x, lo.y, lo.z },
+    { hi.x, lo.y, hi.z },
+    { hi.x, hi.y, hi.z },
+    { hi.x, hi.y, lo.z },
+
+    { lo.x, lo.y, lo.z },
+    { hi.x, lo.y, lo.z },
+    { hi.x, lo.y, hi.z },
+    { lo.x, lo.y, hi.z },
+
+    { lo.x, hi.y, lo.z },
+    { hi.x, hi.y, lo.z },
+    { hi.x, hi.y, hi.z },
+    { lo.x, hi.y, hi.z }
+  };
+
+  switch (itemType) {
+  case 1: // Faces
+    glBegin(GL_QUADS);
+    for (unsigned int i = 0; i < 6; ++i) {
+      PickColor(itemType << kTypeShift, 0, i << kIDShift);
+      for (int f = i * 4; f < (i + 1) * 4; ++f)
+        glVertex3fv(kVerts[f]);
+    }
+    glEnd();
+    break;
+  case 2: // Edges
+    glBegin(GL_LINES);
+    for (unsigned int i = 0; i < 6; ++i) {
+      int prev = i * 4 + 3;
+      for (unsigned int f = i * 4; f < (i + 1) * 4; ++f) {
+        PickColor(itemType << kTypeShift, 0, f << kIDShift);
+        glVertex3fv(kVerts[prev]);
+        glVertex3fv(kVerts[f]);
+        prev = f;
+      }
+    }
+    glEnd();
+    break;
+  case 3: // Verts
+    glBegin(GL_QUADS);
+    for (unsigned int i = 0; i < 24; ++i) {
+      PickColor(itemType << kTypeShift, 0, i << kIDShift);
+      glVertex3fv(kVerts[i]);
+    }
+    glEnd();
+    break;
+  default: // Regular drawing.
+    break;
+  }
 }
 
 
@@ -338,21 +407,31 @@ int PickingViewer::actionForMousePress(int button, int state, int x, int y)
     if (x >= 0 && x < _width && y >= 0 && y < _height) {
       unsigned int sx = (unsigned int)x * kBufferWidth / _width;
       unsigned int sy = (unsigned int)y * kBufferHeight / _height;
-      fprintf(stderr, "Click at %d, %d scaled to %u, %u\n", x, y, sx, sy);
       if (picker->objectAt(sx, sy, type, id)) {
         switch (type) {
           case 1: _selectedFace = id;   return ACTION_PICK_FACE;
           case 2: _selectedEdge = id;   return ACTION_PICK_EDGE;
           case 3: _selectedVertex = id; return ACTION_PICK_VERTEX;
           default:
-            fprintf(stderr, "Hit unknown object type %u with id %u.\n", type, id);
+            fprintf(stderr, "Unknown object type %u with id %u.\n", type, id);
             break;
         }
+      }
+      else {
+        fprintf(stderr, "Background.\n");
       }
     }
   }
 
   return vgl::Viewer::actionForMousePress(button, state, x, y);
+}
+
+
+int PickingViewer::actionForKeyPress(unsigned int key, int x, int y)
+{
+  if (key == ' ')
+    return ACTION_NEXT_MODE;
+  return vgl::Viewer::actionForKeyPress(key, x, y);
 }
 
 
@@ -362,6 +441,7 @@ void PickingViewer::actionHandler(int action)
   case ACTION_PICK_FACE:    fprintf(stderr, "Picked face %u\n", _selectedFace); break;
   case ACTION_PICK_EDGE:    fprintf(stderr, "Picked edge %u\n", _selectedEdge); break;
   case ACTION_PICK_VERTEX:  fprintf(stderr, "Picked vertex %u\n", _selectedVertex); break;
+  case ACTION_NEXT_MODE:    ((PickingRenderer*)_renderer)->nextDrawingMode(); break;
   default:
     vgl::Viewer::actionHandler(action);
     break;
