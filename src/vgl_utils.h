@@ -86,7 +86,12 @@ void drawBitmapString(float x, float y, void* font, char* str,
 GLuint loadShader(GLenum shaderType, const char* path);
 
 // Link a vertex shader and fragment shader together into a shader program.
-GLuint linkShader(GLuint vertexShaderID, GLuint fragmentShaderID);
+GLuint linkShader(GLuint vertexShaderID, GLuint fragmentShaderID,
+  GLuint geometryShaderID=0, GLenum inGeomType=0, GLenum outGeomType=0, GLuint maxOutVerts=0);
+
+// Link multiple shaders of arbitrary types together into a shader program.
+// The last shader ID in the arg list must be 0.
+GLuint linkShaders(GLuint firstShader...);
 
 // Print out the contents of the shader info log. Useful for debugging when
 // your shader won't compile. The obj param is the ID of the shader whose log

@@ -125,11 +125,18 @@ GLuint loadShader(GLenum shaderType, const char* path)
 }
 
 
-GLuint linkShader(GLuint vertexShaderID, GLuint fragmentShaderID)
+GLuint linkShader(GLuint vertexShaderID, GLuint fragmentShaderID,
+  GLuint geometryShaderID, GLenum inGeomType, GLenum outGeomType, GLuint maxOutVerts)
 {
   GLuint programID = glCreateProgram();
   glAttachShader(programID, vertexShaderID);
   glAttachShader(programID, fragmentShaderID);
+  if (geometryShaderID) {
+    glAttachShader(programID, geometryShaderID);
+    glProgramParameteriEXT(programID, GL_GEOMETRY_INPUT_TYPE_EXT, inGeomType);
+    glProgramParameteriEXT(programID, GL_GEOMETRY_OUTPUT_TYPE_EXT, outGeomType);
+    glProgramParameteriEXT(programID, GL_GEOMETRY_VERTICES_OUT_EXT, maxOutVerts);
+  }
   glLinkProgram(programID);
 
   GLint status;
@@ -158,6 +165,7 @@ void printShaderInfoLog(GLuint obj)
     delete[] infoLog;
 	}
 }
+
 
 void printProgramInfoLog(GLuint obj)
 {
