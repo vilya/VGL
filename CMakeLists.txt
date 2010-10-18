@@ -43,6 +43,11 @@ add_custom_command(
   DEPENDS example/pick.vert example/pick.frag example/draw.vert example/draw.frag
   COMMAND cp ${VGL_SOURCE_DIR}/example/pick.vert ${VGL_SOURCE_DIR}/example/pick.frag ${VGL_SOURCE_DIR}/example/draw.vert ${VGL_SOURCE_DIR}/example/draw.frag ${VGL_BINARY_DIR}
 )
+add_custom_command(
+  OUTPUT  perface.v.glsl perface.g.glsl perface.f.glsl
+  DEPENDS example/perface.v.glsl example/perface.g.glsl example/perface.f.glsl
+  COMMAND cp ${VGL_SOURCE_DIR}/example/perface.v.glsl ${VGL_SOURCE_DIR}/example/perface.g.glsl ${VGL_SOURCE_DIR}/example/perface.f.glsl ${VGL_BINARY_DIR}
+)
 
 
 # Helper function which creates an example program.
@@ -92,4 +97,9 @@ example(styled)
 add_executable(picking example/picking.cpp pick.frag pick.vert draw.frag draw.vert)
 target_link_libraries(picking vgl)
 install(TARGETS picking DESTINATION bin)
+
+#example(perface)
+add_executable(perface example/perface.cpp perface.v.glsl perface.g.glsl perface.f.glsl)
+target_link_libraries(perface vgl)
+install(TARGETS perface DESTINATION bin)
 
