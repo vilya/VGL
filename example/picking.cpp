@@ -165,8 +165,6 @@ void PickingRenderer::render()
   unsigned int width = vp[2];
   unsigned int height = vp[3];
 
-  fprintf(stderr, "width = %u, height = %u\n", width, height);
-
   unsigned int newBufSize = width * height * 3;
   if (newBufSize != _pickData.size()) {
     _pickData.resize(newBufSize);
@@ -475,7 +473,6 @@ void PickingViewer::actionHandler(int action)
 
 int main(int argc, char** argv)
 {
-  PickingRenderer renderer;
   PickingViewer viewer;
   viewer.run();
 }

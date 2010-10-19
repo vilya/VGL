@@ -60,11 +60,6 @@ void PerFaceRenderer::setup()
 {
   glEnable(GL_DEPTH_TEST);
 
-  GLint vp[4];
-  glGetIntegerv(GL_VIEWPORT, vp);
-  unsigned int width = vp[2];
-  unsigned int height = vp[3];
-
   // Load and link the shaders.
   GLuint vertexShader = vgl::loadShader(GL_VERTEX_SHADER, kVertexShader);
   GLuint geometryShader = vgl::loadShader(GL_GEOMETRY_SHADER_EXT, kGeometryShader);
@@ -92,11 +87,6 @@ void PerFaceRenderer::setup()
 
 void PerFaceRenderer::render()
 {
-  GLint vp[4];
-  glGetIntegerv(GL_VIEWPORT, vp);
-  unsigned int width = vp[2];
-  unsigned int height = vp[3];
-
   glUseProgram(_prog);
   glBindBuffer(GL_ARRAY_BUFFER, _buffers[0]);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _buffers[1]);
