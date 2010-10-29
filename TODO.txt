@@ -7,6 +7,7 @@ TODO
 - Make the loadOBJ and loadPLY functions public.
 - Make it possible to register additional geometry loaders without changing the VGL code.
 - Add support for LWO files.
+- Add support for .3ds files, using lib3ds: http://lib3ds.sf.net/
 
 - Comment the code properly, in a structured format that Doxygen or something can use.
 - Add a build target to generate the docs.
@@ -18,3 +19,12 @@ TODO
 - Get the ArcballCamera working *better* than the hacked-together camera in the
   OBJViewer.
 
+- Scene graph classes
+- Scene graph renderer
+  - Walk the scene graph to build up a vector of render commands. Note that
+    unloading a buffer / texture / shader should be a command too.
+  - build up an adjacency matrix for dependencies between render commands.
+  - Do a topological sort of the render commands.
+  - Fuse commands where possible.
+  - Sort the render commands to minimise the number of state changes & maximise
+    reuse of buffers/textures.

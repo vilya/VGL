@@ -100,7 +100,7 @@ Viewer::Viewer(
 
   // Setup GLUT
   glutInit(&argc, argv);
-  glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
+  glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA | GLUT_STENCIL);
   glutInitWindowPosition(100, 100);
   glutInitWindowSize(width, height);
   glutCreateWindow((title != NULL) ? title : "Unnamed");

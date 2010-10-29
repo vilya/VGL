@@ -91,6 +91,8 @@ example(basic)
 example(example)
 example(imageview)
 example(raymarch)
+example(shadowmap)
+example(stencil)
 example(styled)
 
 #example(picking)
