@@ -48,6 +48,8 @@ private:
 
   DirectionalLight* _light;
   vgl::Camera* _camera;
+
+  GLuint _testTex;
 };
 
 
@@ -124,6 +126,13 @@ vgl::Matrix4f DirectionalLight::getShadowMatrix(int shadowMapWidth,
   glGetFloatv(GL_MODELVIEW_MATRIX, shadowMatrix.data);
   glPopMatrix();
 
+  for (int r = 1; r < 4; ++r) {
+    for (int c = 0; c < r; ++c) {
+      float tmp = shadowMatrix.rows[r][c];
+      shadowMatrix.rows[r][c] = shadowMatrix.rows[c][r];
+      shadowMatrix.rows[c][r] = tmp;
+    }
+  }
   return shadowMatrix;
 }
 
@@ -138,7 +147,8 @@ ShadowMapRenderer::ShadowMapRenderer(DirectionalLight* light, vgl::Camera* camer
     _shadowMapHeight(512),
     _shadowTex(0),
     _light(light),
-    _camera(camera)
+    _camera(camera),
+    _testTex(0)
 {
 }
 
@@ -199,7 +209,7 @@ void ShadowMapRenderer::render()
   setupShadowMap();
 
   // Draw the scene from the cameras point of view with a bright light for the unshadowed areas.
-  //drawSceneFromCamera(1.0f, viewport);
+  drawSceneFromCamera(1.0f, viewport);
 
   // Cleanup
   glDisable(GL_TEXTURE_2D);
@@ -215,8 +225,8 @@ void ShadowMapRenderer::render()
 void ShadowMapRenderer::saveShadowTexture()
 {
   glBindTexture(GL_TEXTURE_2D, _shadowTex);
-  glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, 0, 0, _shadowMapWidth, _shadowMapHeight, 0);
-  glClear(GL_DEPTH_BUFFER_BIT);
+  glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 0, 0, _shadowMapWidth, _shadowMapHeight, 0);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 
@@ -329,9 +339,9 @@ int main(int argc, char**argv)
                             -1, 1, -1, 1,
                             30, kWidth, kHeight);
 
-  DirectionalLight light(vgl::Vec3f(0, 5, 0),
+  DirectionalLight light(vgl::Vec3f(2, 5, 1),
                          vgl::Vec3f(0, 0, 0),
-                         vgl::Vec3f(1, 0, 0));
+                         vgl::Vec3f(1, 0, 1));
 
   ShadowMapRenderer renderer(&light, &camera);
   vgl::Viewer viewer("Stencil buffer test", kWidth, kHeight, &renderer, &camera);
