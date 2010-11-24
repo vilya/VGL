@@ -629,9 +629,7 @@ void loadOBJ(ParserCallbacks* callbacks, const char* path)
           break;
         case OBJ_LINETYPE_F:
         case OBJ_LINETYPE_FO:
-          callbacks->beginFace();
           objParseFace(col, col, callbacks);
-          callbacks->endFace();
           break;
         case OBJ_LINETYPE_USEMTL:
           objParseUSEMTL(col, col, callbacks);

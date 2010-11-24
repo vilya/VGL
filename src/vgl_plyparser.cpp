@@ -87,85 +87,94 @@ void loadPLY(ParserCallbacks* callbacks, const char* path)
   float version = 0.0;
   PlyFile* plySrc = ply_open_for_reading(const_cast<char*>(path),
       &numElements, &elementNames, &fileType, &version);
+  if (plySrc == NULL)
+    throw ParseException("Unable to open file %s", path);
 
-  for (int i = 0; i < numElements; ++i) {
-    char* sectionName = elementNames[i];
-    int sectionSize = 0;
-    int numProperties = 0;
-
-    PlyProperty** sectionProperties = ply_get_element_description(
-        plySrc, sectionName, &sectionSize, &numProperties);
-
-    if (strcmp("vertex", sectionName) == 0) {
-      ply_get_property(plySrc, sectionName, &vertexProps[0]); 
-      ply_get_property(plySrc, sectionName, &vertexProps[1]); 
-      ply_get_property(plySrc, sectionName, &vertexProps[2]);
-
-      // If there are any texture or normal coords, grab them too.
-      unsigned int propMask = 0;
-      for (int i = 0; i < numProperties; ++i) {
-        PlyProperty* availableProp = sectionProperties[i];
-        for (int j = 3; vertexProps[j].name != NULL; ++j) {
-          PlyProperty* requestedProp = &vertexProps[j];
-          if (strcmp(requestedProp->name, availableProp->name) == 0) {
-            ply_get_property(plySrc, sectionName, requestedProp);
-            propMask |= (1 << j);
+  try {
+    callbacks->beginModel(path);
+    for (int i = 0; i < numElements; ++i) {
+      char* sectionName = elementNames[i];
+      int sectionSize = 0;
+      int numProperties = 0;
+  
+      PlyProperty** sectionProperties = ply_get_element_description(
+          plySrc, sectionName, &sectionSize, &numProperties);
+  
+      if (strcmp("vertex", sectionName) == 0) {
+        ply_get_property(plySrc, sectionName, &vertexProps[0]); 
+        ply_get_property(plySrc, sectionName, &vertexProps[1]); 
+        ply_get_property(plySrc, sectionName, &vertexProps[2]);
+  
+        // If there are any texture or normal coords, grab them too.
+        unsigned int propMask = 0;
+        for (int i = 0; i < numProperties; ++i) {
+          PlyProperty* availableProp = sectionProperties[i];
+          for (int j = 3; vertexProps[j].name != NULL; ++j) {
+            PlyProperty* requestedProp = &vertexProps[j];
+            if (strcmp(requestedProp->name, availableProp->name) == 0) {
+              ply_get_property(plySrc, sectionName, requestedProp);
+              propMask |= (1 << j);
+            }
           }
         }
-      }
-      ply_get_other_properties(plySrc, sectionName, offsetof(PLYVertex, otherData));
-
-      hasTexCoords = propMask & (0x3 << 3); // true if the u and v bits are set.
-      hasNormals = propMask & (0x7 << 5); // true if the nx, ny and nz bits are set.
-      hasRGB = propMask & (0x7 << 8); // true if the r, g and b bits are set.
-      hasIntensity = propMask & (0x1 << 11); // true if the intensity bit is set.
+        ply_get_other_properties(plySrc, sectionName, offsetof(PLYVertex, otherData));
   
-      for (int vertexNum = 0; vertexNum < sectionSize; ++vertexNum) {
-        PLYVertex plyVert;
-        ply_get_element(plySrc, &plyVert);
-
-        callbacks->vec3fAttributeParsed(ParserCallbacks::kCoord, Vec3f(plyVert.x, plyVert.y, plyVert.z));
-        if (hasTexCoords)
-          callbacks->vec3fAttributeParsed(ParserCallbacks::kTexCoord, Vec3f(plyVert.u, plyVert.v, 0.0));
-        if (hasNormals)
-          callbacks->vec3fAttributeParsed(ParserCallbacks::kVertexNormal, Vec3f(plyVert.nx, plyVert.ny, plyVert.nz));
-
-        if (hasRGB)
-          callbacks->vec3fAttributeParsed(ParserCallbacks::kDiffuseColor, Vec3f(plyVert.r, plyVert.g, plyVert.b));
-        else if (hasIntensity)
-          callbacks->vec3fAttributeParsed(ParserCallbacks::kIntensity, Vec3f(plyVert.intensity, plyVert.intensity, plyVert.intensity));
-      }
-    } else if (strcmp("face", sectionName) == 0) {
-      ply_get_property(plySrc, sectionName, &faceProps[0]);
-      ply_get_other_properties(plySrc, sectionName, offsetof(PLYFace, otherData));
-
-      for (int i = 0; i < sectionSize; ++i) {
-        PLYFace plyFace;
-        ply_get_element(plySrc, &plyFace);
-
-        callbacks->beginFace();
-        for (int j = 0; j < plyFace.nverts; ++j) {
-          callbacks->beginVertex();
-          int v = plyFace.verts[j];
-          callbacks->indexAttributeParsed(ParserCallbacks::kCoordRef, v);
+        hasTexCoords = propMask & (0x3 << 3); // true if the u and v bits are set.
+        hasNormals = propMask & (0x7 << 5); // true if the nx, ny and nz bits are set.
+        hasRGB = propMask & (0x7 << 8); // true if the r, g and b bits are set.
+        hasIntensity = propMask & (0x1 << 11); // true if the intensity bit is set.
+    
+        for (int vertexNum = 0; vertexNum < sectionSize; ++vertexNum) {
+          PLYVertex plyVert;
+          ply_get_element(plySrc, &plyVert);
+  
+          callbacks->vec3fAttributeParsed(ParserCallbacks::kCoord, Vec3f(plyVert.x, plyVert.y, plyVert.z));
           if (hasTexCoords)
-            callbacks->indexAttributeParsed(ParserCallbacks::kTexCoordRef, v);
+            callbacks->vec3fAttributeParsed(ParserCallbacks::kTexCoord, Vec3f(plyVert.u, plyVert.v, 0.0));
           if (hasNormals)
-            callbacks->indexAttributeParsed(ParserCallbacks::kNormalRef, v);
+            callbacks->vec3fAttributeParsed(ParserCallbacks::kVertexNormal, Vec3f(plyVert.nx, plyVert.ny, plyVert.nz));
+  
           if (hasRGB)
-            callbacks->indexAttributeParsed(ParserCallbacks::kDiffuseColor, v);
-          if (hasIntensity)
-            callbacks->indexAttributeParsed(ParserCallbacks::kIntensity, v);
-          callbacks->endVertex();
+            callbacks->vec3fAttributeParsed(ParserCallbacks::kDiffuseColor, Vec3f(plyVert.r, plyVert.g, plyVert.b));
+          else if (hasIntensity)
+            callbacks->vec3fAttributeParsed(ParserCallbacks::kIntensity, Vec3f(plyVert.intensity, plyVert.intensity, plyVert.intensity));
         }
-        callbacks->endFace();
+      } else if (strcmp("face", sectionName) == 0) {
+        ply_get_property(plySrc, sectionName, &faceProps[0]);
+        ply_get_other_properties(plySrc, sectionName, offsetof(PLYFace, otherData));
+  
+        for (int i = 0; i < sectionSize; ++i) {
+          PLYFace plyFace;
+          ply_get_element(plySrc, &plyFace);
+  
+          callbacks->beginFace();
+          for (int j = 0; j < plyFace.nverts; ++j) {
+            callbacks->beginVertex();
+            int v = plyFace.verts[j];
+            callbacks->indexAttributeParsed(ParserCallbacks::kCoordRef, v);
+            if (hasTexCoords)
+              callbacks->indexAttributeParsed(ParserCallbacks::kTexCoordRef, v);
+            if (hasNormals)
+              callbacks->indexAttributeParsed(ParserCallbacks::kNormalRef, v);
+            if (hasRGB)
+              callbacks->indexAttributeParsed(ParserCallbacks::kDiffuseColor, v);
+            if (hasIntensity)
+              callbacks->indexAttributeParsed(ParserCallbacks::kIntensity, v);
+            callbacks->endVertex();
+          }
+          callbacks->endFace();
+        }
+      } else {
+        ply_get_other_element(plySrc, sectionName, sectionSize);
       }
-    } else {
-      ply_get_other_element(plySrc, sectionName, sectionSize);
     }
+    callbacks->endModel();
+    ply_close(plySrc);
   }
-
-  ply_close(plySrc);
+  catch (ParseException& ex) {
+    ply_close(plySrc);
+    throw ParseException("[%s] %s\n", path, ex.what());
+  }
 }
 
 
