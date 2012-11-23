@@ -6,13 +6,9 @@
 // compile times down, though.
 
 // Maths
-#include "vgl/matrix3.h"
-#include "vgl/matrix4.h"
+#include <Eigen/Dense>
 #include "vgl/plane3.h"
 #include "vgl/ray3.h"
-#include "vgl/vec2.h"
-#include "vgl/vec3.h"
-#include "vgl/vec4.h"
 #include "vgl/quaternion.h"
 
 // Cameras
