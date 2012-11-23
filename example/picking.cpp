@@ -45,7 +45,7 @@ private:
   void renderPickImage();
   void renderVisualImage();
   void drawMode(GLenum polygonMode);
-  void cube(const vgl::Vec3f& color);
+  void cube(const Eigen::Vector3f& color);
   void pickableCube(BufType itemType);
 
 private:
@@ -251,11 +251,11 @@ void PickingRenderer::renderVisualImage()
   glPointSize(5.0);
 
   drawMode(GL_FILL);
-  cube(vgl::Vec3f(0.3, 0.3, 0.3)); // Draw the faces
+  cube(Eigen::Vector3f(0.3, 0.3, 0.3)); // Draw the faces
   drawMode(GL_LINE);
-  cube(vgl::Vec3f(0.6, 0.6, 0.6)); // Draw the lines 
+  cube(Eigen::Vector3f(0.6, 0.6, 0.6)); // Draw the lines 
   drawMode(GL_POINT);
-  cube(vgl::Vec3f(0.9, 0.9, 0.9)); // Draw the points
+  cube(Eigen::Vector3f(0.9, 0.9, 0.9)); // Draw the points
 }
 
 
@@ -283,43 +283,43 @@ void PickingRenderer::drawMode(GLenum polygonMode)
 }
 
 
-void PickingRenderer::cube(const vgl::Vec3f& color)
+void PickingRenderer::cube(const Eigen::Vector3f& color)
 {
-  vgl::Vec3f lo(-0.5, -0.5, -0.5);
-  vgl::Vec3f hi( 0.5,  0.5,  0.5);
+  Eigen::Vector3f lo(-0.5, -0.5, -0.5);
+  Eigen::Vector3f hi( 0.5,  0.5,  0.5);
 
-  glColor3fv(color.data);
+  glColor3fv(color.data());
   glBegin(GL_QUADS);
 
-  glVertex3f(lo.x, lo.y, lo.z);
-  glVertex3f(hi.x, lo.y, lo.z);
-  glVertex3f(hi.x, hi.y, lo.z);
-  glVertex3f(lo.x, hi.y, lo.z);
+  glVertex3f(lo.x(), lo.y(), lo.z());
+  glVertex3f(hi.x(), lo.y(), lo.z());
+  glVertex3f(hi.x(), hi.y(), lo.z());
+  glVertex3f(lo.x(), hi.y(), lo.z());
 
-  glVertex3f(lo.x, lo.y, hi.z);
-  glVertex3f(hi.x, lo.y, hi.z);
-  glVertex3f(hi.x, hi.y, hi.z);
-  glVertex3f(lo.x, hi.y, hi.z);
+  glVertex3f(lo.x(), lo.y(), hi.z());
+  glVertex3f(hi.x(), lo.y(), hi.z());
+  glVertex3f(hi.x(), hi.y(), hi.z());
+  glVertex3f(lo.x(), hi.y(), hi.z());
 
-  glVertex3f(lo.x, lo.y, lo.z);
-  glVertex3f(lo.x, lo.y, hi.z);
-  glVertex3f(lo.x, hi.y, hi.z);
-  glVertex3f(lo.x, hi.y, lo.z);
+  glVertex3f(lo.x(), lo.y(), lo.z());
+  glVertex3f(lo.x(), lo.y(), hi.z());
+  glVertex3f(lo.x(), hi.y(), hi.z());
+  glVertex3f(lo.x(), hi.y(), lo.z());
 
-  glVertex3f(hi.x, lo.y, lo.z);
-  glVertex3f(hi.x, lo.y, hi.z);
-  glVertex3f(hi.x, hi.y, hi.z);
-  glVertex3f(hi.x, hi.y, lo.z);
+  glVertex3f(hi.x(), lo.y(), lo.z());
+  glVertex3f(hi.x(), lo.y(), hi.z());
+  glVertex3f(hi.x(), hi.y(), hi.z());
+  glVertex3f(hi.x(), hi.y(), lo.z());
 
-  glVertex3f(lo.x, lo.y, lo.z);
-  glVertex3f(hi.x, lo.y, lo.z);
-  glVertex3f(hi.x, lo.y, hi.z);
-  glVertex3f(lo.x, lo.y, hi.z);
+  glVertex3f(lo.x(), lo.y(), lo.z());
+  glVertex3f(hi.x(), lo.y(), lo.z());
+  glVertex3f(hi.x(), lo.y(), hi.z());
+  glVertex3f(lo.x(), lo.y(), hi.z());
 
-  glVertex3f(lo.x, hi.y, lo.z);
-  glVertex3f(hi.x, hi.y, lo.z);
-  glVertex3f(hi.x, hi.y, hi.z);
-  glVertex3f(lo.x, hi.y, hi.z);
+  glVertex3f(lo.x(), hi.y(), lo.z());
+  glVertex3f(hi.x(), hi.y(), lo.z());
+  glVertex3f(hi.x(), hi.y(), hi.z());
+  glVertex3f(lo.x(), hi.y(), hi.z());
 
   glEnd();
 }
@@ -327,39 +327,39 @@ void PickingRenderer::cube(const vgl::Vec3f& color)
 
 void PickingRenderer::pickableCube(BufType itemType)
 {
-  vgl::Vec3f lo(-0.5, -0.5, -0.5);
-  vgl::Vec3f hi( 0.5,  0.5,  0.5);
+  Eigen::Vector3f lo(-0.5, -0.5, -0.5);
+  Eigen::Vector3f hi( 0.5,  0.5,  0.5);
 
   const float kVerts[24][3] = {
-    { lo.x, lo.y, lo.z },
-    { hi.x, lo.y, lo.z },
-    { hi.x, hi.y, lo.z },
-    { lo.x, hi.y, lo.z },
+    { lo.x(), lo.y(), lo.z() },
+    { hi.x(), lo.y(), lo.z() },
+    { hi.x(), hi.y(), lo.z() },
+    { lo.x(), hi.y(), lo.z() },
 
-    { lo.x, lo.y, hi.z },
-    { hi.x, lo.y, hi.z },
-    { hi.x, hi.y, hi.z },
-    { lo.x, hi.y, hi.z },
+    { lo.x(), lo.y(), hi.z() },
+    { hi.x(), lo.y(), hi.z() },
+    { hi.x(), hi.y(), hi.z() },
+    { lo.x(), hi.y(), hi.z() },
 
-    { lo.x, lo.y, lo.z },
-    { lo.x, lo.y, hi.z },
-    { lo.x, hi.y, hi.z },
-    { lo.x, hi.y, lo.z },
+    { lo.x(), lo.y(), lo.z() },
+    { lo.x(), lo.y(), hi.z() },
+    { lo.x(), hi.y(), hi.z() },
+    { lo.x(), hi.y(), lo.z() },
 
-    { hi.x, lo.y, lo.z },
-    { hi.x, lo.y, hi.z },
-    { hi.x, hi.y, hi.z },
-    { hi.x, hi.y, lo.z },
+    { hi.x(), lo.y(), lo.z() },
+    { hi.x(), lo.y(), hi.z() },
+    { hi.x(), hi.y(), hi.z() },
+    { hi.x(), hi.y(), lo.z() },
 
-    { lo.x, lo.y, lo.z },
-    { hi.x, lo.y, lo.z },
-    { hi.x, lo.y, hi.z },
-    { lo.x, lo.y, hi.z },
+    { lo.x(), lo.y(), lo.z() },
+    { hi.x(), lo.y(), lo.z() },
+    { hi.x(), lo.y(), hi.z() },
+    { lo.x(), lo.y(), hi.z() },
 
-    { lo.x, hi.y, lo.z },
-    { hi.x, hi.y, lo.z },
-    { hi.x, hi.y, hi.z },
-    { lo.x, hi.y, hi.z }
+    { lo.x(), hi.y(), lo.z() },
+    { hi.x(), hi.y(), lo.z() },
+    { hi.x(), hi.y(), hi.z() },
+    { lo.x(), hi.y(), hi.z() }
   };
 
   switch (itemType) {

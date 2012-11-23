@@ -7,7 +7,7 @@
 
 struct ExampleMesh
 {
-  std::vector<vgl::Vec3f> coords;
+  std::vector<Eigen::Vector3f> coords;
   std::vector<GLuint> indexes;
 
   ExampleMesh() : coords(), indexes() {}
@@ -31,7 +31,7 @@ public:
       _mesh->indexes.push_back(value);
   }
 
-  virtual void vec3fAttributeParsed(int attr, const vgl::Vec3f& value)
+  virtual void vec3fAttributeParsed(int attr, const Eigen::Vector3f& value)
   {
     if (attr == ParserCallbacks::kCoord)
       _mesh->coords.push_back(value);

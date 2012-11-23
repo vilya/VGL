@@ -61,12 +61,12 @@ public:
       ++_vertsForCurrentFace;
   }
 
-  virtual void vec3fAttributeParsed(int attr, const vgl::Vec3f& value)
+  virtual void vec3fAttributeParsed(int attr, const Eigen::Vector3f& value)
   {
     if (attr == ParserCallbacks::kCoord) {
       ++_totalVertices;
-      _low = pairwiseMin(_low, value);
-      _high = pairwiseMax(_low, value);
+      _low = _low.cwiseMin(value);
+      _high = _low.cwiseMax(value);
     }
     else if (attr == ParserCallbacks::kNormal) {
       ++_totalNormals;
@@ -85,9 +85,9 @@ private:
   void printStats()
   {
     printf("%s\n", _filename.c_str());
-    printf("x = %f - %f\n", _low.x, _high.x);
-    printf("y = %f - %f\n", _low.x, _high.x);
-    printf("z = %f - %f\n", _low.x, _high.x);
+    printf("x = %f - %f\n", _low.x(), _high.x());
+    printf("y = %f - %f\n", _low.y(), _high.y());
+    printf("z = %f - %f\n", _low.z(), _high.z());
     printf("\n");
     printf("%lu faces of up to %lu vertices\n", _totalFaces, _maxVertsPerFace);
     printf("- %lu triangles\n", _triangles);
@@ -117,8 +117,8 @@ private:
   size_t _totalMaterials;
   size_t _totalTextures;
 
-  vgl::Vec3f _low;
-  vgl::Vec3f _high;
+  Eigen::Vector3f _low;
+  Eigen::Vector3f _high;
 
   size_t _vertsForCurrentFace;
   size_t _maxVertsPerFace;

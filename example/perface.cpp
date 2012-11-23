@@ -103,19 +103,19 @@ void PerFaceRenderer::render()
 
 void PerFaceRenderer::uploadCube()
 {
-  vgl::Vec3f lo(-0.5, -0.5, -0.5);
-  vgl::Vec3f hi( 0.5,  0.5,  0.5);
+  Eigen::Vector3f lo(-0.5, -0.5, -0.5);
+  Eigen::Vector3f hi( 0.5,  0.5,  0.5);
 
   const float kVerts[8][3] = {
-    { lo.x, lo.y, lo.z },
-    { hi.x, lo.y, lo.z },
-    { hi.x, hi.y, lo.z },
-    { lo.x, hi.y, lo.z },
+    { lo.x(), lo.y(), lo.z() },
+    { hi.x(), lo.y(), lo.z() },
+    { hi.x(), hi.y(), lo.z() },
+    { lo.x(), hi.y(), lo.z() },
 
-    { lo.x, lo.y, hi.z },
-    { hi.x, lo.y, hi.z },
-    { hi.x, hi.y, hi.z },
-    { lo.x, hi.y, hi.z }
+    { lo.x(), lo.y(), hi.z() },
+    { hi.x(), lo.y(), hi.z() },
+    { hi.x(), hi.y(), hi.z() },
+    { lo.x(), hi.y(), hi.z() }
   };
 
   const GLuint kIndices[] = {

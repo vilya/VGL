@@ -7,22 +7,22 @@
 class DirectionalLight
 {
 public:
-  DirectionalLight(const vgl::Vec3f& pos, const vgl::Vec3f& target,
-                   const vgl::Vec3f& up);
+  DirectionalLight(const Eigen::Vector3f& pos, const Eigen::Vector3f& target,
+                   const Eigen::Vector3f& up);
 
   void setupProjectionMatrix(int shadowMapWidth, int shadowMapHeight);
   void setupModelViewMatrix();
   void setupLight(float brightness);
 
-  vgl::Matrix4f getShadowMatrix(int shadowMapWidth, int shadowMapHeight);
+  Eigen::Matrix4f getShadowMatrix(int shadowMapWidth, int shadowMapHeight);
 
-  const vgl::Vec3f& getPos() const;
-  const vgl::Vec3f& getTarget() const;
-  const vgl::Vec3f& getUp() const;
+  const Eigen::Vector3f& getPos() const;
+  const Eigen::Vector3f& getTarget() const;
+  const Eigen::Vector3f& getUp() const;
 
 private:
-  vgl::Vec3f _pos, _target, _up;
-  vgl::Matrix4f _projMatrix, _modelViewMatrix;
+  Eigen::Vector3f _pos, _target, _up;
+  Eigen::Matrix4f _projMatrix, _modelViewMatrix;
 };
 
 
@@ -66,9 +66,9 @@ public:
 // DirectionalLight methods
 //
 
-DirectionalLight::DirectionalLight(const vgl::Vec3f& pos,
-                                   const vgl::Vec3f& target,
-                                   const vgl::Vec3f& up) :
+DirectionalLight::DirectionalLight(const Eigen::Vector3f& pos,
+                                   const Eigen::Vector3f& target,
+                                   const Eigen::Vector3f& up) :
     _pos(pos),
     _target(target),
     _up(up)
@@ -79,7 +79,7 @@ DirectionalLight::DirectionalLight(const vgl::Vec3f& pos,
 void DirectionalLight::setupProjectionMatrix(int shadowMapWidth,
                                              int shadowMapHeight)
 {
-  float distance = length(_target - _pos);
+  float distance = (_target - _pos).norm();
   gluPerspective(30, float(shadowMapWidth) / float(shadowMapHeight),
       distance * 0.1, distance * 2.0);
 }
@@ -87,26 +87,26 @@ void DirectionalLight::setupProjectionMatrix(int shadowMapWidth,
 
 void DirectionalLight::setupModelViewMatrix()
 {
-  gluLookAt(_pos.x, _pos.y, _pos.z, _target.x, _target.y, _target.z,
-            _up.x, _up.y, _up.z);
+  gluLookAt(_pos.x(), _pos.y(), _pos.z(), _target.x(), _target.y(), _target.z(),
+            _up.x(), _up.y(), _up.z());
 }
 
 
 void DirectionalLight::setupLight(float brightness)
 {
-  const vgl::Vec3f kColor(brightness, brightness, brightness);
-  const vgl::Vec3f kBlack(0, 0, 0);
+  const Eigen::Vector3f kColor(brightness, brightness, brightness);
+  const Eigen::Vector3f kBlack(0, 0, 0);
 
-  glLightfv(GL_LIGHT1, GL_POSITION, _pos.data);
-  glLightfv(GL_LIGHT1, GL_AMBIENT, kColor.data);
-  glLightfv(GL_LIGHT1, GL_DIFFUSE, kColor.data);
-  glLightfv(GL_LIGHT1, GL_SPECULAR, kBlack.data);
+  glLightfv(GL_LIGHT1, GL_POSITION, _pos.data());
+  glLightfv(GL_LIGHT1, GL_AMBIENT, kColor.data());
+  glLightfv(GL_LIGHT1, GL_DIFFUSE, kColor.data());
+  glLightfv(GL_LIGHT1, GL_SPECULAR, kBlack.data());
   glEnable(GL_LIGHT1);
   glEnable(GL_LIGHTING);
 }
 
 
-vgl::Matrix4f DirectionalLight::getShadowMatrix(int shadowMapWidth,
+Eigen::Matrix4f DirectionalLight::getShadowMatrix(int shadowMapWidth,
                                                 int shadowMapHeight)
 {
   const float kBias[] = {
@@ -122,17 +122,11 @@ vgl::Matrix4f DirectionalLight::getShadowMatrix(int shadowMapWidth,
   setupProjectionMatrix(shadowMapWidth, shadowMapHeight);
   setupModelViewMatrix();
 
-  vgl::Matrix4f shadowMatrix;
-  glGetFloatv(GL_MODELVIEW_MATRIX, shadowMatrix.data);
+  Eigen::Matrix4f shadowMatrix;
+  glGetFloatv(GL_MODELVIEW_MATRIX, shadowMatrix.data());
   glPopMatrix();
 
-  for (int r = 1; r < 4; ++r) {
-    for (int c = 0; c < r; ++c) {
-      float tmp = shadowMatrix.rows[r][c];
-      shadowMatrix.rows[r][c] = shadowMatrix.rows[c][r];
-      shadowMatrix.rows[c][r] = tmp;
-    }
-  }
+  shadowMatrix.transpose();
   return shadowMatrix;
 }
 
@@ -166,11 +160,11 @@ void ShadowMapRenderer::setup()
   glShadeModel(GL_SMOOTH);
   glDepthFunc(GL_LEQUAL);
 
-  const vgl::Vec3f kWhite(1, 1, 1);
+  const Eigen::Vector3f kWhite(1, 1, 1);
 
   glClearColor(0, 0, 0, 0);
   glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-  glMaterialfv(GL_FRONT, GL_SPECULAR, kWhite.data);
+  glMaterialfv(GL_FRONT, GL_SPECULAR, kWhite.data());
   glMaterialf(GL_FRONT, GL_SHININESS, 16.0);
 
   // Create the shadowmap texture.
@@ -232,18 +226,18 @@ void ShadowMapRenderer::saveShadowTexture()
 
 void ShadowMapRenderer::setupShadowMap()
 {
-  vgl::Matrix4f shadowMatrix = _light->getShadowMatrix(_shadowMapWidth, _shadowMapHeight);
+  Eigen::Matrix4f shadowMatrix = _light->getShadowMatrix(_shadowMapWidth, _shadowMapHeight);
   glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
-  glTexGenfv(GL_S, GL_EYE_PLANE, shadowMatrix.rows[0]);
+  glTexGenfv(GL_S, GL_EYE_PLANE, shadowMatrix.row(0).data());
   glEnable(GL_TEXTURE_GEN_S);
   glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
-  glTexGenfv(GL_T, GL_EYE_PLANE, shadowMatrix.rows[1]);
+  glTexGenfv(GL_T, GL_EYE_PLANE, shadowMatrix.row(1).data());
   glEnable(GL_TEXTURE_GEN_T);
   glTexGeni(GL_R, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
-  glTexGenfv(GL_R, GL_EYE_PLANE, shadowMatrix.rows[2]);
+  glTexGenfv(GL_R, GL_EYE_PLANE, shadowMatrix.row(2).data());
   glEnable(GL_TEXTURE_GEN_R);
   glTexGeni(GL_Q, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
-  glTexGenfv(GL_Q, GL_EYE_PLANE, shadowMatrix.rows[3]);
+  glTexGenfv(GL_Q, GL_EYE_PLANE, shadowMatrix.row(3).data());
   glEnable(GL_TEXTURE_GEN_Q);
   glBindTexture(GL_TEXTURE_2D, _shadowTex);
   glEnable(GL_TEXTURE_2D);
@@ -333,15 +327,15 @@ int main(int argc, char**argv)
   const int kWidth = 1024;
   const int kHeight = 768;
 
-  vgl::ArcballCamera camera(vgl::Vec3f(0, 0, 5),
-                            vgl::Vec3f(0, 0, 0),
-                            vgl::Vec3f(0, 1, 0),
+  vgl::ArcballCamera camera(Eigen::Vector3f(0, 0, 5),
+                            Eigen::Vector3f(0, 0, 0),
+                            Eigen::Vector3f(0, 1, 0),
                             -1, 1, -1, 1,
                             30, kWidth, kHeight);
 
-  DirectionalLight light(vgl::Vec3f(2, 5, 1),
-                         vgl::Vec3f(0, 0, 0),
-                         vgl::Vec3f(1, 0, 1));
+  DirectionalLight light(Eigen::Vector3f(2, 5, 1),
+                         Eigen::Vector3f(0, 0, 0),
+                         Eigen::Vector3f(1, 0, 1));
 
   ShadowMapRenderer renderer(&light, &camera);
   vgl::Viewer viewer("Stencil buffer test", kWidth, kHeight, &renderer, &camera);
