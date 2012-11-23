@@ -2,7 +2,8 @@
 #define vgl_funcs_h
 
 #include "vgl/public.h"
-#include "vgl/vec3.h"
+
+#include "Eigen/Dense"
 
 namespace vgl {
 
@@ -11,7 +12,7 @@ namespace vgl {
   //
 
   PUBLIC
-  Vec3f unproject(double x, double y, double z = 0.5);
+  Eigen::Vector3f unproject(double x, double y, double z = 0.5);
 
 } // namespace vgl
 

@@ -1,8 +1,5 @@
 #include "vgl/funcs.h"
 
-#include "vgl/vec4.h"
-#include "vgl/matrix4.h"
-
 #define GL_GLEXT_PROTOTYPES 1
 #ifdef linux
 #include <GL/gl.h>
@@ -23,22 +20,22 @@ namespace vgl {
 // OpenGL helper functions.
 //
 
-Vec3f unproject(double x, double y, double z)
+Eigen::Vector3f unproject(double x, double y, double z)
 {
-  Matrix4d projectionMatrix;
-  Matrix4d modelViewMatrix;
-  Vec4i viewportMatrix;
+  Eigen::Matrix4d projectionMatrix;
+  Eigen::Matrix4d modelViewMatrix;
+  Eigen::Vector4i viewportMatrix;
 
-  glGetDoublev(GL_PROJECTION_MATRIX, projectionMatrix.data);
-  glGetDoublev(GL_MODELVIEW_MATRIX, modelViewMatrix.data);
-  glGetIntegerv(GL_VIEWPORT, viewportMatrix.data);
+  glGetDoublev(GL_PROJECTION_MATRIX, projectionMatrix.data());
+  glGetDoublev(GL_MODELVIEW_MATRIX, modelViewMatrix.data());
+  glGetIntegerv(GL_VIEWPORT, viewportMatrix.data());
 
-  Vec3d point;
+  Eigen::Vector3d point;
   gluUnProject(x, y, z,
-      modelViewMatrix.data, projectionMatrix.data, viewportMatrix.data,
-      &point.x, &point.y, &point.z);
+      modelViewMatrix.data(), projectionMatrix.data(), viewportMatrix.data(),
+      &point.x(), &point.y(), &point.z());
 
-  return Vec3f((float)point.x, (float)point.y, (float)point.z);
+  return Eigen::Vector3f((float)point.x(), (float)point.y(), (float)point.z());
 }
 
 
