@@ -1,8 +1,8 @@
 #ifndef vgl_quaternion_h
 #define vgl_quaternion_h
 
-#include "vgl_vec3.h"
-#include "vgl_vec4.h"
+#include "vec3.h"
+#include "vec4.h"
 
 namespace vgl {
 

@@ -1,8 +1,8 @@
 #ifndef vgl_basecamera_h
 #define vgl_basecamera_h
 
-#include "vgl_camera.h"
-#include "vgl_vec3.h"
+#include "camera.h"
+#include "vec3.h"
 
 namespace vgl {
 

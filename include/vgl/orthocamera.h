@@ -1,7 +1,7 @@
 #ifndef vgl_orthocamera_h
 #define vgl_orthocamera_h
 
-#include "vgl_basecamera.h"
+#include "basecamera.h"
 
 namespace vgl {
 

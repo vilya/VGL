@@ -1,7 +1,7 @@
 #ifndef vgl_vec3_h
 #define vgl_vec3_h
 
-#include "vgl_utils.h"
+#include "utils.h"
 
 #include <algorithm>
 #include <cmath>

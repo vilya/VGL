@@ -1,8 +1,8 @@
 #ifndef vgl_ray_h
 #define vgl_ray_h
 
-#include "vgl_vec3.h"
-#include "vgl_utils.h"
+#include "vec3.h"
+#include "utils.h"
 
 #include <cmath>
 

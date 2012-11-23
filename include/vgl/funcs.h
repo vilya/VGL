@@ -1,7 +1,7 @@
 #ifndef vgl_funcs_h
 #define vgl_funcs_h
 
-#include "vgl_vec3.h"
+#include "vec3.h"
 
 namespace vgl {
 

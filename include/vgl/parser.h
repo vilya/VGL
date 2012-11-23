@@ -4,11 +4,11 @@
 #include <stdexcept>
 #include <string>
 
-#include "vgl_matrix3.h"
-#include "vgl_matrix4.h"
-#include "vgl_vec2.h"
-#include "vgl_vec3.h"
-#include "vgl_vec4.h"
+#include "matrix3.h"
+#include "matrix4.h"
+#include "vec2.h"
+#include "vec3.h"
+#include "vec4.h"
 
 namespace vgl {
 

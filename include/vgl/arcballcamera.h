@@ -1,8 +1,8 @@
 #ifndef vgl_arcballcamera_h
 #define vgl_arcballcamera_h
 
-#include "vgl_basecamera.h"
-#include "vgl_vec3.h"
+#include "basecamera.h"
+#include "vec3.h"
 
 namespace vgl {
 

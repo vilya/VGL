@@ -1,7 +1,7 @@
 #ifndef OBJViewer_plyparser_h
 #define OBJViewer_plyparser_h
 
-#include "vgl_parser.h"
+#include "parser.h"
 
 
 namespace vgl {

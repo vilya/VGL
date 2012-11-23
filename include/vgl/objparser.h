@@ -1,7 +1,7 @@
 #ifndef vgl_objparser_h
 #define vgl_objparser_h
 
-#include "vgl_parser.h"
+#include "parser.h"
 
 
 namespace vgl {

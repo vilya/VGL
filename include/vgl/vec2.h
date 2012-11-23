@@ -1,7 +1,7 @@
 #ifndef vgl_vec2_h
 #define vgl_vec2_h
 
-#include "vgl_utils.h"
+#include "utils.h"
 
 #include <algorithm>
 #include <cmath>
