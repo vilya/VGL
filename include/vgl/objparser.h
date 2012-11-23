@@ -1,18 +1,18 @@
 #ifndef vgl_objparser_h
 #define vgl_objparser_h
 
-#include "parser.h"
-
+#include "vgl/parser.h"
+#include "vgl/public.h"
 
 namespace vgl {
 
-//
-// Functions
-//
+  //
+  // Functions
+  //
 
-void loadOBJ(ParserCallbacks* callbacks, const char* path)
-  throw(ParseException);
-
+  PUBLIC
+  void loadOBJ(ParserCallbacks* callbacks, const char* path)
+    throw(ParseException);
 
 } // namespace vgl
 

@@ -1,17 +1,17 @@
 #ifndef vgl_funcs_h
 #define vgl_funcs_h
 
-#include "vec3.h"
+#include "vgl/public.h"
+#include "vgl/vec3.h"
 
 namespace vgl {
 
+  //
+  // OpenGL helper functions.
+  //
 
-//
-// OpenGL helper functions.
-//
-
-Vec3f unproject(double x, double y, double z = 0.5);
-
+  PUBLIC
+  Vec3f unproject(double x, double y, double z = 0.5);
 
 } // namespace vgl
 

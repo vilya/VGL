@@ -1,20 +1,20 @@
-#ifndef OBJViewer_plyparser_h
-#define OBJViewer_plyparser_h
+#ifndef vgl_plyparser_h
+#define vgl_plyparser_h
 
-#include "parser.h"
-
+#include "vgl/parser.h"
+#include "vgl/public.h"
 
 namespace vgl {
 
-//
-// Functions
-//
+  //
+  // Functions
+  //
 
-void loadPLY(ParserCallbacks* callbacks, const char* path)
-  throw(ParseException);
-
+  PUBLIC
+  void loadPLY(ParserCallbacks* callbacks, const char* path)
+    throw(ParseException);
 
 } // namespace vgl
 
-#endif // OBJViewer_plyparser_h
+#endif // vgl_plyparser_h
 
