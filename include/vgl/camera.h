@@ -2,7 +2,8 @@
 #define vgl_camera_h
 
 #include "vgl/public.h"
-#include "vgl/vec3.h"
+
+#include "Eigen/Dense"
 
 namespace vgl {
 
@@ -14,13 +15,13 @@ namespace vgl {
     virtual void dolly(int prevX, int prevY, int currX, int currY) = 0;
     virtual void zoom(int prevX, int prevY, int currX, int currY) = 0;
 
-    virtual void centerView(const Vec3f& low, const Vec3f& high) = 0;
-    virtual void frontView(const Vec3f& low, const Vec3f& high) = 0;
-    virtual void backView(const Vec3f& low, const Vec3f& high) = 0;
-    virtual void leftView(const Vec3f& low, const Vec3f& high) = 0;
-    virtual void rightView(const Vec3f& low, const Vec3f& high) = 0;
-    virtual void topView(const Vec3f& low, const Vec3f& high) = 0;
-    virtual void bottomView(const Vec3f& low, const Vec3f& high) = 0;
+    virtual void centerView(const Eigen::Vector3f& low, const Eigen::Vector3f& high) = 0;
+    virtual void frontView(const Eigen::Vector3f& low, const Eigen::Vector3f& high) = 0;
+    virtual void backView(const Eigen::Vector3f& low, const Eigen::Vector3f& high) = 0;
+    virtual void leftView(const Eigen::Vector3f& low, const Eigen::Vector3f& high) = 0;
+    virtual void rightView(const Eigen::Vector3f& low, const Eigen::Vector3f& high) = 0;
+    virtual void topView(const Eigen::Vector3f& low, const Eigen::Vector3f& high) = 0;
+    virtual void bottomView(const Eigen::Vector3f& low, const Eigen::Vector3f& high) = 0;
 
     virtual void setupProjectionMatrix() = 0;
     virtual void setupModelViewMatrix() = 0;

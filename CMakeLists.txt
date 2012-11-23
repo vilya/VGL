@@ -79,10 +79,10 @@ install(TARGETS vgl LIBRARY DESTINATION lib)
 
 
 # The unit tests.
-if (CPPUNIT_FOUND)
-  enable_testing()
-  test(test_quaternion)
-endif (CPPUNIT_FOUND)
+#if (CPPUNIT_FOUND)
+#  enable_testing()
+#  test(test_quaternion)
+#endif (CPPUNIT_FOUND)
 
 
 # The example programs.

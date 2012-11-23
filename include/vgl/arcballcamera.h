@@ -3,7 +3,8 @@
 
 #include "vgl/basecamera.h"
 #include "vgl/public.h"
-#include "vgl/vec3.h"
+
+#include "Eigen/Dense"
 
 namespace vgl {
 
@@ -14,7 +15,7 @@ namespace vgl {
   class PUBLIC ArcballCamera : public BaseCamera
   {
   public:
-    ArcballCamera(const Vec3f& pos, const Vec3f& target, const Vec3f& up,
+    ArcballCamera(const Eigen::Vector3f& pos, const Eigen::Vector3f& target, const Eigen::Vector3f& up,
       float left, float right, float bottom, float top, float aperture,
       unsigned int pixelWidth, unsigned int pixelHeight);
 

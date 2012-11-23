@@ -1,5 +1,7 @@
 #include "vgl/basecamera.h"
 
+//#include "Eigen/Geometry"
+
 #include <cmath>
 
 #ifdef linux
@@ -21,9 +23,9 @@ namespace vgl {
 //
 
 BaseCamera::BaseCamera(unsigned int pixelWidth, unsigned int pixelHeight) :
-  _pos(Vec3f(0, 0, 10)),
-  _target(Vec3f(0, 0, 0)),
-  _up(Vec3f(0, 1, 0)), 
+  _pos(Eigen::Vector3f(0, 0, 10)),
+  _target(Eigen::Vector3f(0, 0, 0)),
+  _up(Eigen::Vector3f(0, 1, 0)), 
   _left(-1),
   _right(1),
   _bottom(-1),
@@ -35,7 +37,7 @@ BaseCamera::BaseCamera(unsigned int pixelWidth, unsigned int pixelHeight) :
 }
 
 
-BaseCamera::BaseCamera(const Vec3f& pos, const Vec3f& target, const Vec3f& up,
+BaseCamera::BaseCamera(const Eigen::Vector3f& pos, const Eigen::Vector3f& target, const Eigen::Vector3f& up,
     float left, float right, float bottom, float top, float aperture,
     unsigned int pixelWidth, unsigned int pixelHeight) :
   _pos(pos),
@@ -61,11 +63,17 @@ void BaseCamera::pan(int prevX, int prevY, int currX, int currY)
 {
   float dx = (currX - prevX) / 2.0f;
   float dy = (currY - prevY) / 2.0f;
+  
+  Eigen::Vector3f axis(dx, dy, 0.0f);
+  float angle = axis.norm() / float(2.0f * M_PI);
+  axis.normalize();
 
-  Vec3f viewVec = _target - _pos;
-  viewVec = rotateX(viewVec, dy / (float)(2 * M_PI));
-  viewVec = rotateY(viewVec, dx / (float)(2 * M_PI));
-  _target = viewVec + _pos;
+  Eigen::Affine3f t;
+  t.translate(_pos);
+  t.rotate(Eigen::AngleAxis<float>(angle, axis));
+  t.translate(-_pos);
+
+  _target = t * _target;
 }
 
 
@@ -74,10 +82,16 @@ void BaseCamera::roll(int prevX, int prevY, int currX, int currY)
   float dx = (currX - prevX) / 2.0f;
   float dy = (currY - prevY) / 2.0f;
 
-  Vec3f viewVec = _pos - _target;
-  viewVec = rotateX(viewVec, dy / (float)(2 * M_PI));
-  viewVec = rotateY(viewVec, dx / (float)(2 * M_PI));
-  _pos = viewVec + _target;
+  Eigen::Vector3f axis(dx, dy, 0.0f);
+  float angle = axis.norm() / float(2.0f * M_PI);
+  axis.normalize();
+
+  Eigen::Affine3f t;
+  t.translate(_target);
+  t.rotate(Eigen::AngleAxis<float>(angle, axis));
+  t.translate(-_target);
+
+  _pos = t * _pos;
 }
 
 
@@ -86,7 +100,7 @@ void BaseCamera::move(int prevX, int prevY, int currX, int currY)
   float dx = (currX - prevX) / (float)_pixelWidth;
   float dy = (currY - prevY) / (float)_pixelHeight;
 
-  Vec3f delta(dx, dy, 0);
+  Eigen::Vector3f delta(dx, dy, 0);
   _pos += delta;
   _target += delta;
 }
@@ -99,8 +113,8 @@ void BaseCamera::dolly(int prevX, int prevY, int currX, int currY)
   float dz = (abs(dx) >= abs(dy)) ? dx : -dy;
 
   dz *= 2;
-  _pos.z += dz;
-  _target.z += dz;
+  _pos.z() += dz;
+  _target.z() += dz;
 }
 
 
@@ -115,72 +129,72 @@ void BaseCamera::zoom(int prevX, int prevY, int currX, int currY)
 }
 
 
-void BaseCamera::centerView(const Vec3f& low, const Vec3f& high)
+void BaseCamera::centerView(const Eigen::Vector3f& low, const Eigen::Vector3f& high)
 {
   _target = (high + low) / 2.0f;
-  float distance = (high.z - low.z) / 10.0f;
-  _pos = _target + Vec3f(0, 0, distance);
-  _up = Vec3f(0, 1, 0);
+  float distance = (high.z() - low.z()) / 10.0f;
+  _pos = _target + Eigen::Vector3f(0, 0, distance);
+  _up = Eigen::Vector3f(0, 1, 0);
 }
 
 
-void BaseCamera::frontView(const Vec3f& low, const Vec3f& high)
+void BaseCamera::frontView(const Eigen::Vector3f& low, const Eigen::Vector3f& high)
 {
   _target = (high + low) / 2.0f;
-  float distance = (high.z - low.z) / 2.0f +
-      distanceFrom(high.x, low.x, high.y, low.y);
-  _pos = _target + Vec3f(0, 0, distance);
-  _up = Vec3f(0, 1, 0);
+  float distance = (high.z() - low.z()) / 2.0f +
+      distanceFrom(high.x(), low.x(), high.y(), low.y());
+  _pos = _target + Eigen::Vector3f(0, 0, distance);
+  _up = Eigen::Vector3f(0, 1, 0);
 }
 
 
-void BaseCamera::backView(const Vec3f& low, const Vec3f& high)
+void BaseCamera::backView(const Eigen::Vector3f& low, const Eigen::Vector3f& high)
 {
   _target = (high + low) / 2.0f;
-  float distance = (high.z - low.z) / 2.0f +
-      distanceFrom(high.x, low.x, high.y, low.y);
-  _pos = _target + Vec3f(0, 0, -distance);
-  _up = Vec3f(0, 1, 0);
+  float distance = (high.z() - low.z()) / 2.0f +
+      distanceFrom(high.x(), low.x(), high.y(), low.y());
+  _pos = _target + Eigen::Vector3f(0, 0, -distance);
+  _up = Eigen::Vector3f(0, 1, 0);
 }
 
 
-void BaseCamera::leftView(const Vec3f& low, const Vec3f& high)
+void BaseCamera::leftView(const Eigen::Vector3f& low, const Eigen::Vector3f& high)
 {
   _target = (high + low) / 2.0f;
-  float distance = (high.x - low.x) / 2.0f +
-      distanceFrom(high.z, low.z, high.y, low.y);
-  _pos = _target + Vec3f(-distance, 0, 0);
-  _up = Vec3f(0, 1, 0);
+  float distance = (high.x() - low.x()) / 2.0f +
+      distanceFrom(high.z(), low.z(), high.y(), low.y());
+  _pos = _target + Eigen::Vector3f(-distance, 0, 0);
+  _up = Eigen::Vector3f(0, 1, 0);
 }
 
 
-void BaseCamera::rightView(const Vec3f& low, const Vec3f& high)
+void BaseCamera::rightView(const Eigen::Vector3f& low, const Eigen::Vector3f& high)
 {
   _target = (high + low) / 2.0f;
-  float distance = (high.x - low.x) / 2.0f +
-      distanceFrom(high.z, low.z, high.y, low.y);
-  _pos = _target + Vec3f(distance, 0, 0);
-  _up = Vec3f(0, 1, 0);
+  float distance = (high.x() - low.x()) / 2.0f +
+      distanceFrom(high.z(), low.z(), high.y(), low.y());
+  _pos = _target + Eigen::Vector3f(distance, 0, 0);
+  _up = Eigen::Vector3f(0, 1, 0);
 }
 
 
-void BaseCamera::topView(const Vec3f& low, const Vec3f& high)
+void BaseCamera::topView(const Eigen::Vector3f& low, const Eigen::Vector3f& high)
 {
   _target = (high + low) / 2.0f;
-  float distance = (high.y - low.y) +
-      distanceFrom(high.x, low.x, high.z, low.z);
-  _pos = _target + Vec3f(0, distance, 0);
-  _up = Vec3f(0, 0, -1);
+  float distance = (high.y() - low.y()) +
+      distanceFrom(high.x(), low.x(), high.z(), low.z());
+  _pos = _target + Eigen::Vector3f(0, distance, 0);
+  _up = Eigen::Vector3f(0, 0, -1);
 }
 
 
-void BaseCamera::bottomView(const Vec3f& low, const Vec3f& high)
+void BaseCamera::bottomView(const Eigen::Vector3f& low, const Eigen::Vector3f& high)
 {
   _target = (high + low) / 2.0f;
-  float distance = (high.y - low.y) +
-      distanceFrom(high.x, low.x, high.z, low.z);
-  _pos = _target + Vec3f(0, -distance, 0);
-  _up = Vec3f(0, 0, 1);
+  float distance = (high.y() - low.y()) +
+      distanceFrom(high.x(), low.x(), high.z(), low.z());
+  _pos = _target + Eigen::Vector3f(0, -distance, 0);
+  _up = Eigen::Vector3f(0, 0, 1);
 }
 
 
@@ -195,7 +209,7 @@ float BaseCamera::distanceFrom(float highU, float lowU, float highV, float lowV)
 
 void BaseCamera::setupProjectionMatrix()
 {
-  float distance = length(_target - _pos);
+  float distance = (_target - _pos).norm();
   gluPerspective(_aperture, float(_pixelWidth) / float(_pixelHeight),
       distance * 0.1, distance * 2.0);
 }
@@ -203,7 +217,7 @@ void BaseCamera::setupProjectionMatrix()
 
 void BaseCamera::setupModelViewMatrix()
 {
-  gluLookAt(_pos.x, _pos.y, _pos.z, _target.x, _target.y, _target.z, _up.x, _up.y, _up.z);
+  gluLookAt(_pos.x(), _pos.y(), _pos.z(), _target.x(), _target.y(), _target.z(), _up.x(), _up.y(), _up.z());
 }
 
 

@@ -1,7 +1,8 @@
 #include "vgl/plyparser.h"
 
-#include "vgl/vec3.h"
 #include "ply.h"  // From the thirdparty directory.
+
+#include "Eigen/Dense"
 
 #include <cstdio>
 
@@ -128,16 +129,16 @@ void loadPLY(ParserCallbacks* callbacks, const char* path)
           PLYVertex plyVert;
           ply_get_element(plySrc, &plyVert);
   
-          callbacks->vec3fAttributeParsed(ParserCallbacks::kCoord, Vec3f(plyVert.x, plyVert.y, plyVert.z));
+          callbacks->vec3fAttributeParsed(ParserCallbacks::kCoord, Eigen::Vector3f(plyVert.x, plyVert.y, plyVert.z));
           if (hasTexCoords)
-            callbacks->vec3fAttributeParsed(ParserCallbacks::kTexCoord, Vec3f(plyVert.u, plyVert.v, 0.0));
+            callbacks->vec3fAttributeParsed(ParserCallbacks::kTexCoord, Eigen::Vector3f(plyVert.u, plyVert.v, 0.0));
           if (hasNormals)
-            callbacks->vec3fAttributeParsed(ParserCallbacks::kVertexNormal, Vec3f(plyVert.nx, plyVert.ny, plyVert.nz));
+            callbacks->vec3fAttributeParsed(ParserCallbacks::kVertexNormal, Eigen::Vector3f(plyVert.nx, plyVert.ny, plyVert.nz));
   
           if (hasRGB)
-            callbacks->vec3fAttributeParsed(ParserCallbacks::kDiffuseColor, Vec3f(plyVert.r, plyVert.g, plyVert.b));
+            callbacks->vec3fAttributeParsed(ParserCallbacks::kDiffuseColor, Eigen::Vector3f(plyVert.r, plyVert.g, plyVert.b));
           else if (hasIntensity)
-            callbacks->vec3fAttributeParsed(ParserCallbacks::kIntensity, Vec3f(plyVert.intensity, plyVert.intensity, plyVert.intensity));
+            callbacks->vec3fAttributeParsed(ParserCallbacks::kIntensity, Eigen::Vector3f(plyVert.intensity, plyVert.intensity, plyVert.intensity));
         }
       } else if (strcmp("face", sectionName) == 0) {
         ply_get_property(plySrc, sectionName, &faceProps[0]);

@@ -1,8 +1,9 @@
 #ifndef vgl_ray_h
 #define vgl_ray_h
 
-#include "vgl/vec3.h"
 #include "vgl/utils.h"
+
+#include "Eigen/Dense"
 
 #include <cmath>
 
@@ -14,10 +15,10 @@ namespace vgl {
   
   template <typename Num>
   struct Ray3 {
-    Vec3<Num> o, d;  // o is the origin, d is the direction vector.
+    Eigen::Matrix<Num, 3, 1> o, d;  // o is the origin, d is the direction vector.
   
     Ray3() : o(), d() {}
-    Ray3(const Vec3<Num>& iO, const Vec3<Num>& iD) : o(iO), d(iD) {}
+    Ray3(const Eigen::Matrix<Num, 3, 1>& iO, const Eigen::Matrix<Num, 3, 1>& iD) : o(iO), d(iD) {}
     Ray3(const Ray3& a) : o(a.o), d(a.d) {}
   };
   
@@ -31,21 +32,21 @@ namespace vgl {
   //
   
   template <typename Num>
-  Vec3<Num> evaluate(const Ray3<Num>& r, Num t)
+  Eigen::Matrix<Num, 3, 1> evaluate(const Ray3<Num>& r, Num t)
   {
     return r.o + t * r.d;
   }
   
   
   template <typename Num>
-  Ray3<Num> reflect(const Ray3<Num>& r, const Vec3<Num>& hitpos, const Vec3<Num>& normal)
+  Ray3<Num> reflect(const Ray3<Num>& r, const Eigen::Matrix<Num, 3, 1>& hitpos, const Eigen::Matrix<Num, 3, 1>& normal)
   {
     return Ray3<Num>(hitpos, r.d - 2 * dot(r.d, normal) * normal);
   }
   
   
   template <typename Num>
-  Ray3<Num> refract(const Ray3<Num>& r, const Vec3<Num>& hitpos, const Vec3<Num>& normal, Num oldNi, Num newNi)
+  Ray3<Num> refract(const Ray3<Num>& r, const Eigen::Matrix<Num, 3, 1>& hitpos, const Eigen::Matrix<Num, 3, 1>& normal, Num oldNi, Num newNi)
   {
     Num n = oldNi / newNi;
     Num cosThetaI = dot(normal, -r.d);
@@ -55,16 +56,16 @@ namespace vgl {
   
   
   template <typename Num>
-  bool intersectRaySphere(const Ray3<Num>& ray, const Vec3<Num>& sphereCenter, Num sphereRadius, Vec3<Num>& hitPoint)
+  bool intersectRaySphere(const Ray3<Num>& ray, const Eigen::Matrix<Num, 3, 1>& sphereCenter, Num sphereRadius, Eigen::Matrix<Num, 3, 1>& hitPoint)
   {
     const Num kMinT = 1e-4;
     const Num kMaxT = 1e10;
   
-  	Vec3<Num> m(ray.o - sphereCenter);
+  	Eigen::Matrix<Num, 3, 1> m(ray.o - sphereCenter);
   
-  	Num a = dot(ray.d, ray.d);
-  	Num b = 2 * dot(ray.d, m);
-  	Num c = dot(m, m) - sphereRadius * sphereRadius;
+  	Num a = ray.d.squaredNorm(); // this is the same as dot(ray.d, ray.d)
+  	Num b = 2 * ray.d.dot(m);
+  	Num c = m.squaredNorm() - sphereRadius * sphereRadius;
   
   	Num discriminant = b * b - 4 * a * c;
   	if (discriminant > 0) {
