@@ -3,7 +3,7 @@
 
 #include "vgl/public.h"
 
-#include <Eigen/Dense>
+#include "Eigen/Dense"
 
 #include <stdexcept>
 #include <string>
