@@ -1,15 +1,13 @@
 #ifndef vgl_parser_h
 #define vgl_parser_h
 
+#include "vgl/public.h"
+
+#include <Eigen/Dense>
+
 #include <stdexcept>
 #include <string>
 
-#include "vgl/matrix3.h"
-#include "vgl/matrix4.h"
-#include "vgl/public.h"
-#include "vgl/vec2.h"
-#include "vgl/vec3.h"
-#include "vgl/vec4.h"
 
 namespace vgl {
 
@@ -75,11 +73,11 @@ namespace vgl {
 
     virtual void indexAttributeParsed(int attr, size_t value);
     virtual void floatAttributeParsed(int attr, float value);
-    virtual void matrix3fAttributeParsed(int attr, const Matrix3f& value);
-    virtual void matrix4fAttributeParsed(int attr, const Matrix4f& value);
-    virtual void vec2fAttributeParsed(int attr, const Vec2f& value);
-    virtual void vec3fAttributeParsed(int attr, const Vec3f& value);
-    virtual void vec4fAttributeParsed(int attr, const Vec4f& value);
+    virtual void matrix3fAttributeParsed(int attr, const Eigen::Matrix3f& value);
+    virtual void matrix4fAttributeParsed(int attr, const Eigen::Matrix4f& value);
+    virtual void vec2fAttributeParsed(int attr, const Eigen::Vector2f& value);
+    virtual void vec3fAttributeParsed(int attr, const Eigen::Vector3f& value);
+    virtual void vec4fAttributeParsed(int attr, const Eigen::Vector4f& value);
     virtual void textureAttributeParsed(int attr, const char* path);
     virtual void stringAttributeParsed(int attr, const char* value);
   };

@@ -88,27 +88,27 @@ void ParserCallbacks::floatAttributeParsed(int attr, float value)
 }
 
 
-void ParserCallbacks::matrix3fAttributeParsed(int attr, const Matrix3f& value)
+void ParserCallbacks::matrix3fAttributeParsed(int attr, const Eigen::Matrix3f& value)
 {
 }
 
 
-void ParserCallbacks::matrix4fAttributeParsed(int attr, const Matrix4f& value)
+void ParserCallbacks::matrix4fAttributeParsed(int attr, const Eigen::Matrix4f& value)
 {
 }
 
 
-void ParserCallbacks::vec2fAttributeParsed(int attr, const Vec2f& value)
+void ParserCallbacks::vec2fAttributeParsed(int attr, const Eigen::Vector2f& value)
 {
 }
 
 
-void ParserCallbacks::vec3fAttributeParsed(int attr, const Vec3f& value)
+void ParserCallbacks::vec3fAttributeParsed(int attr, const Eigen::Vector3f& value)
 {
 }
 
 
-void ParserCallbacks::vec4fAttributeParsed(int attr, const Vec4f& value)
+void ParserCallbacks::vec4fAttributeParsed(int attr, const Eigen::Vector4f& value)
 {
 }
 
