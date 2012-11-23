@@ -9,7 +9,6 @@
 #include <Eigen/Dense>
 #include "vgl/plane3.h"
 #include "vgl/ray3.h"
-#include "vgl/quaternion.h"
 
 // Cameras
 #include "vgl/arcballcamera.h"
