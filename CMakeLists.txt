@@ -30,7 +30,7 @@ file(GLOB VGL_EXTRAS test/*.cpp example/*.cpp)
 
 # Compilation and linking properties.
 set_source_files_properties(${VGL_SOURCES} ${VGL_EXTRAS}
-  COMPILE_FLAGS "${OpenMP_CXX_FLAGS} -g3")
+  COMPILE_FLAGS "${OpenMP_CXX_FLAGS}")
 include_directories(src thirdparty
   ${GLUT_INCLUDE_DIR}
   ${JPEG_INCLUDE_DIR}
