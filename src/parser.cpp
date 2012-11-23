@@ -1,7 +1,7 @@
-#include "vgl_parser.h"
+#include "vgl/parser.h"
 
-#include "vgl_objparser.h"
-#include "vgl_plyparser.h"
+#include "vgl/objparser.h"
+#include "vgl/plyparser.h"
 
 #include <cstdarg>
 #include <cstdio>

@@ -1,4 +1,4 @@
-#include "vgl_image.h"
+#include "vgl/image.h"
 
 #include <libgen.h>
 #include <cstring>

@@ -1,9 +1,9 @@
-#include "vgl_viewer.h"
+#include "vgl/viewer.h"
 
-#include "vgl_arcballcamera.h"
-#include "vgl_camera.h"
-#include "vgl_renderer.h"
-#include "vgl_vec3.h"
+#include "vgl/arcballcamera.h"
+#include "vgl/camera.h"
+#include "vgl/renderer.h"
+#include "vgl/vec3.h"
 
 #include <cstdlib>
 

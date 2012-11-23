@@ -1,4 +1,4 @@
-#include "vgl_basecamera.h"
+#include "vgl/basecamera.h"
 
 #include <cmath>
 

@@ -1,9 +1,9 @@
-#include "vgl_objparser.h"
+#include "vgl/objparser.h"
 
-#include "vgl_image.h"
-#include "vgl_parser.h"
-#include "vgl_utils.h"
-#include "vgl_vec3.h"
+#include "vgl/image.h"
+#include "vgl/parser.h"
+#include "vgl/utils.h"
+#include "vgl/vec3.h"
 
 #include <cstdarg>
 #include <cstdio>

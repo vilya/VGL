@@ -1,9 +1,9 @@
-#include "vgl_arcballcamera.h"
+#include "vgl/arcballcamera.h"
 
-#include "vgl_funcs.h"
-#include "vgl_matrix4.h"
-#include "vgl_quaternion.h"
-#include "vgl_ray3.h"
+#include "vgl/funcs.h"
+#include "vgl/matrix4.h"
+#include "vgl/quaternion.h"
+#include "vgl/ray3.h"
 
 namespace vgl {
 

@@ -1,6 +1,6 @@
-#include "vgl_vec3.h"
+#include "vgl/vec3.h"
 
-#include "vgl_utils.h"
+#include "vgl/utils.h"
 
 #include <cmath>
 

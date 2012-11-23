@@ -6,36 +6,36 @@
 // compile times down, though.
 
 // Maths
-#include "vgl_matrix3.h"
-#include "vgl_matrix4.h"
-#include "vgl_plane3.h"
-#include "vgl_ray3.h"
-#include "vgl_vec2.h"
-#include "vgl_vec3.h"
-#include "vgl_vec4.h"
-#include "vgl_quaternion.h"
+#include "vgl/matrix3.h"
+#include "vgl/matrix4.h"
+#include "vgl/plane3.h"
+#include "vgl/ray3.h"
+#include "vgl/vec2.h"
+#include "vgl/vec3.h"
+#include "vgl/vec4.h"
+#include "vgl/quaternion.h"
 
 // Cameras
-#include "vgl_arcballcamera.h"
-#include "vgl_basecamera.h"
-#include "vgl_camera.h"
-#include "vgl_orthocamera.h"
+#include "vgl/arcballcamera.h"
+#include "vgl/basecamera.h"
+#include "vgl/camera.h"
+#include "vgl/orthocamera.h"
 
 // Image files
-#include "vgl_image.h"
+#include "vgl/image.h"
 
 // Model files
-#include "vgl_parser.h"
+#include "vgl/parser.h"
 
 // Rendering
-#include "vgl_renderer.h"
+#include "vgl/renderer.h"
 
 // GUI
-#include "vgl_viewer.h"
+#include "vgl/viewer.h"
 
 // Miscellaneous
-#include "vgl_funcs.h"
-#include "vgl_utils.h"
+#include "vgl/funcs.h"
+#include "vgl/utils.h"
 
 // OpenGL
 #define GL_GLEXT_PROTOTYPES 1

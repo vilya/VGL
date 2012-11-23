@@ -1,4 +1,4 @@
-#include "vgl_camera.h"
+#include "vgl/plane3.h"
 
 namespace vgl {
 

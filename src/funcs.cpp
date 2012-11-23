@@ -1,7 +1,7 @@
-#include "vgl_funcs.h"
+#include "vgl/funcs.h"
 
-#include "vgl_vec4.h"
-#include "vgl_matrix4.h"
+#include "vgl/vec4.h"
+#include "vgl/matrix4.h"
 
 #define GL_GLEXT_PROTOTYPES 1
 #ifdef linux

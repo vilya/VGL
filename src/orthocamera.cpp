@@ -1,4 +1,4 @@
-#include "vgl_orthocamera.h"
+#include "vgl/orthocamera.h"
 
 namespace vgl {
 

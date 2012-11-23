@@ -1,4 +1,4 @@
-#include "vgl_vec4.h"
+#include "vgl/vec2.h"
 
 namespace vgl {
 

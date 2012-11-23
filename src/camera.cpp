@@ -1,4 +1,4 @@
-#include "vgl_vec2.h"
+#include "vgl/camera.h"
 
 namespace vgl {
 

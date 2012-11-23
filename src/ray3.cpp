@@ -1,4 +1,4 @@
-#include "vgl_plane3.h"
+#include "vgl/ray3.h"
 
 namespace vgl {
 

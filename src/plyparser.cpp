@@ -1,6 +1,6 @@
-#include "vgl_plyparser.h"
+#include "vgl/plyparser.h"
 
-#include "vgl_vec3.h"
+#include "vgl/vec3.h"
 #include "ply.h"  // From the thirdparty directory.
 
 #include <cstdio>
