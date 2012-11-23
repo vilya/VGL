@@ -3,7 +3,6 @@
 #include "vgl/image.h"
 #include "vgl/parser.h"
 #include "vgl/utils.h"
-#include "vgl/vec3.h"
 
 #include <cstdarg>
 #include <cstdio>
@@ -259,17 +258,17 @@ std::string mtlParseNEWMTL(char* line, char*& col) throw(ParseException) {
 }
 
 
-Vec3f mtlParseColor(char* line, char*& col) throw(ParseException) {
+Eigen::Vector3f mtlParseColor(char* line, char*& col) throw(ParseException) {
   col = line;
   eatSpace(col, true);
   float r = parseFloat(col, col);
   eatSpace(col, false);
   if (isEnd(*col) || isCommentStart(*col))
-    return Vec3f(r, r, r);
+    return Eigen::Vector3f(r, r, r);
   float g = parseFloat(col, col);
   eatSpace(col, true);
   float b = parseFloat(col, col);
-  return Vec3f(r, g, b);
+  return Eigen::Vector3f(r, g, b);
 }
 
 
@@ -461,7 +460,7 @@ OBJFileLineType objParseLineType(char* line, char*& col) throw(ParseException) {
 }
 
 
-Vec3f objParseV(char *line, char*& col) throw(ParseException) {
+Eigen::Vector3f objParseV(char *line, char*& col) throw(ParseException) {
   col = line;
   eatSpace(col, true);
   float x = parseFloat(col, col);
@@ -471,45 +470,45 @@ Vec3f objParseV(char *line, char*& col) throw(ParseException) {
   float z = parseFloat(col, col);
   eatSpace(col);
   if (isEnd(*col) || isCommentStart(*col))
-    return Vec3f(x, y, z);
+    return Eigen::Vector3f(x, y, z);
   float w = parseFloat(col, col);
-  return Vec3f(x / w, y / w, z / w);
+  return Eigen::Vector3f(x / w, y / w, z / w);
 }
 
 
-Vec3f objParseVT(char *line, char*& col) throw(ParseException) {
+Eigen::Vector3f objParseVT(char *line, char*& col) throw(ParseException) {
   col = line;
   eatSpace(col, true);
   float u = parseFloat(col, col);
   eatSpace(col);
   if (isEnd(*col) || isCommentStart(*col))
-    return Vec3f(u, 0.0f, 0.0f);
+    return Eigen::Vector3f(u, 0.0f, 0.0f);
   float v = parseFloat(col, col);
   eatSpace(col);
   if (isEnd(*col) || isCommentStart(*col))
-    return Vec3f(u, v, 0.0f);
+    return Eigen::Vector3f(u, v, 0.0f);
   float w = parseFloat(col, col);
-  return Vec3f(u, v, w);
+  return Eigen::Vector3f(u, v, w);
 }
 
 
-Vec3f objParseVP(char *line, char*& col) throw(ParseException) {
+Eigen::Vector3f objParseVP(char *line, char*& col) throw(ParseException) {
   col = line;
   eatSpace(col, true);
   float u = parseFloat(col, col);
   eatSpace(col);
   if (isEnd(*col) || isCommentStart(*col))
-    return Vec3f(u, 0.0f, 0.0f);
+    return Eigen::Vector3f(u, 0.0f, 0.0f);
   float v = parseFloat(col, col);
   eatSpace(col);
   if (isEnd(*col) || isCommentStart(*col))
-    return Vec3f(u, v, 0.0f);
+    return Eigen::Vector3f(u, v, 0.0f);
   float w = parseFloat(col, col);
-  return Vec3f(u, v, w);
+  return Eigen::Vector3f(u, v, w);
 }
 
 
-Vec3f objParseVN(char* line, char*& col) throw(ParseException) {
+Eigen::Vector3f objParseVN(char* line, char*& col) throw(ParseException) {
   col = line;
   eatSpace(col, true);
   float i = parseFloat(col, col);
@@ -517,7 +516,7 @@ Vec3f objParseVN(char* line, char*& col) throw(ParseException) {
   float j = parseFloat(col, col);
   eatSpace(col, true);
   float k = parseFloat(col, col);
-  return Vec3f(i, j, k);
+  return Eigen::Vector3f(i, j, k);
 }
 
 
