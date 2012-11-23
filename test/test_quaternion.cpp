@@ -1,7 +1,7 @@
-#include "vgl_quaternion.h"
+#include "vgl/quaternion.h"
 
-#include "vgl_utils.h"
-#include "vgl_vec3.h"
+#include "vgl/utils.h"
+#include "vgl/vec3.h"
 
 #include <cppunit/TestRunner.h>
 #include <cppunit/TestResult.h>
